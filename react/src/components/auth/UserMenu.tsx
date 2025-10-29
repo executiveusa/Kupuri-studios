@@ -1,5 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import { useConfigs, useRefreshModels } from '@/contexts/configs'
 import { BASE_API_URL } from '@/constants'
@@ -21,6 +22,7 @@ export function UserMenu() {
   const { setShowLoginDialog } = useConfigs()
   const refreshModels = useRefreshModels()
   const { t } = useTranslation()
+  const navigate = useNavigate()
 
   const handleLogout = async () => {
     await logout()
@@ -31,7 +33,7 @@ export function UserMenu() {
 
   // 如果用户已登录，显示用户菜单
   if (authStatus.is_logged_in && authStatus.user_info) {
-    const { username, image_url } = authStatus.user_info
+    const { username, image_url, is_admin: isAdminUser } = authStatus.user_info
     const initials = username ? username.substring(0, 2).toUpperCase() : 'U'
 
     return (
@@ -49,6 +51,14 @@ export function UserMenu() {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>{t('common:auth.myAccount')}</DropdownMenuLabel>
           <DropdownMenuItem disabled>{username}</DropdownMenuItem>
+          {isAdminUser && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => navigate('/knowledge')}>
+                知识库管理
+              </DropdownMenuItem>
+            </>
+          )}
           <DropdownMenuSeparator />
           <DropdownMenuItem
             onClick={() => {

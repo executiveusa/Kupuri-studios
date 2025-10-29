@@ -43,6 +43,7 @@ export default function Knowledge() {
   const [enabledKnowledge, setEnabledKnowledge] = useState<Set<string>>(
     new Set()
   )
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null)
 
   // 详情弹窗状态
   const [selectedKnowledge, setSelectedKnowledge] =
@@ -50,6 +51,7 @@ export default function Knowledge() {
   const [showDetailDialog, setShowDetailDialog] = useState(false)
 
   const pageSize = 12
+  const isAdminUser = isAdmin === true
 
   // Load enabled knowledge from settings
   useEffect(() => {
@@ -78,12 +80,14 @@ export default function Knowledge() {
         ...params,
       })
 
-      setKnowledgeList(response.data.list)
-      setTotalPages(response.data.pagination.total_pages)
+      setIsAdmin(response.is_admin)
+      setKnowledgeList(response.list)
+      setTotalPages(response.pagination.total_pages)
     } catch (error) {
       console.error('Failed to fetch knowledge list:', error)
       toast.error('获取知识库列表失败')
       setKnowledgeList([])
+      setIsAdmin(null)
     } finally {
       setLoading(false)
     }
@@ -109,6 +113,11 @@ export default function Knowledge() {
 
   // Toggle knowledge enable/disable
   const toggleKnowledge = async (knowledgeId: string, enabled: boolean) => {
+    if (!isAdminUser) {
+      toast.error('仅管理员可以管理知识库')
+      return
+    }
+
     const newEnabled = new Set(enabledKnowledge)
     if (enabled) {
       newEnabled.add(knowledgeId)
@@ -216,14 +225,14 @@ export default function Knowledge() {
         )}
 
         {/* Empty State */}
-        {!loading && knowledgeList.length === 0 && (
+        {!loading && isAdminUser && knowledgeList.length === 0 && (
           <div className="text-center py-8 text-muted-foreground">
             {searchTerm ? '没有找到相关知识库' : '暂无知识库'}
           </div>
         )}
 
         {/* Knowledge Grid */}
-        {!loading && knowledgeList.length > 0 && (
+        {!loading && isAdminUser && knowledgeList.length > 0 && (
           <>
             <div
               style={{
@@ -323,8 +332,17 @@ export default function Knowledge() {
         )}
       </div>
 
+      {/* 非管理员提示 */}
+      {!loading && isAdmin === false && (
+        <div className="px-6 pb-8">
+          <div className="text-center py-12 text-muted-foreground border rounded-lg">
+            仅管理员可以访问知识库管理界面。
+          </div>
+        </div>
+      )}
+
       {/* 知识库详情弹窗 */}
-      <Dialog open={showDetailDialog} onOpenChange={setShowDetailDialog}>
+      <Dialog open={showDetailDialog && isAdminUser} onOpenChange={setShowDetailDialog}>
         <DialogContent className="max-w-4xl max-h-[80vh] flex flex-col">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
