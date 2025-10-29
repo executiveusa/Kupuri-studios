@@ -25,13 +25,15 @@ export interface Pagination {
 }
 
 // 获取知识库列表的响应接口
+export interface KnowledgeListData {
+  list: KnowledgeBase[]
+  pagination: Pagination
+  is_admin: boolean
+}
+
 export interface KnowledgeListResponse {
   success: boolean
-  data: {
-    list: KnowledgeBase[]
-    pagination: Pagination
-    is_admin: boolean
-  }
+  data: KnowledgeListData
   message: string
 }
 
@@ -53,11 +55,11 @@ export interface ApiResponse {
 /**
  * 获取知识库列表
  * @param params 查询参数
- * @returns Promise<KnowledgeListResponse>
+ * @returns Promise<KnowledgeListData>
  */
 export async function getKnowledgeList(
   params: KnowledgeListParams = {}
-): Promise<KnowledgeListResponse> {
+): Promise<KnowledgeListData> {
   const { pageSize = 10, pageNumber = 1, search } = params
 
   // 构建查询参数
@@ -79,8 +81,13 @@ export async function getKnowledgeList(
       throw new Error(`HTTP error! status: ${response.status}`)
     }
 
-    const data = await response.json()
-    return data
+    const data: KnowledgeListResponse = await response.json()
+
+    if (!data.success || !data.data) {
+      throw new Error(data.message || 'Failed to get knowledge list')
+    }
+
+    return data.data
   } catch (error) {
     console.error('Failed to get knowledge list:', error)
     throw new Error(

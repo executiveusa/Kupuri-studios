@@ -63,6 +63,16 @@ The current structure predates the Turborepo blueprint described in the upgrade 
 | 6 | Monetization | Stripe tokens, usage metering, pricing UI |
 | 7 | Advanced Features | Collaboration, emotion engine, predictive rendering, QC automation |
 
+## Phase Progress Checklist
+- [ ] **Phase 1 – Turborepo foundation**
+- [ ] **Phase 2 – Database & Auth**
+- [ ] **Phase 3 – GCP Infrastructure**
+- [ ] **Phase 4 – Core Services**
+- [ ] **Phase 5 – Frontend Enhancements**
+  - [x] Gate legacy knowledge management dashboard behind admin privileges to safeguard future shared AI editing controls.
+- [ ] **Phase 6 – Monetization**
+- [ ] **Phase 7 – Advanced Features**
+
 ## Immediate Next Actions
 1. Audit existing dependencies and confirm compatibility with `pnpm` and Turbo build pipelines.
 2. Extract reusable UI primitives from `react/src` into a candidate `packages/ui` module.
