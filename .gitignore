@@ -19,4 +19,16 @@ user_data/
 
 .continue
 
+# Environment variables
 .env
+.env.local
+.env.*.local
+
+# Test results
+playwright-report/
+test-results/
+lighthouse-results.json
+
+# Logs
+*.log
+npm-debug.log*

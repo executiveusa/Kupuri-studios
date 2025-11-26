@@ -20,7 +20,11 @@
     "clean:ts": "cd electron && rm -rf dist",
     "test": "vitest",
     "test:run": "vitest run",
-    "test:watch": "vitest --watch"
+    "test:watch": "vitest --watch",
+    "deploy:agent": "tsx tools/vercel-agent/agent.ts",
+    "deploy:check": "tsx tools/vercel-agent/check-deployment.ts",
+    "test:e2e": "playwright test",
+    "test:lighthouse": "lighthouse http://localhost:5174 --output=json --output-path=./lighthouse-results.json"
   },
   "publish": "always",
   "build": {
@@ -81,13 +85,17 @@
   },
   "devDependencies": {
     "@electron/notarize": "^3.0.1",
+    "@playwright/test": "^1.48.0",
     "@types/electron": "^1.4.38",
     "@types/node": "^20.19.4",
     "concurrently": "^9.1.2",
     "cross-env": "^7.0.3",
+    "dotenv": "^16.4.5",
     "electron": "^35.1.0",
     "electron-builder": "^24.0.0",
+    "lighthouse": "^12.2.1",
     "ts-node": "^10.9.2",
+    "tsx": "^4.16.2",
     "typescript": "^5.8.3",
     "vitest": "^3.2.1"
   },
