@@ -1,0 +1,42 @@
+# Build stage
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+# Install dependencies
+COPY package.json pnpm-lock.yaml ./
+RUN npm install -g pnpm && pnpm install
+
+# Copy source
+COPY web ./web
+COPY tsconfig.base.json ./
+
+# Build
+RUN cd web && npm run build
+
+# Runtime stage
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Install dumb-init for proper signal handling
+RUN apk add --no-cache dumb-init
+
+# Install production dependencies only
+COPY web/package.json web/pnpm-lock.yaml ./
+RUN npm install -g pnpm && pnpm install --prod
+
+# Copy built application
+COPY --from=builder /app/web/.next ./web/.next
+COPY web/public ./web/public
+COPY web/package.json ./web/package.json
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
+  CMD wget --quiet --tries=1 --spider http://localhost:3000/ || exit 1
+
+# Run application
+ENTRYPOINT ["/sbin/dumb-init", "--"]
+CMD ["npm", "-C", "web", "start"]
+
+EXPOSE 3000

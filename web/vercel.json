@@ -1,0 +1,52 @@
+{
+  "name": "kupuri-web",
+  "version": 2,
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "public": false,
+  "env": {
+    "NEXT_PUBLIC_API_BASE_URL": {
+      "description": "API Base URL",
+      "value": "https://api.kupuri.studio",
+      "required": false
+    },
+    "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY": {
+      "description": "Stripe Publishable Key",
+      "required": true
+    },
+    "NEXT_PUBLIC_POLYGON_RPC": {
+      "description": "Polygon RPC URL",
+      "value": "https://polygon-rpc.com",
+      "required": false
+    },
+    "NEXT_PUBLIC_NFT_CONTRACT_ADDRESS": {
+      "description": "NFT Contract Address on Polygon",
+      "required": false
+    },
+    "NEXT_PUBLIC_MAGIC_LINK_API_KEY": {
+      "description": "Magic Link API Key",
+      "required": false
+    }
+  },
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ],
+  "regions": ["sfo1", "iad1", "fra1"],
+  "git": {
+    "deploymentEnabled": {
+      "main": true,
+      "develop": true
+    }
+  },
+  "skipAutoDeploy": false,
+  "framework": "nextjs"
+}

@@ -1,0 +1,131 @@
+version: 3
+
+applications:
+  web:
+    name: kupuri-web
+    description: "Kupuri Studios - Web Frontend"
+    type: "static"
+    image: "node:20-alpine"
+    build:
+      command: "npm run build"
+      directory: "web"
+    ports:
+      - "3000"
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: "https://api.kupuri.studio"
+      NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: "${STRIPE_PUBLISHABLE_KEY}"
+    restart_policy: "always"
+    healthcheck:
+      test: "curl -f http://localhost:3000 || exit 1"
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  bff:
+    name: kupuri-bff
+    description: "Kupuri Studios - Backend for Frontend (Hono)"
+    type: "docker"
+    build:
+      context: "."
+      dockerfile: "deploy/docker/Dockerfile.bff"
+    ports:
+      - "8000"
+    environment:
+      DATABASE_URL: "postgresql://kupuri:${POSTGRES_PASSWORD}@postgres:5432/kupuri"
+      REDIS_URL: "redis://redis:6379"
+      JWT_SECRET: "${JWT_SECRET}"
+      ANTHROPIC_API_KEY: "${ANTHROPIC_API_KEY}"
+      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
+      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
+      STRIPE_SECRET_KEY: "${STRIPE_SECRET_KEY}"
+      NODE_ENV: "production"
+    restart_policy: "always"
+    healthcheck:
+      test: "curl -f http://localhost:8000/api/health || exit 1"
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    depends_on:
+      - postgres
+      - redis
+
+  postgres:
+    name: kupuri-postgres
+    image: "postgres:16-alpine"
+    environment:
+      POSTGRES_USER: "kupuri"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      POSTGRES_DB: "kupuri"
+    restart_policy: "always"
+    volumes:
+      - "postgres_data:/var/lib/postgresql/data"
+    healthcheck:
+      test: "pg_isready -U kupuri"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    name: kupuri-redis
+    image: "redis:7-alpine"
+    restart_policy: "always"
+    volumes:
+      - "redis_data:/data"
+    healthcheck:
+      test: "redis-cli ping"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  n8n:
+    name: kupuri-n8n
+    image: "n8nio/n8n:latest"
+    environment:
+      N8N_HOST: "${N8N_HOST}"
+      N8N_PROTOCOL: "https"
+      N8N_PORT: "5678"
+      DATABASE_TYPE: "postgresdb"
+      DATABASE_HOST: "postgres"
+      DATABASE_PORT: "5432"
+      DATABASE_NAME: "n8n"
+      DATABASE_USER: "kupuri"
+      DATABASE_PASSWORD: "${POSTGRES_PASSWORD}"
+      N8N_ENCRYPTION_KEY: "${N8N_ENCRYPTION_KEY}"
+    ports:
+      - "5678"
+    restart_policy: "always"
+    depends_on:
+      - postgres
+    volumes:
+      - "n8n_data:/home/node/.n8n"
+
+volumes:
+  postgres_data:
+  redis_data:
+  n8n_data:
+
+services:
+  postgresql:
+    version: "16"
+  redis:
+    version: "7"
+
+monitoring:
+  enabled: true
+  prometheus:
+    enabled: true
+    retention: "15d"
+
+  grafana:
+    enabled: true
+
+ssl:
+  enabled: true
+  provider: "letsencrypt"
+  email: "${SSL_EMAIL}"
+
+backup:
+  enabled: true
+  schedule: "0 2 * * *" # Daily at 2 AM
+  retention_days: 30
+  destination: "s3://${AWS_S3_BUCKET}/backups"

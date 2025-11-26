@@ -1,0 +1,162 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: kupuri-postgres
+    environment:
+      POSTGRES_USER: kupuri
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-kupuri}
+      POSTGRES_DB: kupuri
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kupuri"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - kupuri-network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: kupuri-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - kupuri-network
+
+  # BFF Server (Hono)
+  bff:
+    build:
+      context: ../
+      dockerfile: deploy/docker/Dockerfile.bff
+    container_name: kupuri-bff
+    environment:
+      DATABASE_URL: postgresql://kupuri:${POSTGRES_PASSWORD:-kupuri}@postgres:5432/kupuri
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: ${JWT_SECRET}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: 8000
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - kupuri-network
+    volumes:
+      - ../bff:/app/bff
+      - /app/bff/node_modules
+
+  # ComfyUI for image generation
+  comfyui:
+    image: ghcr.io/comfyorg/comfyui:latest
+    container_name: kupuri-comfyui
+    environment:
+      NVIDIA_VISIBLE_DEVICES: all
+    ports:
+      - "8188:8188"
+    volumes:
+      - comfyui_models:/root/.comfyui/models
+      - comfyui_outputs:/root/.comfyui/output
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    networks:
+      - kupuri-network
+
+  # n8n Workflow Automation
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: kupuri-n8n
+    environment:
+      N8N_HOST: ${N8N_HOST:-localhost}
+      N8N_PROTOCOL: ${N8N_PROTOCOL:-http}
+      N8N_PORT: 5678
+      DATABASE_TYPE: postgresdb
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: n8n
+      DATABASE_USER: kupuri
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-kupuri}
+      N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY}
+    ports:
+      - "5678:5678"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - kupuri-network
+    volumes:
+      - n8n_data:/home/node/.n8n
+
+  # Frontend (Next.js)
+  web:
+    build:
+      context: ../
+      dockerfile: deploy/docker/Dockerfile.web
+    container_name: kupuri-web
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:8000
+      NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - bff
+    networks:
+      - kupuri-network
+    volumes:
+      - ../web:/app/web
+      - /app/web/node_modules
+      - /app/web/.next
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: kupuri-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - web
+      - bff
+      - n8n
+    networks:
+      - kupuri-network
+
+volumes:
+  postgres_data:
+  redis_data:
+  comfyui_models:
+  comfyui_outputs:
+  n8n_data:
+
+networks:
+  kupuri-network:
+    driver: bridge
