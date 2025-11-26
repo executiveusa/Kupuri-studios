@@ -1,36 +1,94 @@
 import { Hono } from 'hono';
 import { z } from 'zod';
+import { AuthService } from '../services/authService';
+import { AppError } from '../middleware/errorHandler';
 
 const router = new Hono();
 
 const LoginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8),
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
 });
 
 const RegisterSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8),
-  name: z.string().min(2),
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+  name: z.string().min(2, 'Name must be at least 2 characters'),
+});
+
+const RefreshSchema = z.object({
+  refreshToken: z.string(),
 });
 
 router.post('/login', async (c) => {
-  // TODO: Implement login
-  return c.json({ message: 'Login endpoint' });
+  try {
+    const body = await c.req.json();
+    const data = LoginSchema.parse(body);
+
+    const result = await AuthService.login(data.email, data.password);
+
+    return c.json({
+      success: true,
+      data: result,
+    });
+  } catch (err) {
+    if (err instanceof z.ZodError) {
+      throw new AppError('Validation failed', 'VALIDATION_ERROR', 400, {
+        errors: err.errors,
+      });
+    }
+    throw err;
+  }
 });
 
 router.post('/register', async (c) => {
-  // TODO: Implement registration
-  return c.json({ message: 'Register endpoint' });
+  try {
+    const body = await c.req.json();
+    const data = RegisterSchema.parse(body);
+
+    const result = await AuthService.register(data.email, data.password, data.name);
+
+    return c.json({
+      success: true,
+      data: result,
+    });
+  } catch (err) {
+    if (err instanceof z.ZodError) {
+      throw new AppError('Validation failed', 'VALIDATION_ERROR', 400, {
+        errors: err.errors,
+      });
+    }
+    throw err;
+  }
 });
 
 router.post('/refresh', async (c) => {
-  // TODO: Implement token refresh
-  return c.json({ message: 'Refresh endpoint' });
+  try {
+    const body = await c.req.json();
+    const data = RefreshSchema.parse(body);
+
+    const result = await AuthService.refreshToken(data.refreshToken);
+
+    return c.json({
+      success: true,
+      data: result,
+    });
+  } catch (err) {
+    if (err instanceof z.ZodError) {
+      throw new AppError('Validation failed', 'VALIDATION_ERROR', 400, {
+        errors: err.errors,
+      });
+    }
+    throw err;
+  }
 });
 
 router.post('/logout', async (c) => {
-  return c.json({ message: 'Logged out' });
+  // Client-side cleanup handled by frontend
+  return c.json({
+    success: true,
+    message: 'Logged out successfully',
+  });
 });
 
 export default router;
