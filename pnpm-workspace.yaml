@@ -1,0 +1,9 @@
+packages:
+  - 'web'
+  - 'bff'
+  - 'shared/packages/*'
+  - 'desktop'
+  - 'contracts'
+
+# Prevent publishing root workspace package
+publish: false

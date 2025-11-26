@@ -1,0 +1,18 @@
+{
+  "name": "@kupuri/api",
+  "version": "1.0.0",
+  "description": "Kupuri Studios - API Client",
+  "private": true,
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@kupuri/types": "workspace:*",
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "@kupuri/types",
+  "version": "1.0.0",
+  "description": "Kupuri Studios - Shared TypeScript types",
+  "private": true,
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "type-check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}

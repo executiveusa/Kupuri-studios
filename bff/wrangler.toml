@@ -1,0 +1,35 @@
+name = "kupuri-bff"
+type = "service"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+[env.development]
+name = "kupuri-bff-dev"
+vars = { ENVIRONMENT = "development" }
+
+[env.production]
+name = "kupuri-bff"
+vars = { ENVIRONMENT = "production" }
+
+[[r2_buckets]]
+binding = "COMIC_BUCKET"
+bucket_name = "kupuri-comics"
+preview_bucket_name = "kupuri-comics-preview"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "kupuri-db"
+database_id = "your-database-id"
+
+[[kv_namespaces]]
+binding = "KV_CACHE"
+id = "your-kv-id"
+preview_id = "your-kv-preview-id"
+
+[build]
+command = "pnpm build"
+watch_paths = ["src/**/*.ts"]
+
+[docs]
+title = "Kupuri Studios BFF API"
+description = "Backend for Frontend API for Kupuri Studios autonomous comic generation platform"
