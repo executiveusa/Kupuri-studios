@@ -9,11 +9,11 @@ import canvasEn from './locales/en/canvas.json'
 import chatEn from './locales/en/chat.json'
 import settingsEn from './locales/en/settings.json'
 
-import commonZh from './locales/zh-CN/common.json'
-import homeZh from './locales/zh-CN/home.json'
-import canvasZh from './locales/zh-CN/canvas.json'
-import chatZh from './locales/zh-CN/chat.json'
-import settingsZh from './locales/zh-CN/settings.json'
+import commonEs from './locales/es-MX/common.json'
+import homeEs from './locales/es-MX/home.json'
+import canvasEs from './locales/es-MX/canvas.json'
+import chatEs from './locales/es-MX/chat.json'
+import settingsEs from './locales/es-MX/settings.json'
 
 const resources = {
   en: {
@@ -23,12 +23,12 @@ const resources = {
     chat: chatEn,
     settings: settingsEn,
   },
-  'zh-CN': {
-    common: commonZh,
-    home: homeZh,
-    canvas: canvasZh,
-    chat: chatZh,
-    settings: settingsZh,
+  'es-MX': {
+    common: commonEs,
+    home: homeEs,
+    canvas: canvasEs,
+    chat: chatEs,
+    settings: settingsEs,
   },
 }
 

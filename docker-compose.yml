@@ -1,0 +1,25 @@
+# Docker Compose for Kupuri Studios
+version: '3.8'
+
+services:
+  kupuri-studios:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: kupuri-studios
+    ports:
+      - "8000:8000"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8000
+      - UI_DIST_DIR=/app/react/dist
+    volumes:
+      # Optional: Mount local data directories if needed
+      - ./data:/app/data
+    restart: unless-stopped
+    networks:
+      - kupuri-network
+
+networks:
+  kupuri-network:
+    driver: bridge

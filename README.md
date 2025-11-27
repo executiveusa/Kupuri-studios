@@ -1,6 +1,6 @@
 <h1 align="center">
-  <a href="https://jaaz.app" target="_blank"> Jaaz.app</a>
-  <p align="center">Open source Canva AI alternative</p>
+  <a href="https://github.com/executiveusa/Kupuri-studios" target="_blank">Kupuri Studios</a>
+  <p align="center">Open source Canva AI alternative - Enhanced Fork</p>
 
  <p align="center">
   <a href="https://jaaz.app">
@@ -9,8 +9,15 @@
 </p>
 
 </h2>
+
+<p align="center">
+  <strong>🎨 Major Refactor (Nov 2025)</strong><br>
+  Mexican Spanish • Docker/VPS Ready • Premium UI/UX<br>
+  <a href="REFACTOR-SUMMARY.md">📖 See full refactor details →</a>
+</p>
+
 <p align="center">The world's first open-source multimodal canvas creative agent</p>
-<p align="center">This is a substitute for Canva and Manus that prioritizes privacy and is usable locally.</p>
+<p align="center">Fork of <a href="https://github.com/11cafe/jaaz">Jaaz.app</a> with enhanced deployment and bilingual support.</p>
 <p>
   <b>📣 [New!] Enterprise Cloud “Full” Edition</b> — Private/on-prem deployment & commercial licensing (Docker image or full source). Includes all jaaz.app online features. 
   <b>30% OFF</b> through <b>Sep 15, 2025</b>. 

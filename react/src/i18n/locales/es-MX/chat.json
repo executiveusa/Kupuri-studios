@@ -1,0 +1,50 @@
+{
+  "newChat": "Nuevo Chat",
+  "placeholder": "Escribe tu mensaje aquí...",
+  "insufficientBalance": "Saldo Insuficiente",
+  "insufficientBalanceDescription": "Tus créditos se agotaron. Por favor recarga para continuar.",
+  "textarea": {
+    "placeholder": "Ingresa tus requisitos de diseño",
+    "selectModel": "¡Por favor selecciona un modelo de texto! Ve a Configuración para establecer tus claves API si aún no lo has hecho.",
+    "selectTool": "¡Por favor ve a configuración para agregar herramientas de generación de imágenes o videos, o no podrás generar ninguna imagen o video!",
+    "enterPrompt": "Por favor ingresa un prompt",
+    "quantity": "Cantidad de Imágenes"
+  },
+  "messages": {
+    "imagePositioning": "Ir a la imagen",
+    "showMore": "Mostrar Más",
+    "showLess": "Mostrar Menos"
+  },
+  "thinking": {
+    "title": "Pensando"
+  },
+  "plan": {
+    "title": "Plan",
+    "steps": {
+      "singular": "paso",
+      "plural": "pasos"
+    }
+  },
+  "shareTemplate": {
+    "title": "Compartir como Plantilla",
+    "templateName": "Nombre de la Plantilla",
+    "templateNamePlaceholder": "Ingresa el nombre de la plantilla...",
+    "coverPhoto": "Foto de Portada",
+    "noImagesFound": "No se encontraron imágenes en el lienzo",
+    "nameRequired": "El nombre de la plantilla es requerido",
+    "coverImageRequired": "La imagen de portada es requerida",
+    "create": "Crear Plantilla",
+    "creating": "Creando...",
+    "success": "¡Plantilla creada exitosamente!",
+    "error": "Error al crear la plantilla"
+  },
+  "modelSelector": {
+    "title": "Modelo",
+    "auto": "Auto",
+    "tabs": {
+      "image": "Imagen",
+      "video": "Video",
+      "text": "Texto"
+    }
+  }
+}

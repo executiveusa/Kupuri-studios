@@ -1,0 +1,63 @@
+{
+  "title": "Lienzo",
+  "rename": "Renombrar Lienzo",
+  "delete": "Eliminar Lienzo",
+  "share": "Compartir Lienzo",
+  "export": "Exportar Lienzo",
+  "exportImages": "Exportar",
+  "import": "Importar Lienzo",
+  "untitled": "Sin Título",
+  "back": "Atrás",
+  "saveSnapshot": "Guardar Instantánea",
+  "loadSnapshot": "Cargar Instantánea",
+  "saved": "Guardado ✅",
+  "messages": {
+    "canvasRenamed": "Lienzo renombrado exitosamente",
+    "canvasDeleted": "Lienzo eliminado exitosamente",
+    "canvasExported": "Lienzo exportado exitosamente",
+    "canvasImported": "Lienzo importado exitosamente",
+    "failedToRename": "Error al renombrar lienzo",
+    "failedToDelete": "Error al eliminar lienzo",
+    "failedToCreateFile": "Error al crear archivo",
+    "nothingSelected": "No hay recursos seleccionados",
+    "exportingAssets": "Exportando recursos...",
+    "failedToExportImages": "Error al exportar imágenes",
+    "gptImagePermissionRequired": "¡Debe habilitar los permisos del modelo gpt-image-1 para usar esta función!"
+  },
+  "deleteDialog": {
+    "title": "Eliminar Lienzo",
+    "description": "¿Está seguro de que desea eliminar este Lienzo? Esta acción no se puede deshacer.",
+    "cancel": "Cancelar",
+    "delete": "Eliminar"
+  },
+  "tool": {
+    "hand": "Mano",
+    "selection": "Selección",
+    "rectangle": "Rectángulo",
+    "ellipse": "Elipse",
+    "text": "Texto",
+    "image": "Imagen",
+    "shape": "Forma",
+    "arrow": "Flecha",
+    "line": "Línea",
+    "zoomFit": "Ajustar zoom"
+  },
+  "popbar": {
+    "addToChat": "Agregar al chat",
+    "magicGenerate": "✨ Generación Mágica"
+  },
+  "myAssets": "Mis Recursos",
+  "selectAFolder": "Seleccionar una carpeta",
+  "selectAFolderDescription": "Seleccione una carpeta para ver sus imágenes y videos",
+  "noMediaFiles": "No hay archivos multimedia",
+  "noMediaFilesDescription": "No hay imágenes o videos en esta carpeta",
+  "mediaFiles": "archivos multimedia",
+  "openInExplorer": "Abrir en explorador de archivos",
+  "basicInfo": "Información básica",
+  "fileName": "Nombre de archivo",
+  "fileSize": "Tamaño de archivo",
+  "modifiedTime": "Fecha de modificación",
+  "dimensions": "Dimensiones",
+  "filePath": "Ruta de archivo",
+  "pngMetadata": "Metadatos PNG"
+}
