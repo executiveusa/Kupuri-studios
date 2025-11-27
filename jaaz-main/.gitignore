@@ -20,5 +20,3 @@ user_data/
 .continue
 
 .env
-.env.coolify
-.vercel
