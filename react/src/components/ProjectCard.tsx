@@ -1,10 +1,9 @@
 'use client'
 
-import Image from 'next/image'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 
-export function ProjectCard({ project, onClick }) {
+export function ProjectCard({ project, onClick }: any) {
   const [imageLoaded, setImageLoaded] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
 
@@ -25,16 +24,13 @@ export function ProjectCard({ project, onClick }) {
       <motion.div
         className="absolute inset-0"
         animate={{ scale: isHovered ? 1.05 : 1 }}
-        transition={{ duration: 0.3, ease: 'easeOut' }}
+        transition={{ duration: 0.3, type: 'spring', bounce: 0.2 }}
       >
-        <Image
+        <img
           src={project.imageSrc}
           alt={project.title}
-          fill
-          className={`object-cover transition-all duration-500 ${imageLoaded ? 'blur-0' : 'blur-lg'}`}
-          onLoadingComplete={() => setImageLoaded(true)}
-          placeholder="blur"
-          blurDataURL="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600'%3E%3Crect fill='%23222'/%3E%3C/svg%3E"
+          className={`w-full h-full object-cover transition-all duration-500 ${imageLoaded ? 'blur-0' : 'blur-lg'}`}
+          onLoad={() => setImageLoaded(true)}
         />
       </motion.div>
 

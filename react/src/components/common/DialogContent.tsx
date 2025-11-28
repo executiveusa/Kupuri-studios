@@ -24,11 +24,6 @@ const CommonDialogContent: React.FC<CommonDialogProps> = ({
     transition: {
       duration: 0.5,
       ease: [0.17, 0.67, 0.51, 1],
-      opacity: {
-        delay: 0.2,
-        duration: 0.4,
-        ease: 'easeOut',
-      },
     },
   }
 

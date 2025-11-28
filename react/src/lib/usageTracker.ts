@@ -36,7 +36,7 @@ export class UsageTracker {
       .reduce((sum, e) => sum + (e.cost || 0), 0)
   }
 
-  getAverageResponse time(userId: string) {
+  getAverageResponseTime(userId: string) {
     const userEvents = this.getUsageByUser(userId).filter((e) => e.duration)
     if (userEvents.length === 0) return 0
     return userEvents.reduce((sum, e) => sum + (e.duration || 0), 0) / userEvents.length

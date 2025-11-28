@@ -17,7 +17,7 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "vite build",
     "build:lib": "vite build --mode lib && cp src/index.d.ts dist/index.d.ts",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -50,6 +50,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "file-saver": "^2.0.5",
+    "framer-motion": "^12.23.24",
     "i18next": "^25.2.1",
     "i18next-browser-languagedetector": "^8.1.0",
     "idb": "^8.0.3",
@@ -71,9 +72,11 @@
     "react-markdown-editor-lite": "^1.3.4",
     "react-photo-view": "^1.2.7",
     "react-resizable-panels": "^3.0.2",
+    "react-router-dom": "^7.9.6",
     "remark-gfm": "^4.0.1",
     "socket.io-client": "^4.8.1",
     "sonner": "^2.0.3",
+    "stripe": "^20.0.0",
     "tailwind-merge": "^3.0.2",
     "tailwindcss": "^4.0.17",
     "tldraw": "^3.13.1",

@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 
-export function HeroSection({ title, subtitle }) {
+export function HeroSection({ title, subtitle }: { title?: string; subtitle?: string } = {}) {
   const [scrollY, setScrollY] = useState(0)
 
   useEffect(() => {
@@ -28,7 +28,7 @@ export function HeroSection({ title, subtitle }) {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.8, ease: 'easeOut' },
+      transition: { type: 'spring' as const, damping: 25, stiffness: 100 },
     },
   }
 
@@ -46,7 +46,7 @@ export function HeroSection({ title, subtitle }) {
           x: [0, 100, 0],
           y: [0, -50, 0],
         }}
-        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+        transition={{ duration: 8, repeat: Infinity, ease: [0.43, 0.13, 0.23, 0.96] }}
       />
 
       <motion.div
@@ -55,7 +55,7 @@ export function HeroSection({ title, subtitle }) {
           x: [0, -100, 0],
           y: [0, 50, 0],
         }}
-        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+        transition={{ duration: 10, repeat: Infinity, ease: [0.43, 0.13, 0.23, 0.96] }}
       />
 
       {/* Content */}

@@ -2,9 +2,8 @@
 
 import { motion, AnimatePresence } from 'framer-motion'
 import { useEffect, useRef } from 'react'
-import Image from 'next/image'
 
-export function ProjectModal({ project, onClose, isOpen }) {
+export function ProjectModal({ project, onClose, isOpen }: any) {
   const modalRef = useRef(null)
 
   useEffect(() => {
@@ -16,7 +15,7 @@ export function ProjectModal({ project, onClose, isOpen }) {
     }
   }, [isOpen])
 
-  const handleEscape = (e) => {
+  const handleEscape = (e: any) => {
     if (e.key === 'Escape') onClose()
   }
 
@@ -74,12 +73,10 @@ export function ProjectModal({ project, onClose, isOpen }) {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
               >
-                <Image
+                <img
                   src={project.imageSrc}
                   alt={project.title}
-                  fill
-                  className="object-cover"
-                  priority
+                  className="w-full h-full object-cover"
                 />
               </motion.div>
 
@@ -105,7 +102,7 @@ export function ProjectModal({ project, onClose, isOpen }) {
                       Technologies
                     </h3>
                     <div className="flex flex-wrap gap-2">
-                      {project.technologies.map((tech) => (
+                      {project.technologies.map((tech: string) => (
                         <motion.span
                           key={tech}
                           whileHover={{ scale: 1.05 }}
