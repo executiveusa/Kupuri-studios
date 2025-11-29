@@ -4,7 +4,7 @@ WORKDIR /app/react
 
 # Copy package files and install dependencies
 COPY react/package*.json ./
-RUN npm ci
+RUN npm ci --legacy-peer-deps
 
 # Copy React source code
 COPY react/ .
