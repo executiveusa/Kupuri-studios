@@ -13,6 +13,7 @@ from services.config_service import FILES_DIR
 from services.db_service import db_service
 from services.websocket_service import send_to_websocket, broadcast_session_update  # type: ignore
 from common import DEFAULT_PORT
+from utils.url_helper import get_base_url
 from utils.http_client import HttpClient
 import aiofiles
 import mimetypes
@@ -152,7 +153,8 @@ async def send_video_error_notification(session_id: str, error_message: str) -> 
 
 def format_video_success_message(filename: str) -> str:
     """Format success message for video generation"""
-    return f"video generated successfully ![video_id: {filename}](http://localhost:{DEFAULT_PORT}/api/file/{filename})"
+    base_url = get_base_url()
+    return f"video generated successfully ![video_id: {filename}]({base_url}/api/file/{filename})"
 
 
 async def process_video_result(

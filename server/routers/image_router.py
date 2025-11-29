@@ -1,6 +1,7 @@
 from fastapi.responses import FileResponse
 from fastapi.concurrency import run_in_threadpool
 from common import DEFAULT_PORT
+from utils.url_helper import get_base_url
 from tools.utils.image_canvas_utils import generate_file_id
 from services.config_service import FILES_DIR
 
@@ -89,9 +90,10 @@ async def upload_image(file: UploadFile = File(...), max_size_mb: float = 3.0):
 
     # 返回文件信息
     print('🦄upload_image file_path', file_path)
+    base_url = get_base_url()
     return {
         'file_id': f'{file_id}.{extension}',
-        'url': f'http://localhost:{DEFAULT_PORT}/api/file/{file_id}.{extension}',
+        'url': f'{base_url}/api/file/{file_id}.{extension}',
         'width': width,
         'height': height,
     }

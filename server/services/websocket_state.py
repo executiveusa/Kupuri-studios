@@ -1,9 +1,40 @@
 # services/websocket_state.py
 import socketio
+import os
 from typing import Dict
 
+# Get CORS origins from environment variable, fallback to localhost for development
+def get_cors_origins():
+    """
+    Get allowed CORS origins from environment variable.
+    
+    Production: Set CORS_ORIGINS="https://kupuri.com,https://www.kupuri.com"
+    Development: Defaults to localhost on common ports
+    """
+    cors_env = os.environ.get('CORS_ORIGINS', '')
+    
+    if cors_env:
+        # Split comma-separated origins and strip whitespace
+        origins = [origin.strip() for origin in cors_env.split(',') if origin.strip()]
+        print(f"🔒 CORS origins configured from environment: {origins}")
+        return origins
+    
+    # Development fallback - common localhost ports
+    dev_origins = [
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "http://localhost:8000",
+        "http://localhost:57988",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:5173",
+        "http://127.0.0.1:8000",
+        "http://127.0.0.1:57988"
+    ]
+    print(f"⚠️  CORS_ORIGINS not set, using development origins: {dev_origins}")
+    return dev_origins
+
 sio = socketio.AsyncServer(
-    cors_allowed_origins="*",
+    cors_allowed_origins=get_cors_origins(),
     async_mode='asgi'
 )
 

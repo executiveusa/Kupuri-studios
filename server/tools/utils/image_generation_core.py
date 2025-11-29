@@ -5,6 +5,7 @@ Contains the main orchestration logic for image generation across different prov
 
 from typing import Optional, Dict, Any
 from common import DEFAULT_PORT
+from utils.url_helper import get_base_url
 from tools.utils.image_utils import process_input_image
 from ..image_providers.image_base_provider import ImageProviderBase
 
@@ -94,4 +95,5 @@ async def generate_image_with_provider(
         session_id, canvas_id, filename, mime_type, width, height
     )
 
-    return f"image generated successfully ![image_id: {filename}](http://localhost:{DEFAULT_PORT}{image_url})"
+    base_url = get_base_url()
+    return f"image generated successfully ![image_id: {filename}]({base_url}{image_url})"

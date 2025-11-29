@@ -5,6 +5,7 @@ from langchain_core.runnables import RunnableConfig
 from services.jaaz_service import JaazService
 from tools.utils.image_canvas_utils import save_image_to_canvas, send_image_start_notification, send_image_error_notification
 from common import DEFAULT_PORT
+from utils.url_helper import get_base_url
 import os
 from tools.utils.image_utils import get_image_info_and_save, generate_image_id, process_input_image
 from services.config_service import FILES_DIR
@@ -131,10 +132,11 @@ async def generate_image_by_midjourney_jaaz(
             raise Exception("Failed to save any images from Midjourney generation")
 
         # Create result message with all saved images
+        base_url = get_base_url()
         image_links: List[str] = []
         for saved_image in saved_images:
             image_links.append(
-                f"![image_{saved_image['index']+1}: {saved_image['image_id']}](http://localhost:{DEFAULT_PORT}{saved_image['url']})"
+                f"![image_{saved_image['index']+1}: {saved_image['image_id']}]({base_url}{saved_image['url']})"
             )
 
         result_message = f"Midjourney generated {len(saved_images)} images successfully:\n\n" + "\n\n".join(image_links)

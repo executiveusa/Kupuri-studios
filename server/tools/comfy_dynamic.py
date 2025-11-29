@@ -27,6 +27,7 @@ import traceback
 from io import BytesIO
 from typing import Annotated, Any, Dict, List, Optional
 from common import DEFAULT_PORT
+from utils.url_helper import get_base_url
 from .utils.image_canvas_utils import (
     generate_file_id,
     generate_new_image_element,
@@ -250,7 +251,8 @@ def build_tool(wf: Dict[str, Any]) -> BaseTool:
                 canvas_data["data"]["elements"].append(new_element)
                 canvas_data["data"]["files"][file_id] = file_data
 
-                image_url = f"http://localhost:{DEFAULT_PORT}/api/file/{filename}"
+                base_url = get_base_url()
+                image_url = f"{base_url}/api/file/{filename}"
 
                 generated_files_info.append(
                     {

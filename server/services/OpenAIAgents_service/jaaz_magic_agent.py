@@ -8,6 +8,7 @@ from tools.utils.image_canvas_utils import save_image_to_canvas
 from tools.utils.image_utils import get_image_info_and_save
 from services.config_service import FILES_DIR
 from common import DEFAULT_PORT
+from utils.url_helper import get_base_url
 from ..jaaz_service import JaazService
 
 
@@ -122,9 +123,10 @@ async def create_jaaz_response(messages: List[Dict[str, Any]], session_id: str =
             except Exception as e:
                 print(f"❌ 保存图片到画布失败: {e}")
 
+        base_url = get_base_url()
         return {
             'role': 'assistant',
-            'content': f'✨ Magic Success!!!\n\nResult url: {result_url}\n\n![image_id: {filename}](http://localhost:{DEFAULT_PORT}{image_url})'
+            'content': f'✨ Magic Success!!!\n\nResult url: {result_url}\n\n![image_id: {filename}]({base_url}{image_url})'
         }
 
     except (asyncio.TimeoutError, Exception) as e:

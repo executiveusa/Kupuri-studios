@@ -7,10 +7,11 @@ sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8")
 print('Importing websocket_router')
 from routers.websocket_router import *  # DO NOT DELETE THIS LINE, OTHERWISE, WEBSOCKET WILL NOT WORK
 print('Importing routers')
-from routers import config_router, image_router, root_router, workspace, canvas, ssl_test, chat_router, settings, tool_confirmation
+from routers import config_router, image_router, root_router, workspace, canvas, ssl_test, chat_router, settings, tool_confirmation, stripe_webhook
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 import argparse
 from contextlib import asynccontextmanager
 from starlette.types import Scope
@@ -45,6 +46,38 @@ async def lifespan(app: FastAPI):
 print('Creating FastAPI app')
 app = FastAPI(lifespan=lifespan)
 
+# Configure CORS middleware for HTTP requests
+def get_cors_origins_list():
+    """Get CORS origins from environment variable, with fallback to development origins."""
+    cors_env = os.environ.get('CORS_ORIGINS', '')
+    
+    if cors_env:
+        origins = [origin.strip() for origin in cors_env.split(',') if origin.strip()]
+        print(f"🔒 FastAPI CORS origins: {origins}")
+        return origins
+    
+    # Development fallback
+    dev_origins = [
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "http://localhost:8000",
+        "http://localhost:57988",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:5173",
+        "http://127.0.0.1:8000",
+        "http://127.0.0.1:57988"
+    ]
+    print(f"⚠️  CORS_ORIGINS not set, using development origins for FastAPI")
+    return dev_origins
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=get_cors_origins_list(),
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # Include routers
 print('Including routers')
 app.include_router(config_router.router)
@@ -56,6 +89,7 @@ app.include_router(image_router.router)
 app.include_router(ssl_test.router)
 app.include_router(chat_router.router)
 app.include_router(tool_confirmation.router)
+app.include_router(stripe_webhook.router)
 
 # Mount the React build directory
 react_build_dir = os.environ.get('UI_DIST_DIR', os.path.join(
