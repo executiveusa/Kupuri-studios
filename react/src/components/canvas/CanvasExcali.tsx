@@ -20,9 +20,11 @@ import {
   BinaryFiles,
   ExcalidrawInitialDataState,
 } from '@excalidraw/excalidraw/types'
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { VideoElement } from './VideoElement'
+import { GhostElementOverlay } from './GhostElementOverlay'
+import { AnimatePresence } from 'framer-motion'
 
 import '@/assets/style/canvas.css'
 
@@ -39,13 +41,22 @@ type CanvasExcaliProps = {
   initialData?: ExcalidrawInitialDataState
 }
 
+interface GhostElementData {
+  id: string
+  prompt?: string
+  sceneX: number
+  sceneY: number
+  width: number
+  height: number
+}
+
 const CanvasExcali: React.FC<CanvasExcaliProps> = ({
   canvasId,
   initialData,
 }) => {
   const { excalidrawAPI, setExcalidrawAPI } = useCanvas()
-
   const { i18n } = useTranslation()
+  const [ghostElements, setGhostElements] = useState<Map<string, GhostElementData>>(new Map())
 
   // Immediate handler for UI updates (no debounce)
   const handleSelectionChange = (
@@ -128,17 +139,11 @@ const CanvasExcali: React.FC<CanvasExcaliProps> = ({
   )
   const { theme } = useTheme()
 
-  // 添加自定义类名以便应用我们的CSS修复
   const excalidrawClassName = `excalidraw-custom ${theme === 'dark' ? 'excalidraw-dark-fix' : ''}`
-  
-  // 在深色模式下使用自定义主题设置，避免使用默认的滤镜
-  // 这样可以确保颜色在深色模式下正确显示
   const customTheme = theme === 'dark' ? 'light' : theme
   
-  // 在组件挂载和主题变化时设置深色模式下的背景色
   useEffect(() => {
     if (excalidrawAPI && theme === 'dark') {
-      // 设置深色背景，但保持light主题以避免颜色反转
       excalidrawAPI.updateScene({
         appState: {
           viewBackgroundColor: '#121212',
@@ -146,7 +151,6 @@ const CanvasExcali: React.FC<CanvasExcaliProps> = ({
         }
       })
     } else if (excalidrawAPI && theme === 'light') {
-      // 恢复浅色背景
       excalidrawAPI.updateScene({
         appState: {
           viewBackgroundColor: '#ffffff',
@@ -156,46 +160,119 @@ const CanvasExcali: React.FC<CanvasExcaliProps> = ({
     }
   }, [excalidrawAPI, theme])
 
+  // Handle generation started - create ghost placeholder
+  const handleGenerationStarted = useCallback((event: typeof eventBus extends { emit: (event: infer E, ...args: any[]) => any } ? E extends 'Canvas::GenerationStarted' ? Parameters<typeof eventBus.emit>[1] : never : never) => {
+    if (event.canvasId !== canvasId || !excalidrawAPI) return
+
+    console.log('👻 Generation started, creating ghost element:', event)
+
+    // Create a locked placeholder image element in the scene
+    const ghostImageElement = convertToExcalidrawElements([
+      {
+        type: 'image',
+        id: event.ghostId,
+        x: event.x,
+        y: event.y,
+        width: event.width,
+        height: event.height,
+        fileId: 'ghost-placeholder', // Dummy fileId
+        status: 'pending',
+        locked: true, // Lock it so user can't delete it
+        strokeColor: '#D00000',
+        backgroundColor: 'transparent',
+        fillStyle: 'solid',
+        strokeWidth: 2,
+        strokeStyle: 'dashed',
+        roundness: null,
+        roughness: 0,
+        opacity: 50,
+        angle: 0,
+        seed: Math.random(),
+        version: 1,
+        versionNonce: Math.random(),
+        isDeleted: false,
+        groupIds: [],
+        boundElements: [],
+        updated: Date.now(),
+        frameId: null,
+        index: null,
+        customData: { isGhost: true, prompt: event.prompt },
+      },
+    ])[0] as ExcalidrawImageElement
+
+    const currentElements = excalidrawAPI.getSceneElements()
+    excalidrawAPI.updateScene({
+      elements: [...currentElements, ghostImageElement],
+    })
+
+    // Track this ghost for overlay rendering
+    setGhostElements(prev => new Map(prev).set(event.ghostId, {
+      id: event.ghostId,
+      prompt: event.prompt,
+      sceneX: event.x,
+      sceneY: event.y,
+      width: event.width,
+      height: event.height,
+    }))
+  }, [canvasId, excalidrawAPI])
+
   const addImageToExcalidraw = useCallback(
     async (imageElement: ExcalidrawImageElement, file: BinaryFileData) => {
       if (!excalidrawAPI) return
 
-      // 获取当前画布元素以便添加新元素
       const currentElements = excalidrawAPI.getSceneElements()
 
-      excalidrawAPI.addFiles([file])
+      // Check if this is replacing a ghost element
+      const isReplacingGhost = ghostElements.has(imageElement.id)
+      
+      if (isReplacingGhost) {
+        console.log('👻 Replacing ghost element with real image:', imageElement.id)
+        // Remove the ghost from our tracking
+        setGhostElements(prev => {
+          const next = new Map(prev)
+          next.delete(imageElement.id)
+          return next
+        })
+        
+        // Remove the ghost placeholder from scene
+        const filteredElements = currentElements.filter(el => el.id !== imageElement.id)
+        
+        excalidrawAPI.addFiles([file])
 
-      console.log('👇 Adding new image element to canvas:', imageElement.id)
-      console.log('👇 Image element properties:', {
-        id: imageElement.id,
-        type: imageElement.type,
-        locked: imageElement.locked,
-        groupIds: imageElement.groupIds,
-        isDeleted: imageElement.isDeleted,
-        x: imageElement.x,
-        y: imageElement.y,
-        width: imageElement.width,
-        height: imageElement.height,
-      })
+        const unlockedImageElement = {
+          ...imageElement,
+          locked: false,
+          groupIds: [],
+          isDeleted: false,
+        }
 
-      // Ensure image is not locked and can be manipulated
-      const unlockedImageElement = {
-        ...imageElement,
-        locked: false,
-        groupIds: [],
-        isDeleted: false,
+        excalidrawAPI.updateScene({
+          elements: [...filteredElements, unlockedImageElement],
+        })
+      } else {
+        // Normal image addition (not replacing ghost)
+        excalidrawAPI.addFiles([file])
+
+        console.log('👇 Adding new image element to canvas:', imageElement.id)
+
+        const unlockedImageElement = {
+          ...imageElement,
+          locked: false,
+          groupIds: [],
+          isDeleted: false,
+        }
+
+        excalidrawAPI.updateScene({
+          elements: [...currentElements, unlockedImageElement],
+        })
       }
-
-      excalidrawAPI.updateScene({
-        elements: [...(currentElements || []), unlockedImageElement],
-      })
 
       localStorage.setItem(
         'excalidraw-last-image-position',
         JSON.stringify(lastImagePosition.current)
       )
     },
-    [excalidrawAPI]
+    [excalidrawAPI, ghostElements]
   )
 
   const addVideoEmbed = useCallback(
@@ -208,9 +285,6 @@ const CanvasExcali: React.FC<CanvasExcaliProps> = ({
         console.log('👇 Video element properties:', {
           id: elementData.id,
           type: elementData.type,
-          locked: elementData.locked,
-          groupIds: elementData.groupIds,
-          isDeleted: elementData.isDeleted,
           x: elementData.x,
           y: elementData.y,
           width: elementData.width,
@@ -226,7 +300,6 @@ const CanvasExcali: React.FC<CanvasExcaliProps> = ({
             width: elementData.width,
             height: elementData.height,
             link: videoSrc,
-            // 添加必需的基本样式属性
             strokeColor: '#000000',
             backgroundColor: 'transparent',
             fillStyle: 'solid',
@@ -235,35 +308,23 @@ const CanvasExcali: React.FC<CanvasExcaliProps> = ({
             roundness: null,
             roughness: 1,
             opacity: 100,
-            // 添加必需的变换属性
             angle: 0,
             seed: Math.random(),
             version: 1,
             versionNonce: Math.random(),
-            // 添加必需的状态属性
             locked: false,
             isDeleted: false,
             groupIds: [],
-            // 添加绑定框属性
             boundElements: [],
             updated: Date.now(),
-            // 添加必需的索引和帧ID属性
             frameId: null,
-            index: null, // 添加缺失的index属性
-            // 添加自定义数据属性
+            index: null,
             customData: {},
           },
         ])
 
-        console.log('👇 Converted video elements:', videoElements)
-
         const currentElements = excalidrawAPI.getSceneElements()
         const newElements = [...currentElements, ...videoElements]
-
-        console.log(
-          '👇 Updating scene with elements count:',
-          newElements.length
-        )
 
         excalidrawAPI.updateScene({
           elements: newElements,
@@ -276,13 +337,11 @@ const CanvasExcali: React.FC<CanvasExcaliProps> = ({
         )
       }
 
-      // If dimensions are provided, use them directly
       if (elementData.width && elementData.height) {
         createVideoElement(elementData.width, elementData.height)
         return
       }
 
-      // Otherwise, try to get video's natural dimensions
       const video = document.createElement('video')
       video.crossOrigin = 'anonymous'
 
@@ -291,7 +350,6 @@ const CanvasExcali: React.FC<CanvasExcaliProps> = ({
         const videoHeight = video.videoHeight
 
         if (videoWidth && videoHeight) {
-          // Scale down if video is too large (max 800px width)
           const maxWidth = 800
           let finalWidth = videoWidth
           let finalHeight = videoHeight
@@ -304,7 +362,6 @@ const CanvasExcali: React.FC<CanvasExcaliProps> = ({
 
           createVideoElement(finalWidth, finalHeight)
         } else {
-          // Fallback to default dimensions
           createVideoElement(320, 180)
         }
       }
@@ -323,7 +380,6 @@ const CanvasExcali: React.FC<CanvasExcaliProps> = ({
     (element: NonDeleted<ExcalidrawEmbeddableElement>, appState: AppState) => {
       const { link } = element
 
-      // Check if this is a video URL
       if (
         link &&
         (link.includes('.mp4') ||
@@ -332,7 +388,6 @@ const CanvasExcali: React.FC<CanvasExcaliProps> = ({
           link.startsWith('blob:') ||
           link.includes('video'))
       ) {
-        // Return the VideoPlayer component
         return (
           <VideoElement
             src={link}
@@ -342,8 +397,6 @@ const CanvasExcali: React.FC<CanvasExcaliProps> = ({
         )
       }
 
-      console.log('👇 Not a video URL, returning null for:', link)
-      // Return null for non-video embeds to use default rendering
       return null
     },
     []
@@ -353,13 +406,11 @@ const CanvasExcali: React.FC<CanvasExcaliProps> = ({
     (imageData: ISocket.SessionImageGeneratedEvent) => {
       console.log('👇 CanvasExcali received image_generated:', imageData)
 
-      // Only handle if it's for this canvas
       if (imageData.canvas_id !== canvasId) {
         console.log('👇 Image not for this canvas, ignoring')
         return
       }
 
-      // Check if this is actually a video generation event that got mislabeled
       if (imageData.file?.mimeType?.startsWith('video/')) {
         console.log(
           '👇 This appears to be a video, not an image. Ignoring in image handler.'
@@ -376,13 +427,11 @@ const CanvasExcali: React.FC<CanvasExcaliProps> = ({
     (videoData: ISocket.SessionVideoGeneratedEvent) => {
       console.log('👇 CanvasExcali received video_generated:', videoData)
 
-      // Only handle if it's for this canvas
       if (videoData.canvas_id !== canvasId) {
         console.log('👇 Video not for this canvas, ignoring')
         return
       }
 
-      // Create video embed element using the video URL
       addVideoEmbed(videoData.element, videoData.video_url)
     },
     [addVideoEmbed, canvasId]
@@ -391,50 +440,81 @@ const CanvasExcali: React.FC<CanvasExcaliProps> = ({
   useEffect(() => {
     eventBus.on('Socket::Session::ImageGenerated', handleImageGenerated)
     eventBus.on('Socket::Session::VideoGenerated', handleVideoGenerated)
+    eventBus.on('Canvas::GenerationStarted', handleGenerationStarted)
     return () => {
       eventBus.off('Socket::Session::ImageGenerated', handleImageGenerated)
       eventBus.off('Socket::Session::VideoGenerated', handleVideoGenerated)
+      eventBus.off('Canvas::GenerationStarted', handleGenerationStarted)
     }
-  }, [handleImageGenerated, handleVideoGenerated])
+  }, [handleImageGenerated, handleVideoGenerated, handleGenerationStarted])
+
+  // Render ghost overlays synced to canvas coordinates
+  const renderGhostOverlays = () => {
+    if (!excalidrawAPI || ghostElements.size === 0) return null
+
+    const appState = excalidrawAPI.getAppState()
+    const zoom = appState.zoom.value
+
+    return (
+      <AnimatePresence>
+        {Array.from(ghostElements.values()).map((ghost) => {
+          // Convert scene coordinates to viewport coordinates
+          const viewportX = ghost.sceneX * zoom + appState.scrollX
+          const viewportY = ghost.sceneY * zoom + appState.scrollY
+          const viewportWidth = ghost.width * zoom
+          const viewportHeight = ghost.height * zoom
+
+          return (
+            <GhostElementOverlay
+              key={ghost.id}
+              x={viewportX}
+              y={viewportY}
+              width={viewportWidth}
+              height={viewportHeight}
+              prompt={ghost.prompt}
+            />
+          )
+        })}
+      </AnimatePresence>
+    )
+  }
 
   return (
-    <Excalidraw
-      theme={customTheme as Theme}
-      langCode={i18n.language}
-      className={excalidrawClassName}
-      excalidrawAPI={(api) => {
-        setExcalidrawAPI(api)
-      }}
-      onChange={handleChange}
-      initialData={() => {
-        const data = initialData
-        console.log('👇initialData', data)
-        if (data?.appState) {
-          data.appState = {
-            ...data.appState,
-            collaborators: undefined!,
+    <div className="relative w-full h-full">
+      <Excalidraw
+        theme={customTheme as Theme}
+        langCode={i18n.language}
+        className={excalidrawClassName}
+        excalidrawAPI={(api) => {
+          setExcalidrawAPI(api)
+        }}
+        onChange={handleChange}
+        initialData={() => {
+          const data = initialData
+          console.log('👇initialData', data)
+          if (data?.appState) {
+            data.appState = {
+              ...data.appState,
+              collaborators: undefined!,
+            }
           }
-        }
-        return data || null
-      }}
-      renderEmbeddable={renderEmbeddable}
-      // Allow all URLs for embeddable content
-      validateEmbeddable={(url: string) => {
-        console.log('👇 Validating embeddable URL:', url)
-        // Allow all URLs - return true for everything
-        return true
-      }}
-      // Ensure interactive mode is enabled
-      viewModeEnabled={false}
-      zenModeEnabled={false}
-      // Allow element manipulation
-      onPointerUpdate={(payload) => {
-        // Minimal logging - only log significant pointer events
-        if (payload.button === 'down' && Math.random() < 0.05) {
-          // console.log('👇 Pointer down on:', payload.pointer.x, payload.pointer.y)
-        }
-      }}
-    />
+          return data || null
+        }}
+        renderEmbeddable={renderEmbeddable}
+        validateEmbeddable={(url: string) => {
+          console.log('👇 Validating embeddable URL:', url)
+          return true
+        }}
+        viewModeEnabled={false}
+        zenModeEnabled={false}
+        onPointerUpdate={(payload) => {
+          if (payload.button === 'down' && Math.random() < 0.05) {
+            // Minimal logging
+          }
+        }}
+      />
+      {renderGhostOverlays()}
+    </div>
   )
 }
 

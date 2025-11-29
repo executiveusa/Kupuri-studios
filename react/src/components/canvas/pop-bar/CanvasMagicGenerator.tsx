@@ -48,9 +48,32 @@ const CanvasMagicGenerator = ({ selectedImages, selectedElements }: CanvasMagicG
         // 转base64
         const base64 = canvas.toDataURL('image/png', 0.8);
 
+        // Calculate position for ghost element (center of viewport)
+        const viewportWidth = appState.width
+        const viewportHeight = appState.height
+        const ghostWidth = 512
+        const ghostHeight = 512
+        
+        // Position in scene coordinates (center of current viewport)
+        const ghostX = -appState.scrollX / appState.zoom.value + (viewportWidth / 2 - ghostWidth / 2) / appState.zoom.value
+        const ghostY = -appState.scrollY / appState.zoom.value + (viewportHeight / 2 - ghostHeight / 2) / appState.zoom.value
+
+        const ghostId = `ghost-${Date.now()}`
+
+        // Emit ghost element creation event FIRST
+        eventBus.emit('Canvas::GenerationStarted', {
+            ghostId,
+            canvasId: window.location.pathname.split('/').pop() || '',
+            prompt: 'Magic generation in progress...',
+            x: ghostX,
+            y: ghostY,
+            width: ghostWidth,
+            height: ghostHeight,
+        })
+
         // 发送魔法生成事件
         eventBus.emit('Canvas::MagicGenerate', {
-            fileId: `magic-${Date.now()}`,
+            fileId: ghostId, // Use same ID so we can replace the ghost
             base64: base64,
             width: canvas.width,
             height: canvas.height,

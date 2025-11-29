@@ -9,12 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TestBillingRouteImport } from './routes/test-billing'
 import { Route as KnowledgeRouteImport } from './routes/knowledge'
 import { Route as AssetsRouteImport } from './routes/assets'
 import { Route as Agent_studioRouteImport } from './routes/agent_studio'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CanvasIdRouteImport } from './routes/canvas.$id'
 
+const TestBillingRoute = TestBillingRouteImport.update({
+  id: '/test-billing',
+  path: '/test-billing',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const KnowledgeRoute = KnowledgeRouteImport.update({
   id: '/knowledge',
   path: '/knowledge',
@@ -46,6 +52,7 @@ export interface FileRoutesByFullPath {
   '/agent_studio': typeof Agent_studioRoute
   '/assets': typeof AssetsRoute
   '/knowledge': typeof KnowledgeRoute
+  '/test-billing': typeof TestBillingRoute
   '/canvas/$id': typeof CanvasIdRoute
 }
 export interface FileRoutesByTo {
@@ -53,6 +60,7 @@ export interface FileRoutesByTo {
   '/agent_studio': typeof Agent_studioRoute
   '/assets': typeof AssetsRoute
   '/knowledge': typeof KnowledgeRoute
+  '/test-billing': typeof TestBillingRoute
   '/canvas/$id': typeof CanvasIdRoute
 }
 export interface FileRoutesById {
@@ -61,19 +69,33 @@ export interface FileRoutesById {
   '/agent_studio': typeof Agent_studioRoute
   '/assets': typeof AssetsRoute
   '/knowledge': typeof KnowledgeRoute
+  '/test-billing': typeof TestBillingRoute
   '/canvas/$id': typeof CanvasIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/agent_studio' | '/assets' | '/knowledge' | '/canvas/$id'
+  fullPaths:
+    | '/'
+    | '/agent_studio'
+    | '/assets'
+    | '/knowledge'
+    | '/test-billing'
+    | '/canvas/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/agent_studio' | '/assets' | '/knowledge' | '/canvas/$id'
+  to:
+    | '/'
+    | '/agent_studio'
+    | '/assets'
+    | '/knowledge'
+    | '/test-billing'
+    | '/canvas/$id'
   id:
     | '__root__'
     | '/'
     | '/agent_studio'
     | '/assets'
     | '/knowledge'
+    | '/test-billing'
     | '/canvas/$id'
   fileRoutesById: FileRoutesById
 }
@@ -82,11 +104,19 @@ export interface RootRouteChildren {
   Agent_studioRoute: typeof Agent_studioRoute
   AssetsRoute: typeof AssetsRoute
   KnowledgeRoute: typeof KnowledgeRoute
+  TestBillingRoute: typeof TestBillingRoute
   CanvasIdRoute: typeof CanvasIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/test-billing': {
+      id: '/test-billing'
+      path: '/test-billing'
+      fullPath: '/test-billing'
+      preLoaderRoute: typeof TestBillingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/knowledge': {
       id: '/knowledge'
       path: '/knowledge'
@@ -130,6 +160,7 @@ const rootRouteChildren: RootRouteChildren = {
   Agent_studioRoute: Agent_studioRoute,
   AssetsRoute: AssetsRoute,
   KnowledgeRoute: KnowledgeRoute,
+  TestBillingRoute: TestBillingRoute,
   CanvasIdRoute: CanvasIdRoute,
 }
 export const routeTree = rootRouteImport

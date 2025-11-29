@@ -31,6 +31,7 @@ const CanvasMenuButton = ({
         <Button
           variant="ghost"
           size="icon"
+          aria-label={`${t(`canvas:tool.${type}`)} (${toolShortcuts[type]})`}
           className={cn(
             'p-2 rounded-md cursor-pointer hover:bg-primary/5',
             isActive && 'bg-primary/10'

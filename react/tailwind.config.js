@@ -6,7 +6,17 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'],
+        heading: ['Anton', 'Impact', 'sans-serif'],
+      },
       colors: {
+        proper: {
+          red: '#D00000',
+          dark: '#0a0a0a',
+          light: '#ffffff',
+          gray: '#f5f5f5',
+        },
         accent: {
           DEFAULT: '#a855f7', // vibrant purple for primary action
           dark: '#9333ea',
