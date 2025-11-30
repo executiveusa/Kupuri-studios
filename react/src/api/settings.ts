@@ -1,3 +1,5 @@
+import { BASE_API_URL } from '@/constants'
+
 /**
  * Settings API - 设置相关的API接口
  *
@@ -20,7 +22,7 @@
  * }
  */
 export async function getSettingsFileExists(): Promise<{ exists: boolean }> {
-  const response = await fetch('/api/settings/exists')
+  const response = await fetch(`${BASE_API_URL}/api/settings/exists`)
   return await response.json()
 }
 
@@ -36,7 +38,7 @@ export async function getSettingsFileExists(): Promise<{ exists: boolean }> {
  * const systemPrompt = settings.system_prompt;
  */
 export async function getSettings(): Promise<Record<string, unknown>> {
-  const response = await fetch('/api/settings')
+  const response = await fetch(`${BASE_API_URL}/api/settings`)
   return await response.json()
 }
 
@@ -62,7 +64,7 @@ export async function updateSettings(
   status: string
   message: string
 }> {
-  const response = await fetch('/api/settings', {
+  const response = await fetch(`${BASE_API_URL}/api/settings`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -86,7 +88,7 @@ export async function updateSettings(
  * // 'http://proxy.example.com:8080' - 使用指定代理
  */
 export async function getProxySettings(): Promise<Record<string, unknown>> {
-  const response = await fetch('/api/settings/proxy')
+  const response = await fetch(`${BASE_API_URL}/api/settings/proxy`)
   return await response.json()
 }
 
@@ -118,7 +120,7 @@ export async function updateProxySettings(
   status: string
   message: string
 }> {
-  const response = await fetch('/api/settings/proxy', {
+  const response = await fetch(`${BASE_API_URL}/api/settings/proxy`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -131,7 +133,7 @@ export async function updateProxySettings(
 // 文件系统浏览相关的API
 export const browseFolderApi = async (path: string = '') => {
   const response = await fetch(
-    `/api/browse_filesystem?path=${encodeURIComponent(path)}`
+    `${BASE_API_URL}/api/browse_filesystem?path=${encodeURIComponent(path)}`
   )
   if (!response.ok) {
     throw new Error('Failed to browse folder')
@@ -141,7 +143,7 @@ export const browseFolderApi = async (path: string = '') => {
 
 export const getMediaFilesApi = async (path: string) => {
   const response = await fetch(
-    `/api/get_media_files?path=${encodeURIComponent(path)}`
+    `${BASE_API_URL}/api/get_media_files?path=${encodeURIComponent(path)}`
   )
   if (!response.ok) {
     throw new Error('Failed to get media files')
@@ -150,7 +152,7 @@ export const getMediaFilesApi = async (path: string) => {
 }
 
 export const openFolderInExplorer = async (path: string) => {
-  const response = await fetch('/api/open_folder_in_explorer', {
+  const response = await fetch(`${BASE_API_URL}/api/open_folder_in_explorer`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -165,7 +167,7 @@ export const openFolderInExplorer = async (path: string) => {
 
 export const getFileThumbnailApi = async (filePath: string) => {
   const response = await fetch(
-    `/api/get_file_thumbnail?file_path=${encodeURIComponent(filePath)}`
+    `${BASE_API_URL}/api/get_file_thumbnail?file_path=${encodeURIComponent(filePath)}`
   )
   if (!response.ok) {
     throw new Error('Failed to get file thumbnail')
@@ -175,13 +177,13 @@ export const getFileThumbnailApi = async (filePath: string) => {
 
 // 获取文件服务URL
 export const getFileServiceUrl = (filePath: string) => {
-  return `/api/serve_file?file_path=${encodeURIComponent(filePath)}`
+  return `${BASE_API_URL}/api/serve_file?file_path=${encodeURIComponent(filePath)}`
 }
 
 // 获取文件详细信息
 export const getFileInfoApi = async (filePath: string) => {
   const response = await fetch(
-    `/api/get_file_info?file_path=${encodeURIComponent(filePath)}`
+    `${BASE_API_URL}/api/get_file_info?file_path=${encodeURIComponent(filePath)}`
   )
   if (!response.ok) {
     throw new Error('Failed to get file info')
@@ -191,7 +193,7 @@ export const getFileInfoApi = async (filePath: string) => {
 
 // 获取用户的My Assets目录路径
 export const getMyAssetsDirPath = async () => {
-  const response = await fetch('/api/settings/my_assets_dir_path')
+  const response = await fetch(`${BASE_API_URL}/api/settings/my_assets_dir_path`)
   const result = await response.json()
   return result
 }

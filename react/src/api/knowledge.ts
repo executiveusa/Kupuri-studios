@@ -230,7 +230,7 @@ export async function saveEnabledKnowledgeDataToSettings(
 ): Promise<ApiResponse> {
   try {
     // 调用本地服务器API，不需要BASE_API_URL和认证
-    const response = await fetch('/api/settings', {
+    const response = await fetch(`${BASE_API_URL}/api/settings`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

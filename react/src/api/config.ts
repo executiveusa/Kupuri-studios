@@ -1,19 +1,20 @@
 import { LLMConfig } from '@/types/types'
+import { BASE_API_URL } from '@/constants'
 
 export async function getConfigExists(): Promise<{ exists: boolean }> {
-  const response = await fetch('/api/config/exists')
+  const response = await fetch(`${BASE_API_URL}/api/config/exists`)
   return await response.json()
 }
 
 export async function getConfig(): Promise<{ [key: string]: LLMConfig }> {
-  const response = await fetch('/api/config')
+  const response = await fetch(`${BASE_API_URL}/api/config`)
   return await response.json()
 }
 
 export async function updateConfig(config: {
   [key: string]: LLMConfig
 }): Promise<{ status: string; message: string }> {
-  const response = await fetch('/api/config', {
+  const response = await fetch(`${BASE_API_URL}/api/config`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

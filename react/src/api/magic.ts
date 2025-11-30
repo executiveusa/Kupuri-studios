@@ -1,5 +1,6 @@
 import { Message, Model } from '@/types/types'
 import { ToolInfo } from './model'
+import { BASE_API_URL } from '@/constants'
 
 export const sendMagicGenerate = async (payload: {
   sessionId: string
@@ -7,7 +8,7 @@ export const sendMagicGenerate = async (payload: {
   newMessages: Message[]
   systemPrompt: string | null
 }) => {
-  const response = await fetch(`/api/magic`, {
+  const response = await fetch(`${BASE_API_URL}/api/magic`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -24,7 +25,7 @@ export const sendMagicGenerate = async (payload: {
 }
 
 export const cancelMagicGenerate = async (sessionId: string) => {
-    const response = await fetch(`/api/magic/cancel/${sessionId}`, {
+    const response = await fetch(`${BASE_API_URL}/api/magic/cancel/${sessionId}`, {
         method: 'POST',
     })
     return await response.json()

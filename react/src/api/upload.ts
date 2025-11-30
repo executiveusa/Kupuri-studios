@@ -1,4 +1,5 @@
 import { compressImageFile } from '@/utils/imageUtils'
+import { BASE_API_URL } from '@/constants'
 
 export async function uploadImage(
   file: File
@@ -8,7 +9,7 @@ export async function uploadImage(
 
   const formData = new FormData()
   formData.append('file', compressedFile)
-  const response = await fetch('/api/upload_image', {
+  const response = await fetch(`${BASE_API_URL}/api/upload_image`, {
     method: 'POST',
     body: formData,
   })
