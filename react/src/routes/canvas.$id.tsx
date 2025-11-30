@@ -12,6 +12,7 @@ import { Loader2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useIsMobile } from '@/hooks/use-is-mobile'
 import { nanoid } from 'nanoid'
+import CanvasEmptyState from '@/components/canvas/CanvasEmptyState'
 
 export const Route = createFileRoute('/canvas/$id')({
   component: Canvas,
@@ -25,6 +26,7 @@ function Canvas() {
   const [error, setError] = useState<Error | null>(null)
   const [canvasName, setCanvasName] = useState('')
   const [sessionList, setSessionList] = useState<Session[]>([])
+  const [showEmptyState, setShowEmptyState] = useState(false)
   const isMobile = useIsMobile()
   
   const search = useSearch({ from: '/canvas/$id' }) as {
@@ -54,12 +56,14 @@ function Canvas() {
             setCanvas(data)
             setCanvasName(data.name || 'Untitled Canvas')
             setSessionList(data.sessions || [])
+            setShowEmptyState(false)
           } else {
             // Treat as new/empty canvas if not found
             console.log('Canvas not found, initializing empty state')
             setCanvas(null)
             setCanvasName('Untitled Canvas')
             setSessionList([])
+            setShowEmptyState(true)
           }
         }
       } catch (err) {
@@ -70,6 +74,7 @@ function Canvas() {
           setCanvas(null)
           setCanvasName('Untitled Canvas')
           setSessionList([])
+          setShowEmptyState(true)
           // Don't set error state so the UI renders the empty canvas
         }
       } finally {
@@ -88,6 +93,12 @@ function Canvas() {
 
   const handleNameSave = async () => {
     await renameCanvas(id, canvasName)
+  }
+
+  const handleEmptyStateAction = (action: string) => {
+    // For now, all actions just dismiss the overlay to reveal the canvas
+    // In the future, we can trigger specific tools or open the chat
+    setShowEmptyState(false)
   }
 
   return (
@@ -111,6 +122,7 @@ function Canvas() {
               </div>
             ) : (
               <div className='relative w-full h-full'>
+                {showEmptyState && <CanvasEmptyState onAction={handleEmptyStateAction} />}
                 <CanvasExcali canvasId={id} initialData={canvas?.data} />
                 <CanvasMenu 
                   canvasId={id}
@@ -137,6 +149,7 @@ function Canvas() {
                   </div>
                 ) : (
                   <div className='relative w-full h-full'>
+                    {showEmptyState && <CanvasEmptyState onAction={handleEmptyStateAction} />}
                     <CanvasExcali canvasId={id} initialData={canvas?.data} />
                     <CanvasMenu />
                     <CanvasPopbarWrapper />

@@ -40,7 +40,7 @@ export function LandingNavbar() {
         {/* Logo */}
         <div className="flex items-center gap-2">
           <span className={`text-2xl font-heading uppercase tracking-tighter ${scrolled ? 'text-proper-red' : 'text-white drop-shadow-md'}`}>
-            PP.
+            KS.
           </span>
         </div>
 
