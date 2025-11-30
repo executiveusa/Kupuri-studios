@@ -1,6 +1,7 @@
 fastapi
 uvicorn[standard]
 anthropic
+stripe
 mcp
 toml
 pyinstaller
