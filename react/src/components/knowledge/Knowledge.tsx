@@ -16,13 +16,14 @@ import {
   getKnowledgeById,
 } from '@/api/knowledge'
 import TopMenu from '../TopMenu'
+import { BASE_API_URL } from '@/constants'
 
 // 获取本地设置的API
 async function getSettings(): Promise<{
   enabled_knowledge_data?: KnowledgeBase[]
 }> {
   try {
-    const response = await fetch('/api/settings')
+    const response = await fetch(`${BASE_API_URL}/api/settings`)
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
     }

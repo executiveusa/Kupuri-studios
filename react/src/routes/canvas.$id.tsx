@@ -7,10 +7,11 @@ import ChatInterface from '@/components/chat/Chat'
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable'
 import { CanvasProvider } from '@/contexts/canvas'
 import { Session } from '@/types/types'
-import { createFileRoute, useParams, useSearch } from '@tanstack/react-router'
+import { createFileRoute, useParams, useSearch, useNavigate } from '@tanstack/react-router'
 import { Loader2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useIsMobile } from '@/hooks/use-is-mobile'
+import { nanoid } from 'nanoid'
 
 export const Route = createFileRoute('/canvas/$id')({
   component: Canvas,
@@ -18,6 +19,7 @@ export const Route = createFileRoute('/canvas/$id')({
 
 function Canvas() {
   const { id } = useParams({ from: '/canvas/$id' })
+  const navigate = useNavigate()
   const [canvas, setCanvas] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
@@ -33,20 +35,42 @@ function Canvas() {
   useEffect(() => {
     let mounted = true
 
+    // Handle "new" canvas creation redirect
+    if (id === 'new') {
+      const newId = nanoid()
+      navigate({ to: '/canvas/$id', params: { id: newId }, replace: true })
+      return
+    }
+
     const fetchCanvas = async () => {
       try {
         setIsLoading(true)
         setError(null)
         const data = await getCanvas(id)
+        
         if (mounted) {
-          setCanvas(data)
-          setCanvasName(data.name)
-          setSessionList(data.sessions)
+          // Check if we got valid canvas data or an error/empty response
+          if (data && (data.name || data.sessions)) {
+            setCanvas(data)
+            setCanvasName(data.name || 'Untitled Canvas')
+            setSessionList(data.sessions || [])
+          } else {
+            // Treat as new/empty canvas if not found
+            console.log('Canvas not found, initializing empty state')
+            setCanvas(null)
+            setCanvasName('Untitled Canvas')
+            setSessionList([])
+          }
         }
       } catch (err) {
         if (mounted) {
-          setError(err instanceof Error ? err : new Error('Failed to fetch canvas data'))
-          console.error('Failed to fetch canvas data:', err)
+          // If it's a 404 or similar, we might want to treat it as a new canvas too
+          // But for now, let's log it. If getCanvas throws on 404, we should handle it here.
+          console.warn('Failed to fetch canvas data, assuming new/empty:', err)
+          setCanvas(null)
+          setCanvasName('Untitled Canvas')
+          setSessionList([])
+          // Don't set error state so the UI renders the empty canvas
         }
       } finally {
         if (mounted) {
@@ -60,7 +84,7 @@ function Canvas() {
     return () => {
       mounted = false
     }
-  }, [id])
+  }, [id, navigate])
 
   const handleNameSave = async () => {
     await renameCanvas(id, canvasName)

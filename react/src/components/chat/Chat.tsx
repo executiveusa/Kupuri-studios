@@ -44,6 +44,7 @@ import { Share2 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { useQueryClient } from '@tanstack/react-query'
 import MixedContent, { MixedContentImages, MixedContentText } from './Message/MixedContent'
+import { BASE_API_URL } from '@/constants'
 
 
 type ChatInterfaceProps = {
@@ -515,7 +516,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
 
     sessionIdRef.current = sessionId
 
-    const resp = await fetch('/api/chat_session/' + sessionId)
+    const resp = await fetch(`${BASE_API_URL}/api/chat_session/` + sessionId)
     const data = await resp.json()
     const msgs = data?.length ? data : []
 
@@ -680,7 +681,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
                           )}
                           onConfirm={() => {
                             // 发送确认事件到后端
-                            fetch('/api/tool_confirmation', {
+                            fetch(`${BASE_API_URL}/api/tool_confirmation`, {
                               method: 'POST',
                               headers: {
                                 'Content-Type': 'application/json',
@@ -694,7 +695,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
                           }}
                           onCancel={() => {
                             // 发送取消事件到后端
-                            fetch('/api/tool_confirmation', {
+                            fetch(`${BASE_API_URL}/api/tool_confirmation`, {
                               method: 'POST',
                               headers: {
                                 'Content-Type': 'application/json',

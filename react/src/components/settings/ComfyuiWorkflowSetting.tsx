@@ -24,6 +24,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '../ui/card'
 import { Badge } from '../ui/badge'
 import { Label } from '../ui/label'
 import { Separator } from '../ui/separator'
+import { BASE_API_URL } from '@/constants'
 
 export type ComfyWorkflowInput = {
   name: string
@@ -63,7 +64,7 @@ export default function ComfuiWorkflowSetting() {
 
   const [workflows, setWorkflows] = useState<ComfyWorkflow[]>([])
   const loadWorkflows = async () => {
-    fetch('/api/settings/comfyui/list_workflows')
+    fetch(`${BASE_API_URL}/api/settings/comfyui/list_workflows`)
       .then((res) => res.json())
       .then((data: ComfyWorkflowFromAPI[]) => {
         console.log('ComfyUI workflows:', data)
@@ -87,7 +88,7 @@ export default function ComfuiWorkflowSetting() {
     loadWorkflows()
   }, [])
   const handleDeleteWorkflow = (id: number) => {
-    fetch(`/api/settings/comfyui/delete_workflow/${id}`, {
+    fetch(`${BASE_API_URL}/api/settings/comfyui/delete_workflow/${id}`, {
       method: 'DELETE',
     })
       .then(() => {
@@ -310,7 +311,7 @@ function AddWorkflowDialog({
     if (workflow) {
       // 先删除
       const deleteRes = await fetch(
-        `/api/settings/comfyui/delete_workflow/${workflow.id}`,
+        `${BASE_API_URL}/api/settings/comfyui/delete_workflow/${workflow.id}`,
         {
           method: 'DELETE',
         }
@@ -323,7 +324,7 @@ function AddWorkflowDialog({
     }
 
     // 再创建
-    const createRes = await fetch('/api/settings/comfyui/create_workflow', {
+    const createRes = await fetch(`${BASE_API_URL}/api/settings/comfyui/create_workflow`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

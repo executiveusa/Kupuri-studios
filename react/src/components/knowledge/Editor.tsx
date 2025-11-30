@@ -33,6 +33,7 @@ import MarkdownIt from 'markdown-it'
 import MdEditor from 'react-markdown-editor-lite'
 import 'react-markdown-editor-lite/lib/index.css'
 import { uploadImage } from '@/api/upload'
+import { BASE_API_URL } from '@/constants'
 const mdParser = new MarkdownIt()
 
 type MediaFile = {
@@ -83,7 +84,7 @@ export default function Editor({ knowledgeID }: { knowledgeID: string }) {
       mdxEditorRef.current?.setMarkdown(draft)
       setIsLoading(false)
     }
-    fetch('/api/read_file', {
+    fetch(`${BASE_API_URL}/api/read_file`, {
       method: 'POST',
       body: JSON.stringify({ knowledge_id: knowledgeID }),
     })
