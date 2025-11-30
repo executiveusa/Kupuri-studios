@@ -10,6 +10,7 @@ import {
   NodeMouseHandler,
 } from '@xyflow/react'
 import debounce from 'lodash.debounce'
+import { useTranslation } from 'react-i18next'
 
 import '@xyflow/react/dist/style.css'
 import AgentNode from './AgentNode'
@@ -49,6 +50,7 @@ const loadInitialGraph = () => {
 }
 
 export default function AgentStudio() {
+  const { t } = useTranslation()
   const [initialNodes, initialEdges] = loadInitialGraph()
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
@@ -111,20 +113,20 @@ export default function AgentStudio() {
           >
             <input
               type="text"
-              placeholder="Enter Agent Name"
+              placeholder={t('agentStudio.enterName', 'Enter Agent Name')}
               className="w-full text-lg font-semibold outline-none border-none mb-2"
             />
             <textarea
-              placeholder="Enter Agent Description"
+              placeholder={t('agentStudio.enterDescription', 'Enter Agent Description')}
               className="w-full text-sm outline-none border-none resize-none mb-2"
             />
             <div className="flex flex-col gap-2">
               <p>
-                <strong>System Prompt</strong>
+                <strong>{t('agentStudio.systemPrompt', 'System Prompt')}</strong>
               </p>
               <Textarea
                 className="w-full text-sm mb-2 h-48"
-                placeholder="Enter System Prompt"
+                placeholder={t('agentStudio.enterSystemPrompt', 'Enter System Prompt')}
               />
             </div>
           </div>

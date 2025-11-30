@@ -1,7 +1,7 @@
 import { useConfigs } from '@/contexts/configs'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { ChevronLeft, ImageIcon } from 'lucide-react'
+import { ChevronLeft, ImageIcon, Bot } from 'lucide-react'
 import { motion } from 'motion/react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from '@tanstack/react-router'
@@ -54,6 +54,15 @@ export default function TopMenu({
         >
           <ImageIcon className="size-4" />
           {t('canvas:assets', 'Library')}
+        </Button>
+        <Button
+          variant={window.location.pathname === '/agent_studio' ? 'default' : 'ghost'}
+          size="sm"
+          className={cn('flex items-center font-bold rounded-none')}
+          onClick={() => navigate({ to: '/agent_studio' })}
+        >
+          <Bot className="size-4" />
+          {t('navigation.agentStudio', 'Agent Studio')}
         </Button>
       </div>
 

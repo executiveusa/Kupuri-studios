@@ -7,6 +7,7 @@ import { useNavigate } from '@tanstack/react-router'
 import { useConfigs } from '@/contexts/configs'
 import { UserMenu } from '../auth/UserMenu'
 import ThemeButton from '../theme/ThemeButton'
+import { useTranslation } from 'react-i18next'
 
 type CanvasHeaderProps = {
   canvasName: string
@@ -23,6 +24,7 @@ const CanvasHeader: React.FC<CanvasHeaderProps> = ({
 }) => {
   const navigate = useNavigate()
   const { setShowSettingsDialog } = useConfigs()
+  const { t } = useTranslation()
 
   return (
     <motion.div
@@ -40,7 +42,7 @@ const CanvasHeader: React.FC<CanvasHeaderProps> = ({
           className="hover:bg-white/10 transition-colors"
         >
           <ChevronLeft className="w-4 h-4 mr-1" />
-          Back
+          {t('canvas:back', 'Back')}
         </Button>
       </div>
 
@@ -50,7 +52,7 @@ const CanvasHeader: React.FC<CanvasHeaderProps> = ({
         value={canvasName}
         onChange={(e) => onNameChange(e.target.value)}
         onBlur={onNameSave}
-        placeholder="Untitled Canvas"
+        placeholder={t('canvas:untitled', 'Untitled Canvas')}
       />
 
       {/* Right: Actions */}

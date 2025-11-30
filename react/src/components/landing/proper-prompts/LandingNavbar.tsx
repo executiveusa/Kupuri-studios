@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useConfigs } from '@/contexts/configs';
 import { useNavigate } from '@tanstack/react-router';
+import LanguageSwitcher from '@/components/common/LanguageSwitcher';
+import { useTranslation } from 'react-i18next';
 
 export function LandingNavbar() {
   const { scrollY } = useScroll();
@@ -10,6 +12,7 @@ export function LandingNavbar() {
   const [scrolled, setScrolled] = useState(false);
   const { setShowLoginDialog } = useConfigs();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     const previous = scrollY.getPrevious() ?? 0;
@@ -43,11 +46,12 @@ export function LandingNavbar() {
 
         {/* Actions */}
         <div className="flex items-center gap-4">
+          <LanguageSwitcher />
           <button 
             onClick={() => navigate({ to: '/canvas/new' })}
             className={`text-sm font-bold uppercase tracking-widest hover:opacity-70 transition-opacity hidden sm:block ${scrolled ? 'text-black' : 'text-white drop-shadow-md'}`}
           >
-            Enter Studio
+            {t('landing.enterStudio', 'Enter Studio')}
           </button>
           <Button 
             size="sm" 
@@ -58,7 +62,7 @@ export function LandingNavbar() {
                 : 'bg-white text-proper-red hover:bg-black hover:text-white'
             }`}
           >
-            Get Access
+            {t('landing.getAccess', 'Get Access')}
           </Button>
         </div>
       </div>
