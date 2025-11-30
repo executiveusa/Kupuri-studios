@@ -41,9 +41,9 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
         // Create socket manager instance if not exists
         if (!socketManagerRef.current) {
           socketManagerRef.current = new SocketIOManager({
-            serverUrl: process.env.NODE_ENV === 'development'
+            serverUrl: import.meta.env.VITE_WS_URL || import.meta.env.VITE_API_BASE_URL || (import.meta.env.MODE === 'development'
               ? 'http://localhost:57988'
-              : window.location.origin,
+              : window.location.origin),
             autoConnect: false
           })
         }
