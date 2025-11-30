@@ -118,7 +118,7 @@ function App() {
               {/* Settings Dialog */}
               <SettingsDialog />
 
-              {/* Login Dialog */}
+              {/* Login Dialog - Temporarily disabled for Guest Mode */}
               {/* <LoginDialog /> */}
             </div>
           </ConfigsProvider>

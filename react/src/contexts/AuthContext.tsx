@@ -11,11 +11,13 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  // GUEST MODE: Default to logged in for immediate access
   const [authStatus, setAuthStatus] = useState<AuthStatus>({
-    status: 'logged_out',
-    is_logged_in: false,
+    status: 'logged_in',
+    is_logged_in: true,
+    user: { email: 'guest@kupuri.studios', name: 'Guest User' }
   })
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false) // Skip loading state
 
   const refreshAuth = async () => {
     try {
@@ -38,7 +40,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   useEffect(() => {
-    refreshAuth()
+    // GUEST MODE: Skip auth check in production
+    if (import.meta.env.DEV) {
+      refreshAuth()
+    }
   }, [])
 
   return (

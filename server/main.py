@@ -112,13 +112,8 @@ if os.path.exists(static_site):
     app.mount("/assets", NoCacheStaticFiles(directory=static_site), name="assets")
 
 
-@app.get("/{full_path:path}")
-async def serve_react_app(full_path: str):
-    # Check if it's a file in the build directory (e.g. favicon.ico, manifest.json)
-    file_path = os.path.join(react_build_dir, full_path)
-    if os.path.exists(file_path) and os.path.isfile(file_path):
-        return FileResponse(file_path)
-
+@app.get("/")
+async def serve_react_app():
     response = FileResponse(os.path.join(react_build_dir, "index.html"))
     response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
     response.headers["Pragma"] = "no-cache"

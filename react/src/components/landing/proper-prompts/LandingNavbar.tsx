@@ -2,12 +2,14 @@ import { motion, useScroll, useMotionValueEvent } from 'framer-motion';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useConfigs } from '@/contexts/configs';
+import { useNavigate } from '@tanstack/react-router';
 
 export function LandingNavbar() {
   const { scrollY } = useScroll();
   const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { setShowLoginDialog } = useConfigs();
+  const navigate = useNavigate();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     const previous = scrollY.getPrevious() ?? 0;
@@ -42,14 +44,14 @@ export function LandingNavbar() {
         {/* Actions */}
         <div className="flex items-center gap-4">
           <button 
-            onClick={() => setShowLoginDialog(true)}
+            onClick={() => navigate({ to: '/canvas/new' })}
             className={`text-sm font-bold uppercase tracking-widest hover:opacity-70 transition-opacity hidden sm:block ${scrolled ? 'text-black' : 'text-white drop-shadow-md'}`}
           >
-            Log in
+            Enter Studio
           </button>
           <Button 
             size="sm" 
-            onClick={() => setShowLoginDialog(true)}
+            onClick={() => navigate({ to: '/canvas/new' })}
             className={`rounded-none font-bold uppercase tracking-wider px-6 ${
               scrolled 
                 ? 'bg-proper-red text-white hover:bg-black' 

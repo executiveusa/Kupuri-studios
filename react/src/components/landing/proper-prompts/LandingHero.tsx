@@ -2,10 +2,12 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { PROPER_ASSETS } from './assets';
 import { useConfigs } from '@/contexts/configs';
 import { Button } from '@/components/ui/button';
+import { useNavigate } from '@tanstack/react-router';
 
 export function LandingHero() {
   const { scrollY } = useScroll();
   const { setShowLoginDialog } = useConfigs();
+  const navigate = useNavigate();
   
   // Parallax effects
   const bgY = useTransform(scrollY, [0, 1000], [0, 300]);
@@ -80,7 +82,7 @@ export function LandingHero() {
 
           <Button 
             size="lg" 
-            onClick={() => setShowLoginDialog(true)}
+            onClick={() => navigate({ to: '/canvas/new' })}
             className="rounded-none bg-proper-red text-white hover:bg-black text-xl px-10 py-8 uppercase font-bold tracking-wider shadow-xl hover:shadow-2xl transition-all"
           >
             Start Creating Free
