@@ -6,7 +6,7 @@ localhost development and production deployments.
 """
 
 import os
-from server.common import DEFAULT_PORT
+from common import DEFAULT_PORT
 
 
 def get_base_url() -> str:
