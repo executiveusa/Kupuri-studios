@@ -5,11 +5,13 @@ import { useConfigs } from '@/contexts/configs';
 import { useNavigate } from '@tanstack/react-router';
 import LanguageSwitcher from '@/components/common/LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
+import { Menu, X } from 'lucide-react';
 
 export function LandingNavbar() {
   const { scrollY } = useScroll();
   const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { setShowLoginDialog } = useConfigs();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -44,12 +46,12 @@ export function LandingNavbar() {
           </span>
         </div>
 
-        {/* Actions */}
-        <div className="flex items-center gap-4">
+        {/* Desktop Actions */}
+        <div className="hidden md:flex items-center gap-4">
           <LanguageSwitcher />
           <button 
             onClick={() => navigate({ to: '/canvas/new' })}
-            className={`text-sm font-bold uppercase tracking-widest hover:opacity-70 transition-opacity hidden sm:block ${scrolled ? 'text-black' : 'text-white drop-shadow-md'}`}
+            className={`text-sm font-bold uppercase tracking-widest hover:opacity-70 transition-opacity ${scrolled ? 'text-black' : 'text-white drop-shadow-md'}`}
           >
             {t('landing.enterStudio', 'Enter Studio')}
           </button>
@@ -65,7 +67,50 @@ export function LandingNavbar() {
             {t('landing.getAccess', 'Get Access')}
           </Button>
         </div>
+
+        {/* Mobile Menu Button */}
+        <div className="md:hidden flex items-center gap-2">
+          <LanguageSwitcher />
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className={`p-2 ${scrolled ? 'text-black' : 'text-white drop-shadow-md'}`}
+          >
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
+
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          className={`md:hidden ${scrolled ? 'bg-white' : 'bg-black/95 backdrop-blur-md'}`}
+        >
+          <div className="container mx-auto px-6 py-4 flex flex-col gap-4">
+            <button
+              onClick={() => {
+                navigate({ to: '/canvas/new' });
+                setMobileMenuOpen(false);
+              }}
+              className={`text-left py-2 font-bold uppercase tracking-widest ${scrolled ? 'text-black hover:text-proper-red' : 'text-white hover:text-proper-red'}`}
+            >
+              {t('landing.enterStudio', 'Enter Studio')}
+            </button>
+            <Button 
+              size="sm"
+              onClick={() => {
+                navigate({ to: '/canvas/new' });
+                setMobileMenuOpen(false);
+              }}
+              className="w-full rounded-none font-bold uppercase tracking-wider bg-proper-red text-white hover:bg-black"
+            >
+              {t('landing.getAccess', 'Get Access')}
+            </Button>
+          </div>
+        </motion.div>
+      )}
     </motion.nav>
   );
 }
