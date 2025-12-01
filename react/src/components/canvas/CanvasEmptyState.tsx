@@ -57,7 +57,7 @@ export default function CanvasEmptyState({ onAction }: CanvasEmptyStateProps) {
         <Card className="max-w-[600px] w-full px-4 shadow-2xl border-border/50 bg-background/95 backdrop-blur-sm">
           <CardHeader className="text-center">
             <CardTitle className="text-3xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-              {t('canvas.emptyState.title', 'Let's Create Something Extraordinary')}
+              {t('canvas.emptyState.title', "Let's Create Something Extraordinary")}
             </CardTitle>
             <CardDescription className="text-lg">
               {t('canvas.emptyState.subtitle', 'Pick a starting point or dive straight in.')}
