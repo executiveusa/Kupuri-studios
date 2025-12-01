@@ -41,6 +41,7 @@
   "navigation": {
     "home": "Inicio",
     "canvas": "Lienzo",
+    "agentStudio": "Estudio de Agentes",
     "settings": "Configuración",
     "back": "Atrás"
   },
@@ -73,6 +74,25 @@
     "notLoggedIn": "No ha iniciado sesión",
     "balance": "Saldo",
     "recharge": "Recargar"
+  },
+  "agentStudio": {
+    "enterName": "Ingrese el Nombre del Agente",
+    "enterDescription": "Ingrese la Descripción del Agente",
+    "systemPrompt": "Indicación del Sistema",
+    "enterSystemPrompt": "Ingrese la Indicación del Sistema",
+    "save": "Guardar",
+    "saving": "Guardando...",
+    "deploy": "Desplegar",
+    "deploying": "Desplegando...",
+    "load": "Cargar",
+    "delete": "Eliminar",
+    "nameRequired": "El nombre del agente es requerido",
+    "saveFirst": "Guarde el agente primero antes de desplegarlo",
+    "confirmDelete": "¿Eliminar este agente?",
+    "noAgents": "No se encontraron agentes guardados",
+    "deploySuccess": "Agente desplegado exitosamente",
+    "saveSuccess": "Agente guardado exitosamente",
+    "deleteSuccess": "Agente eliminado exitosamente"
   },
   "socket": {
     "connectionError": "Error de conexión ({{current}}/{{max}}): {{error}}",

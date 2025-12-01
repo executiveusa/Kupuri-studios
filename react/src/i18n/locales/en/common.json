@@ -41,6 +41,7 @@
   "navigation": {
     "home": "Home",
     "canvas": "Canvas",
+    "agentStudio": "Agent Studio",
     "settings": "Settings",
     "back": "Back"
   },
@@ -55,7 +56,7 @@
   "auth": {
     "login": "Login",
     "logout": "Logout",
-    "loginToKupuri": "Login to Jaaz",
+    "loginToKupuri": "Login to Kupuri",
     "myAccount": "My Account",
     "loginDescription": "Login to use cloud AI models",
     "startLogin": "Start Login",
@@ -73,6 +74,25 @@
     "notLoggedIn": "Not logged in",
     "balance": "Balance",
     "recharge": "Recharge"
+  },
+  "agentStudio": {
+    "enterName": "Enter Agent Name",
+    "enterDescription": "Enter Agent Description",
+    "systemPrompt": "System Prompt",
+    "enterSystemPrompt": "Enter System Prompt",
+    "save": "Save",
+    "saving": "Saving...",
+    "deploy": "Deploy",
+    "deploying": "Deploying...",
+    "load": "Load",
+    "delete": "Delete",
+    "nameRequired": "Agent name is required",
+    "saveFirst": "Save the agent first before deploying",
+    "confirmDelete": "Delete this agent?",
+    "noAgents": "No saved agents found",
+    "deploySuccess": "Agent deployed successfully",
+    "saveSuccess": "Agent saved successfully",
+    "deleteSuccess": "Agent deleted successfully"
   },
   "socket": {
     "connectionError": "Connection error ({{current}}/{{max}}): {{error}}",
