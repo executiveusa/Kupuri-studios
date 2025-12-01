@@ -54,13 +54,13 @@ export default function CanvasEmptyState({ onAction }: CanvasEmptyStateProps) {
         transition={{ duration: 0.3 }}
         className="pointer-events-auto"
       >
-        <Card className="w-[600px] shadow-2xl border-border/50 bg-background/95 backdrop-blur-sm">
+        <Card className="max-w-[600px] w-full px-4 shadow-2xl border-border/50 bg-background/95 backdrop-blur-sm">
           <CardHeader className="text-center">
             <CardTitle className="text-3xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-              {t('canvas.emptyState.title', 'Welcome to Kupuri Studio')}
+              {t('canvas.emptyState.title', 'Let's Create Something Extraordinary')}
             </CardTitle>
             <CardDescription className="text-lg">
-              {t('canvas.emptyState.subtitle', 'What would you like to create today?')}
+              {t('canvas.emptyState.subtitle', 'Pick a starting point or dive straight in.')}
             </CardDescription>
           </CardHeader>
           <CardContent className="grid grid-cols-2 gap-4 p-6">
@@ -93,3 +93,5 @@ export default function CanvasEmptyState({ onAction }: CanvasEmptyStateProps) {
     </div>
   )
 }
+
+

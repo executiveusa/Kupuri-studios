@@ -36,7 +36,7 @@ export function LandingHero() {
         style={{ y: textY, opacity }}
         className="absolute inset-0 z-10 flex flex-col items-center pt-32 md:pt-48 pointer-events-none"
       >
-        <h1 className="font-heading text-[12vw] leading-[0.85] text-proper-red uppercase text-center drop-shadow-xl tracking-tighter">
+        <h1 className="font-heading text-[clamp(2rem,12vw,5rem)] leading-[0.85] text-proper-red uppercase text-center drop-shadow-xl tracking-tighter">
           KUPURI
           <br />
           STUDIOS
@@ -71,13 +71,13 @@ export function LandingHero() {
           transition={{ delay: 0.5, duration: 0.8 }}
         >
           <h2 className="font-heading text-4xl md:text-6xl text-proper-red uppercase mb-6 tracking-tight drop-shadow-sm">
-            Your Copy & Paste
+            Your Infinite Canvas
             <br />
             <span className="text-white drop-shadow-md">Generative AI Studio</span>
           </h2>
           
           <p className="max-w-xl mx-auto text-slate-900 font-medium mb-8 text-lg md:text-xl leading-relaxed bg-white/50 backdrop-blur-sm p-4 rounded-xl">
-            Stop struggling with prompts. Build, iterate, and generate professional assets in seconds.
+            Turn ideas into high-fidelity art, instantly. One canvas. Infinite possibilities.
           </p>
 
           <Button 
@@ -92,3 +92,5 @@ export function LandingHero() {
     </section>
   );
 }
+
+

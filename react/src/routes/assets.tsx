@@ -14,7 +14,7 @@ function Home() {
       <ResizablePanelGroup
         direction="horizontal"
         className="w-screen h-screen"
-        autoSaveId="jaaz-chat-panel"
+        autoSaveId="kupuri-chat-panel"
       >
         <ResizablePanel className="relative" defaultSize={100}>
           <MaterialManager />

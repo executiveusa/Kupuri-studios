@@ -14,6 +14,8 @@ import homeEs from './locales/es-MX/home.json'
 import canvasEs from './locales/es-MX/canvas.json'
 import chatEs from './locales/es-MX/chat.json'
 import settingsEs from './locales/es-MX/settings.json'
+import errorEn from './locales/en/errors.json'
+import errorEs from './locales/es-MX/errors.json'
 
 const resources = {
   en: {
@@ -39,7 +41,7 @@ i18n
     resources,
     fallbackLng: 'en',
     defaultNS: 'common',
-    ns: ['common', 'home', 'canvas', 'chat', 'settings'],
+    ns: ['common', 'home', 'canvas', 'chat', 'settings', 'error'],
 
     detection: {
       order: ['localStorage', 'navigator', 'htmlTag'],
@@ -57,3 +59,4 @@ i18n
   })
 
 export default i18n
+

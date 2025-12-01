@@ -40,10 +40,10 @@ export function LandingFooter() {
             </div>
 
             <div className="flex flex-wrap gap-8 text-sm font-bold uppercase tracking-widest">
-              <a href="#" className="hover:text-black transition-colors">Instagram</a>
-              <a href="#" className="hover:text-black transition-colors">Twitter</a>
-              <a href="#" className="hover:text-black transition-colors">Discord</a>
-              <a href="#" className="hover:text-black transition-colors">Privacy Policy</a>
+              <a href="javascript:void(0)" className="hover:text-black cursor-not-allowed opacity-50 transition-colors">Instagram</a>
+              <a href="javascript:void(0)" className="hover:text-black cursor-not-allowed opacity-50 transition-colors">Twitter</a>
+              <a href="javascript:void(0)" className="hover:text-black cursor-not-allowed opacity-50 transition-colors">Discord</a>
+              <a href="javascript:void(0)" className="hover:text-black cursor-not-allowed opacity-50 transition-colors">Privacy Policy</a>
             </div>
             
             <div className="text-sm opacity-60">
@@ -56,3 +56,4 @@ export function LandingFooter() {
     </footer>
   );
 }
+

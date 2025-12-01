@@ -55,7 +55,7 @@
   "auth": {
     "login": "Iniciar Sesión",
     "logout": "Cerrar Sesión",
-    "loginToJaaz": "Entrar a Kupuri",
+    "loginToKupuri": "Entrar a Kupuri",
     "myAccount": "Mi Cuenta",
     "loginDescription": "Inicie sesión para usar modelos de IA en la nube",
     "startLogin": "Iniciar Sesión",

@@ -134,7 +134,7 @@ export function LoginDialog() {
     <Dialog open={open} onOpenChange={setShowLoginDialog}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{t('common:auth.loginToJaaz')}</DialogTitle>
+          <DialogTitle>{t('common:auth.loginToKupuri')}</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">
