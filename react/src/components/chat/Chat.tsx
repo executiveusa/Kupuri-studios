@@ -36,11 +36,12 @@ import ToolcallProgressUpdate from './ToolcallProgressUpdate'
 import ShareTemplateDialog from './ShareTemplateDialog'
 
 import { useConfigs } from '@/contexts/configs'
+import { useSocket } from '@/contexts/socket'
 import 'react-photo-view/dist/react-photo-view.css'
 import { DEFAULT_SYSTEM_PROMPT } from '@/constants'
 import { ModelInfo, ToolInfo } from '@/api/model'
 import { Button } from '@/components/ui/button'
-import { Share2 } from 'lucide-react'
+import { Share2, Circle } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { useQueryClient } from '@tanstack/react-query'
 import MixedContent, { MixedContentImages, MixedContentText } from './Message/MixedContent'
@@ -64,6 +65,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
   const [session, setSession] = useState<Session | null>(null)
   const { initCanvas, setInitCanvas } = useConfigs()
   const { authStatus } = useAuth()
+  const { connected: socketConnected } = useSocket()
   const [showShareDialog, setShowShareDialog] = useState(false)
   const queryClient = useQueryClient()
 
@@ -613,6 +615,21 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
               <Share2 className="h-4 w-4 mr-1" />
             </Button>
           )} */}
+
+          {/* Connection Status Indicator */}
+          <div className="flex items-center gap-2 ml-4 px-3 py-1 rounded-full bg-slate-900/50">
+            <Circle
+              size={8}
+              className={`fill-current ${
+                socketConnected ? 'text-green-500' : 'text-red-500'
+              }`}
+            />
+            <span className={`text-xs font-medium ${
+              socketConnected ? 'text-green-400' : 'text-red-400'
+            }`}>
+              {socketConnected ? t('chat.connected', 'Connected') : t('chat.disconnected', 'Disconnected')}
+            </span>
+          </div>
 
           <Blur className='absolute top-0 left-0 right-0 h-full -z-1' />
         </header>

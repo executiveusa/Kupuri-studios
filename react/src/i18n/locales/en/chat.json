@@ -1,6 +1,8 @@
 {
   "newChat": "New Chat",
   "placeholder": "Type your message here...",
+  "connected": "Connected",
+  "disconnected": "Disconnected",
   "insufficientBalance": "Insufficient Balance",
   "insufficientBalanceDescription": "Your credits are depleted. Please recharge to continue.",
   "textarea": {

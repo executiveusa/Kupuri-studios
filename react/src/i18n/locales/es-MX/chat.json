@@ -1,6 +1,8 @@
 {
   "newChat": "Nuevo Chat",
   "placeholder": "Escribe tu mensaje aquí...",
+  "connected": "Conectado",
+  "disconnected": "Desconectado",
   "insufficientBalance": "Saldo Insuficiente",
   "insufficientBalanceDescription": "Tus créditos se agotaron. Por favor recarga para continuar.",
   "textarea": {
