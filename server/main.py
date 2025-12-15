@@ -116,11 +116,25 @@ if os.path.exists(static_site):
 
 @app.get("/")
 async def serve_react_app():
-    response = FileResponse(os.path.join(react_build_dir, "index.html"))
-    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
-    response.headers["Pragma"] = "no-cache"
-    response.headers["Expires"] = "0"
-    return response
+    try:
+        index_path = os.path.join(react_build_dir, "index.html")
+        print(f"🔍 Attempting to serve React app from: {index_path}")
+        print(f"🔍 Path exists: {os.path.exists(index_path)}")
+        print(f"🔍 React build dir: {react_build_dir}")
+        print(f"🔍 React build dir exists: {os.path.exists(react_build_dir)}")
+        if os.path.exists(react_build_dir):
+            print(f"🔍 Files in {react_build_dir}: {os.listdir(react_build_dir)}")
+        
+        response = FileResponse(index_path)
+        response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+        return response
+    except Exception as e:
+        print(f"❌ Error serving React app: {e}")
+        import traceback
+        traceback.print_exc()
+        return {"error": str(e), "react_build_dir": react_build_dir}
 
 print('Creating socketio app')
 socket_app = socketio.ASGIApp(sio, other_asgi_app=app, socketio_path='/socket.io')
