@@ -34,11 +34,11 @@ COPY --from=frontend-build /app/react/dist ./react/dist
 # Set environment variables
 ENV UI_DIST_DIR=/app/react/dist
 ENV HOST=0.0.0.0
-ENV PORT=8000
+# PORT will be set by Railway - don't override it
 
-# Expose the port
+# Expose the port (Railway will use its own)
 EXPOSE 8000
 
-# Run the server - use shell form to allow $PORT expansion from Railway
+# Run the server - no args needed, reads PORT from env
 WORKDIR /app/server
-CMD python main.py --port ${PORT:-8000}
+CMD ["python", "-u", "main.py"]

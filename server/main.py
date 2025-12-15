@@ -115,16 +115,23 @@ if os.path.exists(static_site):
     app.mount("/assets", NoCacheStaticFiles(directory=static_site), name="assets")
 
 
+# Simple health endpoint - MUST come before "/" to work
+@app.get("/health")
+async def health_check():
+    """Simple health check that returns immediately - no dependencies."""
+    return {"status": "healthy", "port": os.environ.get("PORT", "not set"), "host": os.environ.get("HOST", "not set")}
+
+
 @app.get("/")
 async def serve_react_app():
     try:
         index_path = os.path.join(react_build_dir, "index.html")
-        print(f"🔍 Attempting to serve React app from: {index_path}")
-        print(f"🔍 Path exists: {os.path.exists(index_path)}")
-        print(f"🔍 React build dir: {react_build_dir}")
-        print(f"🔍 React build dir exists: {os.path.exists(react_build_dir)}")
+        print(f"🔍 Attempting to serve React app from: {index_path}", flush=True)
+        print(f"🔍 Path exists: {os.path.exists(index_path)}", flush=True)
+        print(f"🔍 React build dir: {react_build_dir}", flush=True)
+        print(f"🔍 React build dir exists: {os.path.exists(react_build_dir)}", flush=True)
         if os.path.exists(react_build_dir):
-            print(f"🔍 Files in {react_build_dir}: {os.listdir(react_build_dir)}")
+            print(f"🔍 Files in {react_build_dir}: {os.listdir(react_build_dir)}", flush=True)
         
         response = FileResponse(index_path)
         response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
@@ -132,7 +139,7 @@ async def serve_react_app():
         response.headers["Expires"] = "0"
         return response
     except Exception as e:
-        print(f"❌ Error serving React app: {e}")
+        print(f"❌ Error serving React app: {e}", flush=True)
         import traceback
         traceback.print_exc()
         return {"error": str(e), "react_build_dir": react_build_dir}
@@ -151,12 +158,28 @@ if __name__ == "__main__":
         sorted(_bypass | current - {""}))
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--port', type=int, default=57988,
+    parser.add_argument('--port', type=int, default=8000,
                         help='Port to run the server on')
     args = parser.parse_args()
     import uvicorn
-    print("🌟Starting server, UI_DIST_DIR:", os.environ.get('UI_DIST_DIR'))
-
-    # Use 0.0.0.0 for Docker/VPS compatibility, allow override via HOST env var
+    
+    # Railway provides PORT env var - use it if available
+    port = int(os.environ.get("PORT", args.port))
     host = os.environ.get("HOST", "0.0.0.0")
-    uvicorn.run(socket_app, host=host, port=args.port)
+    
+    print("=" * 60, flush=True)
+    print(f"🚀 KUPURI STUDIOS SERVER STARTING", flush=True)
+    print(f"📌 PORT env var: {os.environ.get('PORT', 'NOT SET')}", flush=True)
+    print(f"📌 HOST env var: {os.environ.get('HOST', 'NOT SET')}", flush=True)
+    print(f"📌 Final port: {port}", flush=True)
+    print(f"📌 Final host: {host}", flush=True)
+    print(f"📁 UI_DIST_DIR: {os.environ.get('UI_DIST_DIR', 'NOT SET')}", flush=True)
+    print(f"📁 React build dir: {react_build_dir}", flush=True)
+    print(f"📁 React build exists: {os.path.exists(react_build_dir)}", flush=True)
+    if os.path.exists(react_build_dir):
+        print(f"📁 React build contents: {os.listdir(react_build_dir)}", flush=True)
+    print("=" * 60, flush=True)
+
+    # Use the raw FastAPI app instead of socketio wrapper for debugging
+    # TODO: Switch back to socket_app once deployment works
+    uvicorn.run(app, host=host, port=port)
