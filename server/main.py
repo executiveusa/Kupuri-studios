@@ -45,6 +45,7 @@ async def lifespan(app: FastAPI):
 
 print('Creating FastAPI app')
 app = FastAPI(lifespan=lifespan)
+print('✅ FastAPI app created')
 
 # Configure CORS middleware for HTTP requests
 def get_cors_origins_list():
@@ -138,6 +139,8 @@ async def serve_react_app():
 
 print('Creating socketio app')
 socket_app = socketio.ASGIApp(sio, other_asgi_app=app, socketio_path='/socket.io')
+print('✅ SocketIO app created successfully')
+print('✅ ALL SETUP COMPLETE - APP READY')
 
 if __name__ == "__main__":
     # bypass localhost request for proxy, fix ollama proxy issue
