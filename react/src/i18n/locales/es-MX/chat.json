@@ -48,5 +48,14 @@
       "video": "Video",
       "text": "Texto"
     }
+  },
+  "costAlert": {
+    "budgetWarning": "Advertencia de Presupuesto",
+    "budgetWarningMessage": "Has usado el {{percent}}% de tu presupuesto mensual ({{spent}} / {{limit}})",
+    "budgetExceeded": "Presupuesto Excedido",
+    "budgetExceededMessage": "Has excedido tu presupuesto mensual. Cambia a modelos gratuitos o aumenta tu límite.",
+    "switchToFree": "Cambiar a Modelos Gratuitos",
+    "viewUsage": "Ver Uso",
+    "usingFreeModel": "Usando modelo gratuito (modo ahorro)"
   }
 }

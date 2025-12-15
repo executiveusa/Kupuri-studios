@@ -98,5 +98,33 @@
   },
   "saveSettings": "Guardar Configuración",
   "close": "Cerrar",
-  "cancel": "Cancelar"
+  "cancel": "Cancelar",
+  "usage": {
+    "title": "Uso y Costos",
+    "description": "Rastrea tu uso de API y optimiza costos",
+    "loading": "Cargando datos de uso...",
+    "totalCost": "Costo Total",
+    "savings": "Ahorros (Nivel Gratuito)",
+    "freeRequests": "Solicitudes Gratuitas",
+    "requests": "solicitudes",
+    "costReduction": "reducción de costos",
+    "geminiFreeTier": "Nivel gratuito de Gemini Flash",
+    "budgetAlert": "Alerta de Presupuesto: Cerca del Límite",
+    "byModel": "Uso por Modelo",
+    "modelBreakdown": "Desglose detallado de costos por modelo",
+    "noData": "No hay datos de uso para este período",
+    "free": "GRATIS",
+    "export": "Exportar CSV",
+    "exportSuccess": "Datos de uso exportados exitosamente",
+    "fetchError": "Error al obtener datos de uso",
+    "periods": {
+      "day": "Últimas 24 horas",
+      "week": "Últimos 7 días",
+      "month": "Últimos 30 días"
+    },
+    "tipsTitle": "Consejos de Optimización de Costos",
+    "tip1": "Gemini Flash es GRATIS (1500 sol/día) - perfecto para borradores y tareas simples",
+    "tip2": "Habilita 'Optimización de Costos' en configuración de proveedores para enrutamiento automático a modelos gratuitos",
+    "tip3": "Actualiza a modelos pagos solo para resultados finales o tareas de visión complejas"
+  }
 }

@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { ChevronDown, Component } from 'lucide-react'
+import { ChevronDown, Component, Zap } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,9 +12,10 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Switch } from '@/components/ui/switch'
 import { Checkbox } from '@/components/ui/checkbox'
+import { Badge } from '@/components/ui/badge'
 import { useTranslation } from 'react-i18next'
 import { useConfigs } from '@/contexts/configs'
-import { ModelInfo, ToolInfo } from '@/api/model'
+import { ModelInfo, ToolInfo, listLiteLLMModels } from '@/api/model'
 import { PROVIDER_NAME_MAPPING } from '@/constants'
 import { ScrollArea } from '@/components/ui/scroll-area'
 
@@ -43,6 +44,29 @@ const ModelSelectorV3: React.FC<ModelSelectorV3Props> = ({
   // 初始化时判断auto模式：如果所有工具都被选中，则为auto模式
   const initialAutoMode = allTools.length > 0 && selectedTools.length === allTools.length
   const [autoMode, setAutoMode] = useState(initialAutoMode)
+  const [litellmModels, setLitellmModels] = useState<any[]>([])
+  const [loadingLiteLLM, setLoadingLiteLLM] = useState(false)
+
+  // Fetch LiteLLM models on mount
+  useEffect(() => {
+    const fetchLiteLLMModels = async () => {
+      setLoadingLiteLLM(true)
+      try {
+        const models = await listLiteLLMModels()
+        setLitellmModels(models.all || [])
+      } catch (error) {
+        console.error('Failed to fetch LiteLLM models:', error)
+      } finally {
+        setLoadingLiteLLM(false)
+      }
+    }
+    
+    // Only fetch if we have a litellm provider configured
+    const hasLiteLLM = textModels?.some(m => m.provider === 'litellm')
+    if (hasLiteLLM) {
+      fetchLiteLLMModels()
+    }
+  }, [textModels])
 
   // Group models by provider
   const groupModelsByProvider = (models: typeof allTools) => {

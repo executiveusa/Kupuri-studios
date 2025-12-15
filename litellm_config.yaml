@@ -1,0 +1,135 @@
+# LiteLLM Configuration for Kupuri Studios
+# Optimized for cost savings with free-tier routing
+
+model_list:
+  # ===== FREE TIER MODELS (Priority 1 - Default routing) =====
+  
+  # Google Gemini 2.0 Flash (FREE: 1500 req/day, 1M tokens/day)
+  - model_name: gemini/gemini-2.0-flash-exp
+    litellm_params:
+      model: gemini/gemini-2.0-flash-exp
+      api_key: os.environ/GOOGLE_API_KEY
+    model_info:
+      mode: chat
+      supports_vision: true
+      supports_function_calling: true
+      max_tokens: 32768
+      is_free: true
+      priority: 1
+
+  # DeepSeek V3 Free (via OpenRouter)
+  - model_name: deepseek/deepseek-chat-v3-0324:free
+    litellm_params:
+      model: openrouter/deepseek/deepseek-chat-v3-0324:free
+      api_key: os.environ/OPENROUTER_API_KEY
+    model_info:
+      mode: chat
+      max_tokens: 8192
+      is_free: true
+      priority: 2
+
+  # ===== VISION MODELS =====
+  
+  # GLM-4V Plus (Zhipu AI - Strong vision + cheap)
+  - model_name: zhipu/glm-4v-plus
+    litellm_params:
+      model: zhipu/glm-4v-plus
+      api_key: os.environ/ZHIPU_API_KEY
+      base_url: https://open.bigmodel.cn/api/paas/v4/
+    model_info:
+      mode: chat
+      supports_vision: true
+      max_tokens: 8192
+      cost_per_1k_input: 0.005
+      cost_per_1k_output: 0.005
+
+  # GPT-4o (OpenAI - Fallback for complex vision tasks)
+  - model_name: openai/gpt-4o
+    litellm_params:
+      model: gpt-4o
+      api_key: os.environ/OPENAI_API_KEY
+    model_info:
+      mode: chat
+      supports_vision: true
+      supports_function_calling: true
+      max_tokens: 128000
+
+  # ===== PREMIUM TEXT MODELS =====
+  
+  # Claude Sonnet 4 (Anthropic - Best reasoning)
+  - model_name: anthropic/claude-sonnet-4
+    litellm_params:
+      model: claude-sonnet-4-20250514
+      api_key: os.environ/ANTHROPIC_API_KEY
+    model_info:
+      mode: chat
+      supports_function_calling: true
+      max_tokens: 200000
+
+  # GPT-4o Mini (OpenAI - Fast + cheap)
+  - model_name: openai/gpt-4o-mini
+    litellm_params:
+      model: gpt-4o-mini
+      api_key: os.environ/OPENAI_API_KEY
+    model_info:
+      mode: chat
+      supports_function_calling: true
+      max_tokens: 128000
+
+  # GLM-4 Plus (Zhipu - Chinese market optimized)
+  - model_name: zhipu/glm-4-plus
+    litellm_params:
+      model: zhipu/glm-4-plus
+      api_key: os.environ/ZHIPU_API_KEY
+      base_url: https://open.bigmodel.cn/api/paas/v4/
+    model_info:
+      mode: chat
+      max_tokens: 8192
+
+# Routing configuration
+router_settings:
+  routing_strategy: cost-based-routing
+  
+  # Fallback groups (ordered by priority)
+  fallbacks:
+    - group_name: free_tier
+      models: 
+        - gemini/gemini-2.0-flash-exp
+        - deepseek/deepseek-chat-v3-0324:free
+    
+    - group_name: vision
+      models:
+        - zhipu/glm-4v-plus
+        - openai/gpt-4o
+    
+    - group_name: premium
+      models:
+        - anthropic/claude-sonnet-4
+        - openai/gpt-4o-mini
+
+  # Retry settings
+  num_retries: 3
+  timeout: 60
+  
+  # Load balancing
+  enable_loadbalancing: true
+  load_balancing_strategy: least-cost
+
+# Budget controls
+general_settings:
+  master_key: os.environ/LITELLM_MASTER_KEY
+  
+  # Cost tracking
+  database_url: sqlite:////app/litellm.db
+  enable_budget_tracking: true
+  
+  # Logging
+  log_requests: true
+  log_level: INFO
+  
+  # Caching (reduce costs by caching common requests)
+  cache:
+    type: redis
+    host: redis
+    port: 6379
+    ttl: 3600  # Cache for 1 hour

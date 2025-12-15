@@ -1,4 +1,5 @@
 import { LandingHero } from './LandingHero';
+import { InteractiveDemo } from './InteractiveDemo';
 import { LandingStickyScroll } from './LandingStickyScroll';
 import { LandingShowcase } from './LandingShowcase';
 import { LandingFooter } from './LandingFooter';
@@ -10,6 +11,7 @@ export function LandingPage() {
       <LandingNavbar />
       <main>
         <LandingHero />
+        <InteractiveDemo />
         <LandingStickyScroll />
         <LandingShowcase />
       </main>

@@ -39,10 +39,39 @@ DEFAULT_PROVIDERS_CONFIG: AppConfig = {
         'api_key': '',
         'max_tokens': 8192,
     },
+    'litellm': {
+        'models': {
+            # Free tier models (prioritized by default)
+            'gemini/gemini-2.0-flash-exp': {'type': 'text', 'is_free': True, 'priority': 1},
+            'deepseek/deepseek-chat-v3-0324:free': {'type': 'text', 'is_free': True, 'priority': 2},
+            # Premium models (upgrade path)
+            'openai/gpt-4o': {'type': 'text', 'is_free': False},
+            'openai/gpt-4o-mini': {'type': 'text', 'is_free': False},
+            'anthropic/claude-sonnet-4': {'type': 'text', 'is_free': False},
+            'zhipu/glm-4-plus': {'type': 'text', 'is_free': False},
+            'zhipu/glm-4v-plus': {'type': 'text', 'is_free': False, 'supports_vision': True},
+        },
+        'url': os.getenv('LITELLM_PROXY_URL', 'http://localhost:4000'),
+        'api_key': os.getenv('LITELLM_API_KEY', 'sk-1234'),
+        'max_tokens': 8192,
+        'cost_optimization': True,  # Enable automatic free-tier routing
+    },
+    'google': {
+        'models': {
+            # Gemini free tier (1500 req/day, 1M tokens/day)
+            'gemini-2.0-flash-exp': {'type': 'text', 'is_free': True},
+            'gemini-1.5-flash': {'type': 'text', 'is_free': True},
+            'gemini-1.5-pro': {'type': 'text', 'is_free': False},
+        },
+        'url': 'https://generativelanguage.googleapis.com/v1beta/',
+        'api_key': os.getenv('GOOGLE_API_KEY', ''),
+        'max_tokens': 8192,
+    },
     'comfyui': {
         'models': {},
         'url': 'http://127.0.0.1:8188',
         'api_key': '',
+        'is_disabled': os.getenv('DISABLE_COMFYUI', 'true').lower() == 'true',  # Disabled by default on VPS
     },
     'ollama': {
         'models': {},

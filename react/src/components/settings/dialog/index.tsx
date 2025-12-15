@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next'
 import SettingProviders from './providers'
 import SettingProxy from './proxy'
 import SettingSidebar, { SettingSidebarType } from './sidebar'
+import { UsageDashboard } from '@/components/settings/UsageDashboard'
 import { X } from 'lucide-react'
 
 const SettingsDialog = () => {
@@ -20,6 +21,8 @@ const SettingsDialog = () => {
     switch (current) {
       case 'proxy':
         return <SettingProxy />
+      case 'usage':
+        return <UsageDashboard />
       case 'provider':
       default:
         return <SettingProviders />

@@ -34,6 +34,24 @@ const PROVIDER_OPTIONS = [
     },
   },
   {
+    value: 'litellm',
+    label: 'LiteLLM (Recommended - 100+ Models)',
+    data: {
+      apiUrl: 'http://localhost:4000',
+      models: {
+        // Free tier models (default)
+        'gemini/gemini-2.0-flash-exp': { type: 'text', is_free: true },
+        'deepseek/deepseek-chat-v3-0324:free': { type: 'text', is_free: true },
+        // Vision models
+        'zhipu/glm-4v-plus': { type: 'text' },
+        'openai/gpt-4o': { type: 'text' },
+        // Premium text
+        'anthropic/claude-sonnet-4': { type: 'text' },
+        'openai/gpt-4o-mini': { type: 'text' },
+      },
+    },
+  },
+  {
     value: 'OpenRouter',
     label: 'OpenRouter',
     data: {

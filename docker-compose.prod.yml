@@ -1,0 +1,79 @@
+# Docker Compose for Kupuri Studios with LiteLLM Integration
+# Optimized for 8GB VPS deployment
+version: '3.8'
+
+services:
+  # LiteLLM Proxy - Unified model router
+  litellm:
+    image: ghcr.io/berriai/litellm:main-latest
+    container_name: kupuri-litellm
+    ports:
+      - "4000:4000"
+    environment:
+      - LITELLM_MASTER_KEY=${LITELLM_MASTER_KEY:-sk-1234}
+      - LITELLM_LOG_LEVEL=INFO
+      - DATABASE_URL=sqlite:////app/litellm.db
+      # Cost optimization settings
+      - LITELLM_FALLBACK_ENABLED=true
+      - LITELLM_BUDGET_ENABLED=true
+    volumes:
+      - ./litellm_config.yaml:/app/config.yaml
+      - litellm_data:/app
+    command: ["--config", "/app/config.yaml", "--port", "4000"]
+    restart: unless-stopped
+    networks:
+      - kupuri-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Kupuri Studios Main App
+  kupuri-studios:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: kupuri-studios
+    ports:
+      - "8000:8000"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8000
+      - UI_DIST_DIR=/app/react/dist
+      # LiteLLM Integration
+      - LITELLM_PROXY_URL=http://litellm:4000
+      - LITELLM_API_KEY=${LITELLM_MASTER_KEY:-sk-1234}
+      # Google API (free tier)
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY:-}
+      # Optional provider keys
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      # Disable heavy features on VPS
+      - DISABLE_COMFYUI=true
+      # CORS for production
+      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost:3000,http://localhost:8000}
+    volumes:
+      - kupuri_data:/app/data
+      - ./server/user_data:/app/server/user_data
+    depends_on:
+      litellm:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - kupuri-network
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  kupuri_data:
+    driver: local
+  litellm_data:
+    driver: local
+
+networks:
+  kupuri-network:
+    driver: bridge

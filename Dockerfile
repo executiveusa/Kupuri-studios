@@ -39,9 +39,9 @@ ENV PORT=8000
 # Expose the port
 EXPOSE 8000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD python -c "import requests; requests.get('http://localhost:8000/')" || exit 1
+# Health check - Removed as it's causing false negatives on Railway
+# HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+#     CMD python -c "import requests; requests.get('http://localhost:8000/')" || exit 1
 
 # Run the server (change to server directory first for correct imports)
 WORKDIR /app/server

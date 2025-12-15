@@ -98,5 +98,33 @@
   },
   "saveSettings": "Save Settings",
   "close": "Close",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "usage": {
+    "title": "Usage & Costs",
+    "description": "Track your API usage and optimize costs",
+    "loading": "Loading usage data...",
+    "totalCost": "Total Cost",
+    "savings": "Savings (Free Tier)",
+    "freeRequests": "Free Requests",
+    "requests": "requests",
+    "costReduction": "cost reduction",
+    "geminiFreeTier": "Gemini Flash free tier",
+    "budgetAlert": "Budget Alert: Approaching Limit",
+    "byModel": "Usage by Model",
+    "modelBreakdown": "Detailed cost breakdown per model",
+    "noData": "No usage data for this period",
+    "free": "FREE",
+    "export": "Export CSV",
+    "exportSuccess": "Usage data exported successfully",
+    "fetchError": "Failed to fetch usage data",
+    "periods": {
+      "day": "Last 24 hours",
+      "week": "Last 7 days",
+      "month": "Last 30 days"
+    },
+    "tipsTitle": "Cost Optimization Tips",
+    "tip1": "Gemini Flash is FREE (1500 req/day) - perfect for drafts and simple tasks",
+    "tip2": "Enable 'Cost Optimization' in provider settings to auto-route to free models",
+    "tip3": "Upgrade to paid models only for final outputs or complex vision tasks"
+  }
 }

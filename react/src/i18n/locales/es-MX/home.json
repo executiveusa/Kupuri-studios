@@ -3,5 +3,43 @@
   "subtitle": "¿Listo para convertir tus ideas en arte?",
   "allProjects": "Todos los Proyectos",
   "noCanvases": "Aún no hay lienzos",
-  "newCanvas": "Sin Título"
+  "newCanvas": "Sin Título",
+  "hero": {
+    "ugc": {
+      "headline": "Ya No Pagues $100,000 MXN Por Episodio",
+      "subheadline": "Crea anime profesional, documentales y contenido social en horas, no semanas. Como lo hacen 847 creadores en CDMX.",
+      "socialProof": "Usado por 847+ creadores en Ciudad de México",
+      "cta": "Pruébalo Gratis - Sin Experiencia en Diseño"
+    },
+    "documentary": {
+      "headline": "Tu Equipo de Producción Completo por $500 MXN/Mes",
+      "subheadline": "Crea storyboards, arte conceptual y material B-roll con IA. Sin diseñadores freelance. Sin equipos de $50K MXN al mes.",
+      "socialProof": "Más de 500 documentalistas en toda Latinoamérica",
+      "cta": "Empieza Gratis - Sin Tarjeta"
+    },
+    "anime": {
+      "headline": "Consistencia de Personajes. Finalmente Resuelto.",
+      "subheadline": "Genera más de 100 cuadros consistentes por hora. Del concepto inicial a storyboards listos para producción.",
+      "socialProof": "12,000+ cuadros de storyboard creados este mes",
+      "cta": "Mira Cómo Funciona - Demo de 60 Segundos"
+    }
+  },
+  "demo": {
+    "badge": "Pruébalo Ahora",
+    "headline": "Mira Cómo Funciona En",
+    "subheadline": "Sin registro. Observa cómo profesionales crean escenas listas para producción en minutos, no horas.",
+    "tutorial1": {
+      "title": "Genera Tu Primera Escena",
+      "description": "Observa cómo la IA crea una escena profesional de anime desde un prompt simple"
+    },
+    "tutorial2": {
+      "title": "Agrega Capa de Fondo",
+      "description": "Transferencia de estilo con un clic para fondos consistentes"
+    },
+    "tutorial3": {
+      "title": "Exporta Storyboard",
+      "description": "Obtén PDF listo para producción con descripciones de cada panel"
+    },
+    "ctaText": "¿Listo para crear el tuyo?"
+  }
 }

@@ -3,5 +3,43 @@
   "subtitle": "Ready to turn your ideas into art?",
   "allProjects": "All Projects",
   "noCanvases": "No canvases yet",
-  "newCanvas": "Untitled"
+  "newCanvas": "Untitled",
+  "hero": {
+    "ugc": {
+      "headline": "Stop Paying Design Teams $5K Per Episode",
+      "subheadline": "Create professional anime, documentaries, and social content in hours, not weeks.",
+      "socialProof": "Used by 847+ creators in Mexico City",
+      "cta": "Try It Free - No Design Skills Needed"
+    },
+    "documentary": {
+      "headline": "Your Full Production Team for $29/Month",
+      "subheadline": "Create storyboards, concept art, and B-roll with AI. No freelance designers needed.",
+      "socialProof": "500+ documentary filmmakers across LATAM",
+      "cta": "Start Free - No Credit Card"
+    },
+    "anime": {
+      "headline": "Character Consistency. Finally Solved.",
+      "subheadline": "Generate 100+ consistent frames per hour. From rough concept to production-ready storyboards.",
+      "socialProof": "12,000+ storyboard frames created this month",
+      "cta": "See It Work - 60 Second Demo"
+    }
+  },
+  "demo": {
+    "badge": "Try It Live",
+    "headline": "See It Work In",
+    "subheadline": "No signup required. Watch how professionals create production-ready scenes in minutes, not hours.",
+    "tutorial1": {
+      "title": "Generate First Scene",
+      "description": "Watch AI create a professional anime scene from a simple prompt"
+    },
+    "tutorial2": {
+      "title": "Add Background Layer",
+      "description": "One-click style transfer for consistent backgrounds"
+    },
+    "tutorial3": {
+      "title": "Export Storyboard",
+      "description": "Get production-ready PDF with panel descriptions"
+    },
+    "ctaText": "Ready to create your own?"
+  }
 }

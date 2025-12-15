@@ -36,3 +36,47 @@ export async function listModels(): Promise<{
     tools: toolsResp,
   }
 }
+
+// Fetch LiteLLM models dynamically
+export async function listLiteLLMModels(): Promise<{
+  free_tier: any[]
+  vision: any[]
+  premium: any[]
+  all: any[]
+}> {
+  try {
+    const response = await fetch(`${BASE_API_URL}/api/litellm/models`)
+    const data = await response.json()
+    
+    if (data.status === 'success') {
+      return data.models
+    }
+    
+    // Fallback to static list if LiteLLM unavailable
+    return {
+      free_tier: [],
+      vision: [],
+      premium: [],
+      all: []
+    }
+  } catch (err) {
+    console.error('Failed to fetch LiteLLM models:', err)
+    return {
+      free_tier: [],
+      vision: [],
+      premium: [],
+      all: []
+    }
+  }
+}
+
+// Get usage stats for cost tracking
+export async function getUsageStats(days: number = 7): Promise<any> {
+  try {
+    const response = await fetch(`${BASE_API_URL}/api/litellm/usage?days=${days}`)
+    return await response.json()
+  } catch (err) {
+    console.error('Failed to fetch usage:', err)
+    return { status: 'error', usage: null }
+  }
+}

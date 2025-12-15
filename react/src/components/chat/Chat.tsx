@@ -34,6 +34,7 @@ import SessionSelector from './SessionSelector'
 import ChatSpinner from './Spinner'
 import ToolcallProgressUpdate from './ToolcallProgressUpdate'
 import ShareTemplateDialog from './ShareTemplateDialog'
+import CostAlert from './CostAlert'
 
 import { useConfigs } from '@/contexts/configs'
 import { useSocket } from '@/contexts/socket'
@@ -633,6 +634,11 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
 
           <Blur className='absolute top-0 left-0 right-0 h-full -z-1' />
         </header>
+
+        {/* Cost Alert Banner */}
+        <div className='absolute top-14 left-0 right-0 z-10 px-4'>
+          <CostAlert budgetLimit={50} />
+        </div>
 
         <ScrollArea className='h-[calc(100vh-45px)]' viewportRef={scrollRef}>
           {messages.length > 0 ? (
