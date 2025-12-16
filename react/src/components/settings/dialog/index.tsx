@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next'
 import SettingProviders from './providers'
 import SettingProxy from './proxy'
 import SettingSidebar, { SettingSidebarType } from './sidebar'
-import { UsageDashboard } from '@/components/settings/UsageDashboard'
+import UsageDashboard from '@/components/settings/UsageDashboard'
 import { X } from 'lucide-react'
 
 const SettingsDialog = () => {
