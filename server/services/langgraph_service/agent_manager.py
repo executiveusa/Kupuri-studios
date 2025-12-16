@@ -1,6 +1,6 @@
 from typing import List, Dict, Any, Optional
 from langgraph.prebuilt import create_react_agent  # type: ignore
-from langgraph.graph import CompiledGraph
+from langgraph.graph.graph import CompiledGraph
 from langchain_core.tools import BaseTool
 from models.tool_model import ToolInfoJson
 from services.langgraph_service.configs.image_vide_creator_config import ImageVideoCreatorAgentConfig
