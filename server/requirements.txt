@@ -1,11 +1,11 @@
-fastapi
-uvicorn[standard]
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
 anthropic
 stripe
 mcp
 toml
 pyinstaller
-openai
+openai>=1.50.0,<2.0.0
 ollama
 httpx
 aiohttp
@@ -20,7 +20,7 @@ certifi
 websocket-client # needed for comfyui execution
 rich # needed for comfyui execution
 typer # needed for comfyui execution
-langchain-core>=0.3.0,<0.4.0  # Pin to 0.3.x for compatibility
+langchain-core==0.3.28
 langgraph==0.4.8
 langgraph-checkpoint==2.0.26
 langgraph-prebuilt==0.2.2
@@ -30,8 +30,7 @@ langchain-ollama==0.3.3
 langchain-openai==0.3.21
 python-socketio==5.13.0
 pymediainfo
-openai-agents==0.3.3  # Pin to stable version
 socksio # For vpn from command line like export https_proxy=http://127.0.0.1:7897 http_proxy=http://127.0.0.1:7897 all_proxy=socks5://127.0.0.1:7897
 piexif # For EXIF metadata handling in JPEG files
-litellm>=1.50.0,<1.81.0 # Unified LLM router - pinned for compatibility
-langchain-google-genai>=2.0.9,<3.0.0 # Google Gemini integration 
+litellm==1.61.0 # Unified LLM router - pinned for compatibility
+langchain-google-genai==2.1.4 # Google Gemini integration 
