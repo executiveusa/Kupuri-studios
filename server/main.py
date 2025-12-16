@@ -180,6 +180,5 @@ if __name__ == "__main__":
         print(f"📁 React build contents: {os.listdir(react_build_dir)}", flush=True)
     print("=" * 60, flush=True)
 
-    # Use the raw FastAPI app instead of socketio wrapper for debugging
-    # TODO: Switch back to socket_app once deployment works
-    uvicorn.run(app, host=host, port=port)
+    # Run with Socket.IO wrapper for WebSocket support (PRODUCTION READY)
+    uvicorn.run(socket_app, host=host, port=port)
