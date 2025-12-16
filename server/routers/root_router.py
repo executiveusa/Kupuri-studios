@@ -52,6 +52,27 @@ async def get_comfyui_model_list(base_url: str) -> List[str]:
 async def get_models() -> list[ModelInfo]:
     config = config_service.get_config()
     res: List[ModelInfo] = []
+    
+    # ENV VAR OVERRIDES - Check for API keys in environment
+    google_api_key = os.getenv('GOOGLE_API_KEY', '').strip()
+    openai_api_key = os.getenv('OPENAI_API_KEY', '').strip()
+    anthropic_api_key = os.getenv('ANTHROPIC_API_KEY', '').strip()
+    
+    # ALWAYS add Google Gemini models if GOOGLE_API_KEY is set in environment
+    # These are free-tier models that work with just a Google API key
+    if google_api_key and google_api_key != 'AIzaSyDummyKeyForTesting123456789':
+        res.extend([
+            {'provider': 'google', 'model': 'gemini-2.0-flash-exp', 'url': 'https://generativelanguage.googleapis.com/v1beta/', 'type': 'text'},
+            {'provider': 'google', 'model': 'gemini-1.5-flash', 'url': 'https://generativelanguage.googleapis.com/v1beta/', 'type': 'text'},
+            {'provider': 'google', 'model': 'gemini-1.5-pro', 'url': 'https://generativelanguage.googleapis.com/v1beta/', 'type': 'text'},
+        ])
+    
+    # Add Jaaz-hosted models (free tier, no API key needed from user)
+    jaaz_url = os.getenv('BASE_API_URL', 'https://jaaz.app').rstrip('/') + '/api/v1/'
+    res.extend([
+        {'provider': 'jaaz', 'model': 'gpt-4o-mini', 'url': jaaz_url, 'type': 'text'},
+        {'provider': 'jaaz', 'model': 'deepseek/deepseek-chat-v3-0324', 'url': jaaz_url, 'type': 'text'},
+    ])
 
     # Handle Ollama models separately
     ollama_url = config.get('ollama', {}).get(
@@ -68,7 +89,7 @@ async def get_models() -> list[ModelInfo]:
             })
 
     for provider in config.keys():
-        if provider in ['ollama']:
+        if provider in ['ollama', 'google']:  # Skip google since we handled it above
             continue
 
         provider_config = config[provider]
@@ -85,12 +106,15 @@ async def get_models() -> list[ModelInfo]:
             model_type = model.get('type', 'text')
             # Only return text models
             if model_type == 'text':
-                res.append({
-                    'provider': provider,
-                    'model': model_name,
-                    'url': provider_url,
-                    'type': model_type
-                })
+                # Avoid duplicates with Jaaz models we already added
+                existing = [m for m in res if m['provider'] == provider and m['model'] == model_name]
+                if not existing:
+                    res.append({
+                        'provider': provider,
+                        'model': model_name,
+                        'url': provider_url,
+                        'type': model_type
+                    })
     return res
 
 
@@ -98,11 +122,27 @@ async def get_models() -> list[ModelInfo]:
 async def list_tools() -> list[ToolInfoJson]:
     config = config_service.get_config()
     res: list[ToolInfoJson] = []
+    
+    # ALWAYS include Jaaz-hosted tools (they use Jaaz's backend API key, not user's)
+    # These are the core image generation tools that make the app usable
+    jaaz_tools = [
+        {'id': 'generate_image_by_gpt_image_1_jaaz', 'provider': 'jaaz', 'type': 'image', 'display_name': 'GPT Image 1'},
+        {'id': 'generate_image_by_imagen_4_jaaz', 'provider': 'jaaz', 'type': 'image', 'display_name': 'Imagen 4'},
+        {'id': 'generate_image_by_recraft_v3_jaaz', 'provider': 'jaaz', 'type': 'image', 'display_name': 'Recraft v3'},
+        {'id': 'generate_image_by_flux_kontext_pro_jaaz', 'provider': 'jaaz', 'type': 'image', 'display_name': 'Flux Kontext Pro'},
+        {'id': 'generate_video_by_kling_v2_jaaz', 'provider': 'jaaz', 'type': 'video', 'display_name': 'Kling v2.1'},
+    ]
+    res.extend(jaaz_tools)
+    
     for tool_id, tool_info in tool_service.tools.items():
         if tool_info.get('provider') == 'system':
             continue
         provider = tool_info['provider']
-        provider_api_key = config[provider].get('api_key', '').strip()
+        # Skip jaaz tools since we added them above
+        if provider == 'jaaz':
+            continue
+        provider_config = config.get(provider, {})
+        provider_api_key = provider_config.get('api_key', '').strip()
         if provider != 'comfyui' and not provider_api_key:
             continue
         res.append({
