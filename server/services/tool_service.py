@@ -220,7 +220,16 @@ class ToolService:
     async def initialize(self):
         self.clear_tools()
         try:
+            # ALWAYS register Jaaz tools - they use Jaaz's backend API key, not user's
+            # This makes the app functional immediately without requiring user configuration
+            for tool_id, tool_info in TOOL_MAPPING.items():
+                if tool_info.get("provider") == "jaaz":
+                    self.register_tool(tool_id, tool_info)
+            
+            # Register other provider tools if they have API keys configured
             for provider_name, provider_config in config_service.app_config.items():
+                if provider_name == "jaaz":
+                    continue  # Already registered above
                 # register all tools by api provider with api key
                 if provider_config.get("api_key", ""):
                     for tool_id, tool_info in TOOL_MAPPING.items():
