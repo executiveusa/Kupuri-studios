@@ -3,14 +3,14 @@
  * Handles communication with backend for agent CRUD operations
  */
 
-const BASE_API_URL = process.env.REACT_APP_API_URL || `${window.location.origin}/api`
+const BASE_API_URL = import.meta.env.VITE_API_URL || `${window.location.origin}/api`
 
 export interface AgentData {
   id?: string
   name: string
   description?: string
-  nodes: any[]
-  edges: any[]
+  nodes: unknown[]
+  edges: unknown[]
   createdAt?: string
   updatedAt?: string
 }
@@ -19,8 +19,8 @@ export interface AgentResponse {
   id: string
   name: string
   description?: string
-  nodes: any[]
-  edges: any[]
+  nodes: unknown[]
+  edges: unknown[]
   createdAt: string
   updatedAt: string
 }
@@ -96,16 +96,17 @@ export async function deleteAgent(id: string): Promise<void> {
 /**
  * List all agents (paginated)
  */
-export async function listAgents(page: number = 1, limit: number = 20): Promise<{
+export async function listAgents(
+  page: number = 1,
+  limit: number = 20
+): Promise<{
   agents: AgentResponse[]
   total: number
   page: number
   limit: number
 }> {
   try {
-    const response = await fetch(
-      `${BASE_API_URL}/agents?page=${page}&limit=${limit}`
-    )
+    const response = await fetch(`${BASE_API_URL}/agents?page=${page}&limit=${limit}`)
 
     if (!response.ok) {
       throw new Error(`Failed to list agents: ${response.statusText}`)

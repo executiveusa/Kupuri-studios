@@ -20,7 +20,11 @@
     "clean:ts": "cd electron && rm -rf dist",
     "test": "vitest",
     "test:run": "vitest run",
-    "test:watch": "vitest --watch"
+    "test:watch": "vitest --watch",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:debug": "playwright test --debug",
+    "test:e2e:headed": "playwright test --headed"
   },
   "publish": "always",
   "build": {
@@ -81,6 +85,7 @@
   },
   "devDependencies": {
     "@electron/notarize": "^3.0.1",
+    "@playwright/test": "^1.52.0",
     "@types/electron": "^1.4.38",
     "@types/node": "^20.19.4",
     "concurrently": "^9.1.2",
