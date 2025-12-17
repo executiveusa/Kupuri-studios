@@ -9,6 +9,8 @@ import canvasEn from './locales/en/canvas.json'
 import chatEn from './locales/en/chat.json'
 import settingsEn from './locales/en/settings.json'
 import dashboardEn from './locales/en/dashboard.json'
+import toolsEn from './locales/en/tools.json'
+import agentsEn from './locales/en/agents.json'
 
 import commonEs from './locales/es-MX/common.json'
 import homeEs from './locales/es-MX/home.json'
@@ -16,6 +18,8 @@ import canvasEs from './locales/es-MX/canvas.json'
 import chatEs from './locales/es-MX/chat.json'
 import settingsEs from './locales/es-MX/settings.json'
 import dashboardEs from './locales/es-MX/dashboard.json'
+import toolsEs from './locales/es-MX/tools.json'
+import agentsEs from './locales/es-MX/agents.json'
 import errorEn from './locales/en/errors.json'
 import errorEs from './locales/es-MX/errors.json'
 
@@ -27,6 +31,8 @@ const resources = {
     chat: chatEn,
     settings: settingsEn,
     dashboard: dashboardEn,
+    tools: toolsEn,
+    agents: agentsEn,
   },
   'es-MX': {
     common: commonEs,
@@ -35,6 +41,8 @@ const resources = {
     chat: chatEs,
     settings: settingsEs,
     dashboard: dashboardEs,
+    tools: toolsEs,
+    agents: agentsEs,
   },
 }
 
@@ -45,7 +53,7 @@ i18n
     resources,
     fallbackLng: 'en',
     defaultNS: 'common',
-    ns: ['common', 'home', 'canvas', 'chat', 'settings', 'error', 'dashboard'],
+    ns: ['common', 'home', 'canvas', 'chat', 'settings', 'error', 'dashboard', 'tools', 'agents'],
 
     detection: {
       order: ['localStorage', 'navigator', 'htmlTag'],

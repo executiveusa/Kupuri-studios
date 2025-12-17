@@ -23,7 +23,7 @@ typer # needed for comfyui execution
 langchain-core==0.3.28
 langgraph==0.3.29
 langgraph-checkpoint==2.0.26
-langgraph-prebuilt==0.1.29
+langgraph-prebuilt==0.1.8
 langgraph-sdk==0.1.70
 langgraph-swarm==0.0.11
 langchain-ollama==0.3.3

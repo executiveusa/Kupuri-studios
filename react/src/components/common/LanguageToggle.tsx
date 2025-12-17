@@ -1,3 +1,8 @@
+/**
+ * Language Toggle Component
+ * Supports EN (English) and ES-MX (Spanish Mexico) with flag icons
+ */
+
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import {
@@ -9,13 +14,18 @@ import {
 import { Globe } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-const LanguageSwitcher = () => {
-  const { i18n } = useTranslation()
+interface LanguageToggleProps {
+  className?: string
+  variant?: 'default' | 'ghost' | 'outline'
+}
 
-  const languages = [
-    { code: 'en', name: 'English', flag: '🇺🇸' },
-    { code: 'es-MX', name: 'Español', flag: '🇲🇽' },
-  ]
+const languages = [
+  { code: 'en', name: 'English', flag: '🇺🇸' },
+  { code: 'es-MX', name: 'Español (México)', flag: '🇲🇽' },
+]
+
+export function LanguageToggle({ className, variant = 'ghost' }: LanguageToggleProps) {
+  const { i18n } = useTranslation()
 
   const currentLanguage = languages.find((lang) => lang.code === i18n.language) || languages[0]
 
@@ -28,13 +38,16 @@ const LanguageSwitcher = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          variant="ghost"
+          variant={variant}
           size="sm"
-          className="gap-2"
+          className={cn('gap-2', className)}
           aria-label="Change language"
         >
           <span className="text-lg">{currentLanguage.flag}</span>
           <Globe className="w-4 h-4" />
+          <span className="hidden sm:inline text-xs font-medium">
+            {currentLanguage.name.split(' ')[0]}
+          </span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-40">
@@ -59,4 +72,4 @@ const LanguageSwitcher = () => {
   )
 }
 
-export default LanguageSwitcher
+export default LanguageToggle
