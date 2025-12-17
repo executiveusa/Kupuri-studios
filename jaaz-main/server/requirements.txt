@@ -20,7 +20,7 @@ certifi
 websocket-client # needed for comfyui execution
 rich # needed for comfyui execution
 typer # needed for comfyui execution
-langchain-core==0.3.28
+langchain-core==0.3.26
 langgraph==0.3.29
 langgraph-checkpoint==2.0.26
 langgraph-prebuilt==0.1.8
