@@ -7,16 +7,17 @@ sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8")
 print('Importing websocket_router')
 from routers.websocket_router import *  # DO NOT DELETE THIS LINE, OTHERWISE, WEBSOCKET WILL NOT WORK
 print('Importing routers')
-from routers import config_router, image_router, root_router, workspace, canvas, ssl_test, chat_router, settings, tool_confirmation, stripe_webhook, agents, litellm_router
+from routers import config_router, image_router, root_router, workspace, canvas, ssl_test, chat_router, settings, tool_confirmation, stripe_webhook, agents, litellm_router, metrics_router
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 import argparse
 from contextlib import asynccontextmanager
 from starlette.types import Scope
 from starlette.responses import Response
 import socketio # type: ignore
+import uuid
 print('Importing websocket_state')
 from services.websocket_state import sio
 print('Importing websocket_service')
@@ -25,6 +26,8 @@ print('Importing config_service')
 from services.config_service import config_service
 print('Importing tool_service')
 from services.tool_service import tool_service
+print('Importing metrics_service')
+from services.metrics_service import metrics_service
 
 async def initialize():
     print('Initializing config_service')
@@ -79,6 +82,35 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Add metrics middleware (tracks all requests)
+@app.middleware("http")
+async def metrics_middleware(request: Request, call_next):
+    """Middleware to track all HTTP requests for metrics."""
+    request_id = str(uuid.uuid4())
+    
+    # Record request start
+    metrics_service.record_request_start(request_id)
+    
+    try:
+        response = await call_next(request)
+        
+        # Record request end with response status
+        metrics_service.record_request_end(
+            request_id,
+            request.method,
+            request.url.path,
+            response.status_code
+        )
+        
+        return response
+    except Exception as e:
+        # Record error
+        metrics_service.record_error(
+            type(e).__name__,
+            request.url.path
+        )
+        raise
+
 # Include routers
 print('Including routers')
 app.include_router(config_router.router)
@@ -93,6 +125,7 @@ app.include_router(tool_confirmation.router)
 app.include_router(stripe_webhook.router)
 app.include_router(agents.router)
 app.include_router(litellm_router.router)
+app.include_router(metrics_router.router)
 
 # Mount the React build directory
 react_build_dir = os.environ.get('UI_DIST_DIR', os.path.join(

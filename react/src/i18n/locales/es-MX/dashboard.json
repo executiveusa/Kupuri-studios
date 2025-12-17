@@ -1,0 +1,19 @@
+{
+  "title": "Panel de Análisis",
+  "subtitle": "Monitoreo de métricas de rendimiento en tiempo real",
+  "lastUpdate": "Última actualización",
+  "loading": "Cargando métricas...",
+  "error": "Error Cargando Métricas",
+  "errorLoading": "No se pudieron cargar las métricas. Por favor, recargue la página.",
+  "totalRequests": "Solicitudes Totales",
+  "avgLatency": "Latencia Promedio",
+  "activeConnections": "Conexiones Activas",
+  "uniqueEndpoints": "Puntos Finales Únicos",
+  "latencyTrend": "Tendencia de Latencia (5 min)",
+  "requestRate": "Tasa de Solicitudes (5 min)",
+  "endpointPerformance": "Top 10 Rendimiento de Puntos Finales",
+  "endpoint": "Punto Final",
+  "requests": "Solicitudes",
+  "p95Latency": "Latencia p95",
+  "maxLatency": "Latencia Máxima"
+}
