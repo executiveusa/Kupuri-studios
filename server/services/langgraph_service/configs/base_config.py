@@ -1,9 +1,18 @@
 from typing import Annotated, Optional, Dict, Any, Sequence, List, TypedDict
-from langgraph.types import Command
-from langgraph.prebuilt import InjectedState
+try:
+    from langgraph.types import Command
+except ImportError:
+    Command = Any  # Fallback for compatibility
+try:
+    from langgraph.prebuilt import InjectedState
+except ImportError:
+    InjectedState = Any  # Fallback for compatibility
 from langchain_core.messages import ToolMessage
 from langchain_core.tools import BaseTool, InjectedToolCallId, tool  # type: ignore
-from langgraph_swarm.handoff import METADATA_KEY_HANDOFF_DESTINATION
+try:
+    from langgraph_swarm.handoff import METADATA_KEY_HANDOFF_DESTINATION
+except ImportError:
+    METADATA_KEY_HANDOFF_DESTINATION = "handoff_destination"  # Fallback
 from models.tool_model import ToolInfoJson
 
 
