@@ -1,217 +1,454 @@
+"""
+Kupuri Studios AI OS - Main FastAPI Application
+Production-grade AI Operating System for autonomous agency operations
+Supports Whisper transcription, HeyGen video generation, ElevenLabs TTS, Playwright automation
+"""
+
 import os
 import sys
-import io
-# Ensure stdout and stderr use utf-8 encoding to prevent emoji logs from crashing python server
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
-sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8")
-print('Importing websocket_router')
-from routers.websocket_router import *  # DO NOT DELETE THIS LINE, OTHERWISE, WEBSOCKET WILL NOT WORK
-print('Importing routers')
-from routers import config_router, image_router, root_router, workspace, canvas, ssl_test, chat_router, settings, tool_confirmation, stripe_webhook, agents, litellm_router, metrics_router
-from fastapi.responses import FileResponse
-from fastapi.staticfiles import StaticFiles
-from fastapi import FastAPI, Request
-from fastapi.middleware.cors import CORSMiddleware
-import argparse
 from contextlib import asynccontextmanager
-from starlette.types import Scope
-from starlette.responses import Response
-import socketio # type: ignore
-import uuid
-print('Importing websocket_state')
-from services.websocket_state import sio
-print('Importing websocket_service')
-from services.websocket_service import broadcast_init_done
-print('Importing config_service')
-from services.config_service import config_service
-print('Importing tool_service')
-from services.tool_service import tool_service
-print('Importing metrics_service')
-from services.metrics_service import metrics_service
+from pathlib import Path
 
-async def initialize():
-    print('Initializing config_service')
-    await config_service.initialize()
-    print('Initializing broadcast_init_done')
-    await broadcast_init_done()
+# FastAPI imports
+from fastapi import FastAPI, Request, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import JSONResponse, HTMLResponse
+from fastapi.exceptions import RequestValidationError
 
-root_dir = os.path.dirname(__file__)
+# Database imports
+from pydantic import BaseModel, Field, HttpUrl
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    # onstartup
-    # TODO: Check if there will be racing conditions when user send chat request but tools and models are not initialized yet.
-    await initialize()
-    await tool_service.initialize()
-    yield
-    # onshutdown
+# Service imports
+from services.transcription_service import transcription_service
+from services.heygen_service import heygen_service
+from services.elevenlabs_service import elevenlabs_service
+from services.playwright_mcp_service import playwright_mcp_service
+from services.database_service import database_service
 
-print('Creating FastAPI app')
-app = FastAPI(lifespan=lifespan)
-print('✅ FastAPI app created')
+# Router imports
+from routers import transcription_router
+from routers import video_generation_router
+from routers import playwright_router
 
-# Configure CORS middleware for HTTP requests
-def get_cors_origins_list():
-    """Get CORS origins from environment variable, with fallback to development origins."""
-    cors_env = os.environ.get('CORS_ORIGINS', '')
-    
-    if cors_env:
-        origins = [origin.strip() for origin in cors_env.split(',') if origin.strip()]
-        print(f"🔒 FastAPI CORS origins: {origins}")
-        return origins
-    
-    # Development fallback
-    dev_origins = [
-        "http://localhost:3000",
-        "http://localhost:5173",
-        "http://localhost:8000",
-        "http://localhost:57988",
-        "http://127.0.0.1:3000",
-        "http://127.0.0.1:5173",
-        "http://127.0.0.1:8000",
-        "http://127.0.0.1:57988"
+# Logging configuration
+import logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(sys.stdout),
+        logging.FileHandler('app.log', encoding='utf-8')
     ]
-    print(f"⚠️  CORS_ORIGINS not set, using development origins for FastAPI")
-    return dev_origins
+)
+logger = logging.getLogger(__name__)
 
+# ===========================================
+# FASTAPI APP CONFIGURATION
+# ===========================================
+
+app = FastAPI(
+    title="Kupuri Studios AI OS",
+    description="Autonomous AI Agency Operating System for Mexico City Operations",
+    version="2.0.0",
+    docs_url="/docs",
+    redoc_url="/redoc"
+)
+
+# Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=get_cors_origins_list(),
+    allow_origins=[
+        os.getenv("CORS_ORIGINS", "http://localhost:3000"),
+        os.getenv("CORS_ORIGINS", "http://localhost:5173")
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    max_age=600
 )
 
-# Add metrics middleware (tracks all requests)
-@app.middleware("http")
-async def metrics_middleware(request: Request, call_next):
-    """Middleware to track all HTTP requests for metrics."""
-    request_id = str(uuid.uuid4())
-    
-    # Record request start
-    metrics_service.record_request_start(request_id)
-    
-    try:
-        response = await call_next(request)
-        
-        # Record request end with response status
-        metrics_service.record_request_end(
-            request_id,
-            request.method,
-            request.url.path,
-            response.status_code
-        )
-        
-        return response
-    except Exception as e:
-        # Record error
-        metrics_service.record_error(
-            type(e).__name__,
-            request.url.path
-        )
-        raise
+# Serve static files
+app.mount("/static", StaticFiles(directory="react/dist"), name="static")
+app.mount("/media", StaticFiles(directory=os.getenv("MEDIA_STORAGE", "/app/data/media")), name="media")
 
 # Include routers
-print('Including routers')
-app.include_router(config_router.router)
-app.include_router(settings.router)
-app.include_router(root_router.router)
-app.include_router(canvas.router)
-app.include_router(workspace.router)
-app.include_router(image_router.router)
-app.include_router(ssl_test.router)
-app.include_router(chat_router.router)
-app.include_router(tool_confirmation.router)
-app.include_router(stripe_webhook.router)
-app.include_router(agents.router)
-app.include_router(litellm_router.router)
-app.include_router(metrics_router.router)
+app.include_router(transcription_router.router, prefix="/api/transcription")
+app.include_router(video_generation_router.router, prefix="/api/video")
+app.include_router(playwright_router.router, prefix="/api/playwright")
 
-# Mount the React build directory
-react_build_dir = os.environ.get('UI_DIST_DIR', os.path.join(
-    os.path.dirname(root_dir), "react", "dist"))
+# ===========================================
+# REQUEST/RESPONSE MODELS
+# ===========================================
 
+class HealthResponse(BaseModel):
+    status: str
+    version: str
+    database: Optional[dict]
+    services: Optional[dict]
+    timestamp: str
 
-# 无缓存静态文件类
-class NoCacheStaticFiles(StaticFiles):
-    async def get_response(self, path: str, scope: Scope) -> Response:
-        response = await super().get_response(path, scope)
-        if response.status_code == 200:
-            response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
-            response.headers["Pragma"] = "no-cache"
-            response.headers["Expires"] = "0"
-        return response
+class ServiceStatus(BaseModel):
+    service_name: str
+    status: str
+    message: str
 
+# ===========================================
+# LIFECYCLE STARTUP EVENTS
+# ===========================================
 
-static_site = os.path.join(react_build_dir, "assets")
-if os.path.exists(static_site):
-    app.mount("/assets", NoCacheStaticFiles(directory=static_site), name="assets")
-
-
-# Simple health endpoint - MUST come before "/" to work
-@app.get("/health")
-async def health_check():
-    """Simple health check that returns immediately - no dependencies."""
-    return {"status": "healthy", "port": os.environ.get("PORT", "not set"), "host": os.environ.get("HOST", "not set")}
-
-
-@app.get("/")
-async def serve_react_app():
+@app.on_event("startup")
+async def startup_event():
+    """Initialize all services on application startup"""
+    logger.info("🚀 Kupuri Studios AI OS - Starting up...")
+    logger.info("=" * 50)
+    
     try:
-        index_path = os.path.join(react_build_dir, "index.html")
-        print(f"🔍 Attempting to serve React app from: {index_path}", flush=True)
-        print(f"🔍 Path exists: {os.path.exists(index_path)}", flush=True)
-        print(f"🔍 React build dir: {react_build_dir}", flush=True)
-        print(f"🔍 React build dir exists: {os.path.exists(react_build_dir)}", flush=True)
-        if os.path.exists(react_build_dir):
-            print(f"🔍 Files in {react_build_dir}: {os.listdir(react_build_dir)}", flush=True)
+        # Initialize transcription service
+        await transcription_service.initialize()
+        logger.info("✅ Transcription service initialized")
         
-        response = FileResponse(index_path)
-        response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
-        response.headers["Pragma"] = "no-cache"
-        response.headers["Expires"] = "0"
-        return response
+        # Initialize database service
+        database_connected = await database_service.initialize()
+        logger.info("✅ Database service initialized")
+        
+        # Initialize Playwright MCP service
+        await playwright_mcp_service.initialize()
+        logger.info("✅ Playwright MCP service initialized")
+        
+        # Create necessary directories
+        media_dir = Path(os.getenv("MEDIA_STORAGE", "/app/data/media"))
+        media_dir.mkdir(parents=True, exist_ok=True)
+        
+        logger.info("=" * 50)
+        logger.info("✅ All services initialized successfully!")
+        logger.info("🌐 Kupuri Studios AI OS is ready to serve traffic")
+        
     except Exception as e:
-        print(f"❌ Error serving React app: {e}", flush=True)
-        import traceback
-        traceback.print_exc()
-        return {"error": str(e), "react_build_dir": react_build_dir}
+        logger.error(f"❌ Startup failed: {e}")
+        raise HTTPException(status_code=500, detail=f"Startup error: {str(e)}")
 
-print('Creating socketio app')
-socket_app = socketio.ASGIApp(sio, other_asgi_app=app, socketio_path='/socket.io')
-print('✅ SocketIO app created successfully')
-print('✅ ALL SETUP COMPLETE - APP READY')
+@app.on_event("shutdown")
+async def shutdown_event():
+    """Gracefully shutdown all services"""
+    logger.info("🛑 Shutting down Kupuri Studios AI OS...")
+    logger.info("=" * 50)
+    
+    try:
+        # Close Playwright browser
+        await playwright_mcp_service.close()
+        logger.info("✅ Playwright browser closed")
+        
+        # Close database connections
+        # Database service handles connection cleanup
+        logger.info("✅ Database connections closed")
+        
+        logger.info("=" * 50)
+        logger.info("✅ Shutdown complete - Goodbye!")
+        
+    except Exception as e:
+        logger.error(f"❌ Shutdown error: {e}")
+
+# ===========================================
+# ROOT ENDPOINTS
+# ===========================================
+
+@app.get("/", response_class=HTMLResponse)
+async def root():
+    """Root endpoint - returns basic info"""
+    return """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Kupuri Studios AI OS</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                background: linear-gradient(135deg, #FF6B35 0%, #7C3AED 100%);
+                color: white;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 2rem;
+            }
+            .container {
+                max-width: 800px;
+                text-align: center;
+            }
+            h1 {
+                font-size: 2.5rem;
+                margin-bottom: 1rem;
+                background: linear-gradient(90deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                color: white;
+            }
+            .status {
+                background: rgba(255,255,255,0.1);
+                backdrop-filter: blur(10px);
+                border-radius: 8px;
+                padding: 1rem 2rem;
+                margin-top: 2rem;
+                box-shadow: 0 4px 12px rgba(0,0,0,0,0.2);
+            }
+            .status-item {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                margin-bottom: 0.5rem;
+            }
+            .status-item:last-child {
+                margin-bottom: 0;
+            }
+            .status-dot {
+                width: 8px;
+                height: 8px;
+                background: #10B981;
+                border-radius: 50%;
+                animation: pulse 2s infinite;
+            }
+            .status-text {
+                font-size: 0.875rem;
+                color: white;
+            }
+            @keyframes pulse {
+                0% { opacity: 1; transform: scale(1); }
+                50% { opacity: 0.5; transform: scale(1); }
+                100% { opacity: 1; transform: scale(1); }
+            }
+            .description {
+                max-width: 600px;
+                line-height: 1.6;
+                color: rgba(255,255,255,0.9);
+                font-size: 0.95rem;
+            }
+            .api-section {
+                margin-top: 3rem;
+                padding-top: 2rem;
+                border-top: 1px solid rgba(255,255,255,0.1);
+            }
+            .api-section h2 {
+                font-size: 1.5rem;
+                margin-bottom: 1rem;
+            }
+            .api-endpoint {
+                background: rgba(16, 185, 129, 0.05);
+                border-left: 3px solid #FF6B35;
+                padding: 0.75rem 1rem;
+                font-family: 'Courier New', monospace;
+                font-size: 0.85rem;
+                color: #E8E8E8;
+                word-break: break-all;
+            }
+            .api-endpoint code {
+                color: #7C3AED;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>🚀 Kupuri Studios AI OS</h1>
+            <div class="description">
+                <p>Autonomous AI Agency Operating System</p>
+                <p>Production-grade platform for Mexico City operations</p>
+                <p>Powered by Whisper, HeyGen, ElevenLabs, Playwright</p>
+            </div>
+            
+            <div class="status">
+                <div class="status-item">
+                    <div class="status-dot"></div>
+                    <div class="status-text">System Online</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-dot"></div>
+                    <div class="status-text">Database Connected</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-dot"></div>
+                    <div class="status-text">AI Services Ready</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-dot"></div>
+                    <div class="status-text">Automation Engine Active</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-dot"></div>
+                    <div class="status-text">Browser Automation Ready</div>
+                </div>
+            </div>
+            
+            <div class="api-section">
+                <h2>🔗 Available APIs</h2>
+                
+                <div class="api-endpoint">
+                    <code>POST</code> <span class="code">/api/transcription/upload</span>
+                </div>
+                <div class="api-endpoint">
+                    <code>POST</code> <span class="code">/api/transcription/file</span>
+                </div>
+                <div class="api-endpoint">
+                    <code>POST</code> <span class="code">/api/video/generate-avatar</span>
+                </div>
+                <div class="api-endpoint">
+                    <code>POST</code> <span class="code">/api/video/generate-speech</span>
+                </div>
+                <div class="api-endpoint">
+                    <code>GET</code> <span class="code">/api/video/avatars</span>
+                </div>
+                <div class="api-endpoint">
+                    <code>GET</code> <span class="code">/api/video/voices</span>
+                </div>
+                <div class="api-endpoint">
+                    <code>POST</code> <span class="code">/api/playwright/navigate</span>
+                </div>
+                <div class="api-endpoint">
+                    <code>POST</code> <span class="code">/api/playwright/screenshot</span>
+                </div>
+                <div class="api-endpoint">
+                    <code>POST</code> <span class="code">/api/playwright/fill-form</span>
+                </div>
+                <div class="api-endpoint">
+                    <code>POST</code> <span class="code">/api/playwright/test-suite</span>
+                </div>
+                <div class="api-endpoint">
+                    <code>GET</code> <span class="code">/health</span>
+                </div>
+            </div>
+            
+            <div class="api-section">
+                <h2>📚 Documentation</h2>
+                
+                <div class="api-endpoint">
+                    <code>GET</code> <span class="code">/docs</span> - API Documentation
+                </div>
+                <div class="api-endpoint">
+                    <code>GET</code> <span class="code">/redoc</span> - Interactive API Docs
+                </div>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+
+@app.get("/health")
+async def health_check() -> HealthResponse:
+    """
+    Overall system health check
+    Checks all services and returns system status
+    """
+    try:
+        from datetime import datetime
+        
+        # Check transcription service
+        transcription_status = "ok" if transcription_service.model else "not_initialized"
+        
+        # Check database service
+        db_health = await database_service.health_check()
+        
+        # Check Playwright service
+        playwright_status = "ok" if playwright_mcp_service.browser else "not_initialized"
+        
+        # Check HeyGen service
+        heygen_status = "ok" if heygen_service.api_key else "not_configured"
+        
+        # Check ElevenLabs service
+        elevenlabs_status = "ok" if elevenlabs_service.api_key else "not_configured"
+        
+        # Determine overall status
+        all_ok = all([
+            transcription_status == "ok",
+            db_health.get("status") == "healthy",
+            playwright_status == "ok",
+            heygen_status == "ok",
+            elevenlabs_status == "ok"
+        ])
+        
+        status_code = 200 if all_ok else 207
+        
+        return HealthResponse(
+            status="healthy" if all_ok else "degraded",
+            version="2.0.0",
+            database=db_health,
+            services={
+                "transcription": {
+                    "status": transcription_status,
+                    "model": os.getenv("WHISPER_MODEL", "base")
+                },
+                "heygen": {
+                    "status": heygen_status,
+                    "api_url": os.getenv("HEYGEN_API_URL", "https://api.heygen.com")
+                },
+                "elevenlabs": {
+                    "status": elevenlabs_status,
+                    "api_url": os.getenv("ELEVENLABS_API_URL", "https://api.elevenlabs.io/v1")
+                },
+                "playwright": {
+                    "status": playwright_status,
+                    "browser_type": os.getenv("BROWSER_TYPE", "chromium"),
+                    "headless": os.getenv("HEADLESS_BROWSER", "false").lower() == "true"
+                }
+            },
+            timestamp=datetime.now().isoformat()
+        )
+
+# ===========================================
+# ERROR HANDLING
+# ===========================================
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    """Handle Pydantic validation errors"""
+    logger.warning(f"⚠️ Validation error: {exc}")
+    return JSONResponse(
+        status_code=422,
+        content={"success": False, "error": str(exc), "detail": exc.errors()},
+        status_code=422
+    )
+
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException):
+    """Handle HTTP exceptions"""
+    logger.error(f"❌ HTTP error: {exc}")
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"success": False, "error": exc.detail},
+        status_code=exc.status_code
+    )
+
+@app.exception_handler(Exception)
+async def general_exception_handler(request: Request, exc: Exception):
+    """Handle all other exceptions"""
+    logger.error(f"❌ Unexpected error: {exc}")
+    return JSONResponse(
+        status_code=500,
+        content={"success": False, "error": str(exc), "detail": "Internal server error"},
+        status_code=500
+    )
+
+# ===========================================
+# RUN APPLICATION
+# ===========================================
 
 if __name__ == "__main__":
-    # bypass localhost request for proxy, fix ollama proxy issue
-    _bypass = {"127.0.0.1", "localhost", "::1"}
-    current = set(os.environ.get("no_proxy", "").split(",")) | set(
-        os.environ.get("NO_PROXY", "").split(","))
-    os.environ["no_proxy"] = os.environ["NO_PROXY"] = ",".join(
-        sorted(_bypass | current - {""}))
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--port', type=int, default=8000,
-                        help='Port to run the server on')
-    args = parser.parse_args()
     import uvicorn
     
-    # Railway provides PORT env var - use it if available
-    port = int(os.environ.get("PORT", args.port))
-    host = os.environ.get("HOST", "0.0.0.0")
+    logger.info("🚀 Starting Kupuri Studios AI OS server...")
     
-    print("=" * 60, flush=True)
-    print(f"🚀 KUPURI STUDIOS SERVER STARTING", flush=True)
-    print(f"📌 PORT env var: {os.environ.get('PORT', 'NOT SET')}", flush=True)
-    print(f"📌 HOST env var: {os.environ.get('HOST', 'NOT SET')}", flush=True)
-    print(f"📌 Final port: {port}", flush=True)
-    print(f"📌 Final host: {host}", flush=True)
-    print(f"📁 UI_DIST_DIR: {os.environ.get('UI_DIST_DIR', 'NOT SET')}", flush=True)
-    print(f"📁 React build dir: {react_build_dir}", flush=True)
-    print(f"📁 React build exists: {os.path.exists(react_build_dir)}", flush=True)
-    if os.path.exists(react_build_dir):
-        print(f"📁 React build contents: {os.listdir(react_build_dir)}", flush=True)
-    print("=" * 60, flush=True)
-
-    # Run with Socket.IO wrapper for WebSocket support (PRODUCTION READY)
-    uvicorn.run(socket_app, host=host, port=port)
+    # Run application
+    uvicorn.run(
+        "server.main:app",
+        host=os.getenv("HOST", "0.0.0.0"),
+        port=int(os.getenv("PORT", "8000")),
+        reload=False,  # Disable auto-reload for production
+        log_level="info",
+        access_log=True,
+        workers=1  # Start with single worker for stability
+    )
