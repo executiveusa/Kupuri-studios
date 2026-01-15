@@ -1,0 +1,21 @@
+{
+  "notFound": {
+    "title": "404 • Lost in the Canvas",
+    "description": "This page doesn't exist, but your creativity does. Let's get you back to creating.",
+    "home": "Go Home",
+    "back": "Go Back",
+    "easter": "Pro tip: Try creating something instead!"
+  },
+  "serverError": {
+    "title": "500 • Something Went Wrong",
+    "description": "Our canvas crashed. We're fixing it. Try refreshing or go home.",
+    "home": "Go Home",
+    "refresh": "Refresh Page"
+  },
+  "networkError": {
+    "title": "Connection Lost",
+    "description": "Check your internet connection and try again.",
+    "retry": "Retry",
+    "home": "Go Home"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "title": "Herramientas y Proveedores",
+  "imageGeneration": "Generación de Imágenes",
+  "videoGeneration": "Generación de Vídeos",
+  "imageTools": {
+    "flux11pro": "Flux 1.1 Pro",
+    "fluxkontextpro": "Flux Kontext Pro",
+    "gpt4vision": "Visión GPT-4",
+    "midjourney": "Midjourney",
+    "ideogram3": "Ideogram 3",
+    "imagen4": "Imagen 4",
+    "recraft": "Recraft v3",
+    "seedDream": "Doubao SeedDream",
+    "seedEdit": "Doubao SeedEdit"
+  },
+  "videoTools": {
+    "hailuo": "Hailuo 02",
+    "kling": "Kling v2.1",
+    "seedDance": "SeedDance v1",
+    "veo3": "VEO 3"
+  },
+  "providers": {
+    "jaaz": "Nube Jaaz",
+    "replicate": "Replicate",
+    "openai": "OpenAI",
+    "anthropic": "Anthropic"
+  },
+  "status": {
+    "available": "Disponible",
+    "unavailable": "No Disponible",
+    "comingSoon": "Próximamente"
+  }
+}

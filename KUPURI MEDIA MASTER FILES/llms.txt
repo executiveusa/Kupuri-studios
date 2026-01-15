@@ -1,0 +1,150 @@
+# Kupuri Studios AI Operating System
+
+> AI-powered autonomous agency platform for Milo in Mexico City
+
+## System Overview
+
+Kupuri Studios is an AI Operating System designed to run an autonomous digital agency. It provides:
+
+- Multi-channel inbox management (chat, email, WhatsApp, social)
+- AI-powered lead qualification and routing
+- Automated landing page generation
+- Multi-agent orchestration for task handling
+- Real-time performance analytics
+
+## Target Markets
+
+- Primary: Mexico City (CDMX), Puerto Vallarta, Seattle, Puerto Rico, Guam
+- Expansion: Spain, Colombia, Argentina, Chile, Peru, Panama
+
+## Architecture
+
+### Backend (FastAPI + Python)
+
+The backend uses FastAPI with:
+- LiteLLM for unified LLM access
+- LangGraph patterns for multi-agent orchestration
+- Hard-coded workflow engine (replacing n8n)
+- Chatwoot integration for omnichannel inbox
+
+Key endpoints:
+- `/api/workflows/niche-detect` - Detect business niche from text
+- `/api/workflows/generate-landing` - Generate landing page configs
+- `/api/workflows/capture-lead` - Process incoming leads
+- `/api/bff/*` - Backend-for-frontend secured endpoints
+
+### Frontend (React 19 + Vite)
+
+Modern React with:
+- TanStack Router for type-safe routing
+- Zustand for state management
+- Tailwind CSS with glassmorphism design
+- i18n support (en, es-MX, zh-CN)
+
+Key components:
+- QueueView - Sprinklr-style conversation queue
+- AgentActivity - Real-time agent status dashboard
+- GlassCard - Pickaxe.io inspired glassmorphism cards
+- GradientButton - Animated gradient buttons
+
+## AI Agents
+
+### Supervisor Agent
+Orchestrates tasks between specialized agents. Routes incoming work to appropriate specialists.
+
+### Lead Qualifier Agent
+Scores and qualifies incoming leads using BANT framework. Routes hot leads for immediate attention.
+
+### Content Creator Agent
+Generates marketing content, landing page copy, social media posts. Supports English and Spanish.
+
+### Customer Support Agent
+Handles customer inquiries with empathy. Escalates complex issues appropriately.
+
+## Workflow Engine
+
+Replaces n8n with hard-coded Python workflows for reliability:
+
+1. **Niche Detection** - Analyzes business to determine industry vertical
+2. **Landing Generator** - Creates complete landing page configurations
+3. **Lead Capture** - Qualifies, scores, and routes incoming leads
+
+## Key Technologies
+
+- Python 3.12+
+- FastAPI
+- React 19
+- Vite
+- TanStack Router
+- Zustand
+- Tailwind CSS
+- LiteLLM
+- Supabase
+- Chatwoot
+- Stripe
+
+## Environment Variables
+
+Required secrets (see .env.example):
+- `ANTHROPIC_API_KEY` - Claude API access
+- `OPENAI_API_KEY` - GPT model access
+- `SUPABASE_URL` / `SUPABASE_ANON_KEY` - Database
+- `STRIPE_SECRET_KEY` - Payments
+- `CHATWOOT_API_TOKEN` - Inbox integration
+
+## Deployment
+
+Supported platforms:
+- Coolify (self-hosted, preferred)
+- Vercel (frontend)
+- Railway (backend)
+
+## API Rate Limits
+
+- Standard: 100 requests/minute
+- Premium: 1000 requests/minute
+- Enterprise: Unlimited
+
+## Support
+
+For AI assistance with this system, use these prompts:
+
+### Understanding the codebase
+"Explain the workflow engine architecture and how to add new workflows"
+
+### Debugging
+"I'm seeing [error]. What might be causing this in the Kupuri system?"
+
+### Feature development
+"How do I add a new agent type to the registry?"
+
+### Integration
+"How do I connect a new channel to the Chatwoot integration?"
+
+## File Structure
+
+```
+server/
+├── main.py              # FastAPI entry point
+├── routers/             # API route handlers
+│   ├── workflow_router.py
+│   ├── chat_router.py
+│   └── bff_router.py
+├── services/            # Business logic
+│   ├── chatwoot_service.py
+│   └── agent_registry.py
+├── workflows/           # Hard-coded workflows
+│   ├── base.py
+│   ├── niche_detector.py
+│   ├── landing_generator.py
+│   └── lead_capture.py
+└── models/              # Data models
+
+react/
+├── src/
+│   ├── components/
+│   │   ├── ui/          # Base UI components
+│   │   └── dashboard/   # Dashboard views
+│   ├── styles/          # Design tokens
+│   └── i18n/            # Translations
+```

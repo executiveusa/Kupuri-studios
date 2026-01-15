@@ -15,7 +15,7 @@ import {
   RefreshCw,
   ChevronRight,
   Sparkles,
-  Waveform,
+  AudioWaveform,
   Check,
   AlertCircle,
   Settings,
@@ -35,7 +35,7 @@ import {
 
 const stages = [
   { id: 'recording', icon: Mic, label: 'Grabar', labelEn: 'Record' },
-  { id: 'transcribing', icon: Waveform, label: 'Transcribir', labelEn: 'Transcribe' },
+  { id: 'transcribing', icon: AudioWaveform, label: 'Transcribir', labelEn: 'Transcribe' },
   { id: 'generating-script', icon: FileText, label: 'Guión', labelEn: 'Script' },
   { id: 'generating-video', icon: Video, label: 'Video', labelEn: 'Video' },
   { id: 'completed', icon: Check, label: 'Listo', labelEn: 'Done' },

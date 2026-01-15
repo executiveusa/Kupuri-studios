@@ -1,0 +1,130 @@
+{
+  "title": "Configuración",
+  "messages": {
+    "settingsSaved": "Configuración guardada exitosamente",
+    "settingsReset": "Configuración restablecida a valores predeterminados",
+    "failedToSave": "Error al guardar la configuración",
+    "failedToLoad": "Error al cargar la configuración",
+    "restartRequired": "Por favor reinicie la aplicación para que la configuración de proxy surta efecto"
+  },
+  "models": {
+    "title": "Modelos",
+    "placeholder": "Ingresa el nombre del modelo",
+    "addModel": "Agregar Modelo",
+    "types": {
+      "text": "texto",
+      "image": "imagen",
+      "video": "video"
+    }
+  },
+  "provider": {
+    "title": "Proveedores",
+    "addProvider": "Agregar Proveedor",
+    "providerName": "Nombre del Proveedor",
+    "providerNamePlaceholder": "Ingresa el nombre del proveedor",
+    "apiUrl": "URL de la API",
+    "apiUrlPlaceholder": "Ingresa la URL de la API",
+    "apiKey": "Clave API",
+    "apiKeyPlaceholder": "Ingresa la clave API",
+    "apiKeyDescription": "Tu clave API se almacenará de forma segura",
+    "maxTokens": "Tokens Máximos",
+    "maxTokensPlaceholder": "Ingresa tus tokens máximos",
+    "maxTokensDescription": "El número máximo de tokens en la respuesta",
+    "customProvider": "✨ Proveedor Personalizado",
+    "imageGeneration": "🎨 Generación de Imágenes",
+    "delete": "Eliminar",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "noModelsSelected": "Por favor agrega al menos un modelo"
+  },
+  "proxy": {
+    "title": "Configuración de Proxy",
+    "mode": "Modo de Proxy",
+    "selectMode": "Selecciona el modo de proxy",
+    "modes": {
+      "no_proxy": "Sin Proxy",
+      "system": "Proxy del Sistema",
+      "custom": "Proxy Personalizado"
+    },
+    "enable": "Habilitar Proxy",
+    "url": "URL del Proxy",
+    "urlPlaceholder": "http://proxy.example.com:8080",
+    "testConnection": "Probar Conexión",
+    "testing": "Probando...",
+    "testSuccess": "Prueba de conexión de proxy exitosa",
+    "testFailed": "Prueba de conexión de proxy fallida: {{message}}",
+    "testError": "Error en la prueba de conexión de proxy",
+    "status": {
+      "enabled": "Habilitado",
+      "disabled": "Deshabilitado",
+      "misconfigured": "Mal configurado"
+    }
+  },
+  "comfyui": {
+    "title": "ComfyUI",
+    "localImageGeneration": "🎨 Generación de Imágenes Local",
+    "enable": "Habilitar",
+    "debugStatus": "🔍 Estado de Depuración",
+    "status": {
+      "disabled": "Deshabilitado",
+      "running": "En Ejecución",
+      "installed": "Instalado (No en Ejecución)",
+      "notInstalled": "No Instalado",
+      "notRunning": "No en Ejecución",
+      "checking": "Verificando..."
+    },
+    "urlDescription": "URL del servicio ComfyUI, ingresa la dirección si ya está instalado",
+    "invalidUrl": "Por favor ingresa una URL válida (ej: http://127.0.0.1:8188)",
+    "notInstalledTitle": "ComfyUI No Instalado",
+    "notInstalledDescription": "Instala ComfyUI para habilitar la generación de imágenes local con modelos Flux",
+    "installButton": "Instalar ComfyUI",
+    "startButton": "Iniciar ComfyUI",
+    "uninstallButton": "Desinstalar ComfyUI",
+    "confirmUninstall": "¿Está seguro de que desea desinstalar ComfyUI? Esto eliminará completamente ComfyUI de su sistema, incluyendo todos los modelos descargados y configuraciones.",
+    "confirmUninstallButton": "Confirmar Desinstalación",
+    "deleteWorkflowConfirmation": "¿Está seguro de que desea eliminar este flujo de trabajo?",
+    "uninstallProgress": {
+      "title": "Desinstalando ComfyUI",
+      "preparing": "Preparando desinstalación...",
+      "inProgress": "Desinstalación en progreso... Por favor espere.",
+      "logTitle": "Registro de Desinstalación:",
+      "completed": "Desinstalación completada"
+    },
+    "notInstalled": "ComfyUI no está instalado",
+    "addWorkflow": "Agregar Flujo de Trabajo",
+    "addInput": "Agregar Entrada",
+    "workflows": "Flujos de Trabajo",
+    "editWorkflow": "Editar Flujo de Trabajo"
+  },
+  "saveSettings": "Guardar Configuración",
+  "close": "Cerrar",
+  "cancel": "Cancelar",
+  "usage": {
+    "title": "Uso y Costos",
+    "description": "Rastrea tu uso de API y optimiza costos",
+    "loading": "Cargando datos de uso...",
+    "totalCost": "Costo Total",
+    "savings": "Ahorros (Nivel Gratuito)",
+    "freeRequests": "Solicitudes Gratuitas",
+    "requests": "solicitudes",
+    "costReduction": "reducción de costos",
+    "geminiFreeTier": "Nivel gratuito de Gemini Flash",
+    "budgetAlert": "Alerta de Presupuesto: Cerca del Límite",
+    "byModel": "Uso por Modelo",
+    "modelBreakdown": "Desglose detallado de costos por modelo",
+    "noData": "No hay datos de uso para este período",
+    "free": "GRATIS",
+    "export": "Exportar CSV",
+    "exportSuccess": "Datos de uso exportados exitosamente",
+    "fetchError": "Error al obtener datos de uso",
+    "periods": {
+      "day": "Últimas 24 horas",
+      "week": "Últimos 7 días",
+      "month": "Últimos 30 días"
+    },
+    "tipsTitle": "Consejos de Optimización de Costos",
+    "tip1": "Gemini Flash es GRATIS (1500 sol/día) - perfecto para borradores y tareas simples",
+    "tip2": "Habilita 'Optimización de Costos' en configuración de proveedores para enrutamiento automático a modelos gratuitos",
+    "tip3": "Actualiza a modelos pagos solo para resultados finales o tareas de visión complejas"
+  }
+}

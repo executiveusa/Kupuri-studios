@@ -1,0 +1,16 @@
+# Coolify Deployment Configuration
+# This file is used by Coolify to configure the deployment
+
+# Build settings
+BUILD_COMMAND=npm run build
+BUILD_PATH=dist
+
+# Port configuration
+PORT=80
+
+# Health check
+HEALTHCHECK_PATH=/health
+
+# Environment variables (set these in Coolify dashboard)
+# VITE_API_URL=https://api.kupuristudios.com
+# VITE_STRIPE_PUBLIC_KEY=pk_live_...

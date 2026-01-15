@@ -1,0 +1,72 @@
+# Ignore node_modules
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# Ignore Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Ignore development files
+.git/
+.gitignore
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Ignore environment files
+.env
+.env.local
+.env.*.local
+
+# Ignore build artifacts (we'll build inside Docker)
+react/dist/
+react/build/
+
+# Ignore documentation
+*.md
+!README.md
+docs/
+
+# Ignore test files
+*.test.js
+*.test.ts
+*.test.tsx
+*.spec.js
+*.spec.ts
+*.spec.tsx
+test/
+tests/
+__tests__/
+
+# Ignore IDE files
+.DS_Store
+Thumbs.db
+
+# Ignore large binary files
+*.mp4
+*.mov
+*.avi
+*.zip
+*.tar.gz
+
+# Ignore electron build outputs
+electron/dist/
+electron/build/
+release/
+
+# Ignore ComfyUI (if locally installed)
+ComfyUI/
+
+# Ignore workspace files
+*.code-workspace

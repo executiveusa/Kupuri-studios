@@ -9,21 +9,39 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VoiceToVideoRouteImport } from './routes/voice-to-video'
 import { Route as TestBillingRouteImport } from './routes/test-billing'
+import { Route as SupervisorRouteImport } from './routes/supervisor'
 import { Route as KnowledgeRouteImport } from './routes/knowledge'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AssetsRouteImport } from './routes/assets'
 import { Route as Agent_studioRouteImport } from './routes/agent_studio'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CanvasIdRouteImport } from './routes/canvas.$id'
 
+const VoiceToVideoRoute = VoiceToVideoRouteImport.update({
+  id: '/voice-to-video',
+  path: '/voice-to-video',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TestBillingRoute = TestBillingRouteImport.update({
   id: '/test-billing',
   path: '/test-billing',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SupervisorRoute = SupervisorRouteImport.update({
+  id: '/supervisor',
+  path: '/supervisor',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const KnowledgeRoute = KnowledgeRouteImport.update({
   id: '/knowledge',
   path: '/knowledge',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AssetsRoute = AssetsRouteImport.update({
@@ -51,16 +69,22 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/agent_studio': typeof Agent_studioRoute
   '/assets': typeof AssetsRoute
+  '/dashboard': typeof DashboardRoute
   '/knowledge': typeof KnowledgeRoute
+  '/supervisor': typeof SupervisorRoute
   '/test-billing': typeof TestBillingRoute
+  '/voice-to-video': typeof VoiceToVideoRoute
   '/canvas/$id': typeof CanvasIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/agent_studio': typeof Agent_studioRoute
   '/assets': typeof AssetsRoute
+  '/dashboard': typeof DashboardRoute
   '/knowledge': typeof KnowledgeRoute
+  '/supervisor': typeof SupervisorRoute
   '/test-billing': typeof TestBillingRoute
+  '/voice-to-video': typeof VoiceToVideoRoute
   '/canvas/$id': typeof CanvasIdRoute
 }
 export interface FileRoutesById {
@@ -68,8 +92,11 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/agent_studio': typeof Agent_studioRoute
   '/assets': typeof AssetsRoute
+  '/dashboard': typeof DashboardRoute
   '/knowledge': typeof KnowledgeRoute
+  '/supervisor': typeof SupervisorRoute
   '/test-billing': typeof TestBillingRoute
+  '/voice-to-video': typeof VoiceToVideoRoute
   '/canvas/$id': typeof CanvasIdRoute
 }
 export interface FileRouteTypes {
@@ -78,24 +105,33 @@ export interface FileRouteTypes {
     | '/'
     | '/agent_studio'
     | '/assets'
+    | '/dashboard'
     | '/knowledge'
+    | '/supervisor'
     | '/test-billing'
+    | '/voice-to-video'
     | '/canvas/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/agent_studio'
     | '/assets'
+    | '/dashboard'
     | '/knowledge'
+    | '/supervisor'
     | '/test-billing'
+    | '/voice-to-video'
     | '/canvas/$id'
   id:
     | '__root__'
     | '/'
     | '/agent_studio'
     | '/assets'
+    | '/dashboard'
     | '/knowledge'
+    | '/supervisor'
     | '/test-billing'
+    | '/voice-to-video'
     | '/canvas/$id'
   fileRoutesById: FileRoutesById
 }
@@ -103,13 +139,23 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   Agent_studioRoute: typeof Agent_studioRoute
   AssetsRoute: typeof AssetsRoute
+  DashboardRoute: typeof DashboardRoute
   KnowledgeRoute: typeof KnowledgeRoute
+  SupervisorRoute: typeof SupervisorRoute
   TestBillingRoute: typeof TestBillingRoute
+  VoiceToVideoRoute: typeof VoiceToVideoRoute
   CanvasIdRoute: typeof CanvasIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/voice-to-video': {
+      id: '/voice-to-video'
+      path: '/voice-to-video'
+      fullPath: '/voice-to-video'
+      preLoaderRoute: typeof VoiceToVideoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/test-billing': {
       id: '/test-billing'
       path: '/test-billing'
@@ -117,11 +163,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TestBillingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/supervisor': {
+      id: '/supervisor'
+      path: '/supervisor'
+      fullPath: '/supervisor'
+      preLoaderRoute: typeof SupervisorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/knowledge': {
       id: '/knowledge'
       path: '/knowledge'
       fullPath: '/knowledge'
       preLoaderRoute: typeof KnowledgeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/assets': {
@@ -159,8 +219,11 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   Agent_studioRoute: Agent_studioRoute,
   AssetsRoute: AssetsRoute,
+  DashboardRoute: DashboardRoute,
   KnowledgeRoute: KnowledgeRoute,
+  SupervisorRoute: SupervisorRoute,
   TestBillingRoute: TestBillingRoute,
+  VoiceToVideoRoute: VoiceToVideoRoute,
   CanvasIdRoute: CanvasIdRoute,
 }
 export const routeTree = rootRouteImport

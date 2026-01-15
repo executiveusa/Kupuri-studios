@@ -1,0 +1,19 @@
+{
+  "title": "Analytics Dashboard",
+  "subtitle": "Real-time application metrics and performance monitoring",
+  "lastUpdate": "Last updated",
+  "loading": "Loading metrics...",
+  "error": "Error Loading Metrics",
+  "errorLoading": "Failed to load metrics. Please refresh the page.",
+  "totalRequests": "Total Requests",
+  "avgLatency": "Avg Latency",
+  "activeConnections": "Active Connections",
+  "uniqueEndpoints": "Unique Endpoints",
+  "latencyTrend": "Latency Trend (5 min)",
+  "requestRate": "Request Rate (5 min)",
+  "endpointPerformance": "Top 10 Endpoint Performance",
+  "endpoint": "Endpoint",
+  "requests": "Requests",
+  "p95Latency": "p95 Latency",
+  "maxLatency": "Max Latency"
+}

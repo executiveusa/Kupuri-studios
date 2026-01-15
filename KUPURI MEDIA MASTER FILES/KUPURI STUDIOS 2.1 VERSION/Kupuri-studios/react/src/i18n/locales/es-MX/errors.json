@@ -1,0 +1,21 @@
+{
+  "notFound": {
+    "title": "404 • Perdido en el Lienzo",
+    "description": "Esta página no existe, pero tu creatividad sí. Volvamos a crear.",
+    "home": "Ir a Inicio",
+    "back": "Atrás",
+    "easter": "Consejo: ¡Intenta crear algo en su lugar!"
+  },
+  "serverError": {
+    "title": "500 • Algo Salió Mal",
+    "description": "Nuestro lienzo se bloqueó. Lo estamos arreglando. Intenta actualizar o ve a inicio.",
+    "home": "Ir a Inicio",
+    "refresh": "Actualizar Página"
+  },
+  "networkError": {
+    "title": "Conexión Perdida",
+    "description": "Verifica tu conexión a internet e intenta de nuevo.",
+    "retry": "Reintentar",
+    "home": "Ir a Inicio"
+  }
+}
