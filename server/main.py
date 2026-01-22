@@ -7,7 +7,7 @@ sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8")
 print('Importing websocket_router')
 from routers.websocket_router import *  # DO NOT DELETE THIS LINE, OTHERWISE, WEBSOCKET WILL NOT WORK
 print('Importing routers')
-from routers import config_router, image_router, root_router, workspace, canvas, ssl_test, chat_router, settings, tool_confirmation, stripe_webhook, agents, litellm_router, metrics_router, chatwoot_router, bff_router
+from routers import config_router, image_router, root_router, workspace, canvas, ssl_test, chat_router, settings, tool_confirmation, stripe_webhook, agents, litellm_router, metrics_router, chatwoot_router, bff_router, skills_router
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi import FastAPI, Request
@@ -128,6 +128,7 @@ app.include_router(litellm_router.router)
 app.include_router(metrics_router.router)
 app.include_router(chatwoot_router.router)
 app.include_router(bff_router.router)
+app.include_router(skills_router.router)
 
 # Mount the React build directory
 react_build_dir = os.environ.get('UI_DIST_DIR', os.path.join(
