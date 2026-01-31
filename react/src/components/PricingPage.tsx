@@ -1,58 +1,58 @@
-'use client'
+"use client";
 
-import { motion } from 'framer-motion'
-import { Check } from 'lucide-react'
+import { motion } from "framer-motion";
+import { Check } from "lucide-react";
 
 const pricingTiers = [
   {
-    name: 'Free',
-    price: '0',
-    period: 'Forever',
-    description: 'Perfect for getting started',
+    name: "Free",
+    price: "0",
+    period: "Forever",
+    description: "Perfect for getting started",
     features: [
-      '5 Projects',
-      'Basic AI Models',
-      '100 Generations/month',
-      'Community Support',
-      'No Credit Card Required',
+      "5 Projects",
+      "Basic AI Models",
+      "100 Generations/month",
+      "Community Support",
+      "No Credit Card Required",
     ],
-    cta: 'Get Started',
-    ctaStyle: 'secondary',
+    cta: "Get Started",
+    ctaStyle: "secondary",
   },
   {
-    name: 'Pay As You Go',
-    price: 'Variable',
-    period: 'Per Usage',
-    description: 'Perfect for creators who want more',
+    name: "Pay As You Go",
+    price: "Variable",
+    period: "Per Usage",
+    description: "Perfect for creators who want more",
     features: [
-      'Unlimited Projects',
-      'All AI Models (GPT-4, Claude, Flux, etc.)',
-      'Pay $0.01 - $1 per generation',
-      'Priority Support',
-      'Commercial License',
-      'Advanced Analytics',
+      "Unlimited Projects",
+      "All AI Models (GPT-4, Claude, Flux, etc.)",
+      "Pay $0.01 - $1 per generation",
+      "Priority Support",
+      "Commercial License",
+      "Advanced Analytics",
     ],
-    cta: 'Start Using',
-    ctaStyle: 'primary',
+    cta: "Start Using",
+    ctaStyle: "primary",
     highlighted: true,
   },
   {
-    name: 'Pro Team',
-    price: 'Custom',
-    period: 'Per Team',
-    description: 'For teams and agencies',
+    name: "Pro Team",
+    price: "Custom",
+    period: "Per Team",
+    description: "For teams and agencies",
     features: [
-      'Everything in Pay As You Go',
-      'Team Collaboration',
-      'Custom API Access',
-      'Dedicated Account Manager',
-      'SLA Guarantee',
-      'Volume Discounts',
+      "Everything in Pay As You Go",
+      "Team Collaboration",
+      "Custom API Access",
+      "Dedicated Account Manager",
+      "SLA Guarantee",
+      "Volume Discounts",
     ],
-    cta: 'Contact Sales',
-    ctaStyle: 'secondary',
+    cta: "Contact Sales",
+    ctaStyle: "secondary",
   },
-]
+];
 
 export function PricingPage() {
   return (
@@ -83,8 +83,8 @@ export function PricingPage() {
               whileHover={{ y: -8 }}
               className={`relative p-8 rounded-2xl backdrop-blur-sm transition-all ${
                 tier.highlighted
-                  ? 'bg-gradient-to-br from-blue-600/20 to-purple-600/20 border-2 border-blue-500/50 ring-2 ring-blue-500/20'
-                  : 'bg-gray-800/50 border border-gray-700/50'
+                  ? "bg-gradient-to-br from-blue-600/20 to-purple-600/20 border-2 border-blue-500/50 ring-2 ring-blue-500/20"
+                  : "bg-gray-800/50 border border-gray-700/50"
               }`}
             >
               {tier.highlighted && (
@@ -95,11 +95,15 @@ export function PricingPage() {
                 </div>
               )}
 
-              <h3 className="text-2xl font-bold text-white mb-2">{tier.name}</h3>
+              <h3 className="text-2xl font-bold text-white mb-2">
+                {tier.name}
+              </h3>
               <p className="text-gray-400 text-sm mb-6">{tier.description}</p>
 
               <div className="mb-8">
-                <span className="text-5xl font-bold text-white">${tier.price}</span>
+                <span className="text-5xl font-bold text-white">
+                  ${tier.price}
+                </span>
                 <span className="text-gray-400 ml-2">/{tier.period}</span>
               </div>
 
@@ -107,9 +111,9 @@ export function PricingPage() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className={`w-full py-3 rounded-xl font-semibold transition-all mb-8 ${
-                  tier.ctaStyle === 'primary'
-                    ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                    : 'border border-gray-500 hover:border-gray-300 text-white'
+                  tier.ctaStyle === "primary"
+                    ? "bg-blue-600 hover:bg-blue-700 text-white"
+                    : "border border-gray-500 hover:border-gray-300 text-white"
                 }`}
               >
                 {tier.cta}
@@ -146,20 +150,20 @@ export function PricingPage() {
           <div className="space-y-6">
             {[
               {
-                q: 'Do I need a credit card to start?',
-                a: 'No! The free tier requires no credit card. You only add payment when you exceed free limits.',
+                q: "Do I need a credit card to start?",
+                a: "No! The free tier requires no credit card. You only add payment when you exceed free limits.",
               },
               {
-                q: 'How much does each generation cost?',
-                a: '$0.01 - $1.00 depending on the model. GPT-4 is more expensive than Flux, for example.',
+                q: "How much does each generation cost?",
+                a: "$0.01 - $1.00 depending on the model. GPT-4 is more expensive than Flux, for example.",
               },
               {
-                q: 'Can I cancel anytime?',
-                a: 'Yes! With pay-as-you-go, you have complete control. Use it or don\'t—no commitments.',
+                q: "Can I cancel anytime?",
+                a: "Yes! With pay-as-you-go, you have complete control. Use it or don't—no commitments.",
               },
               {
-                q: 'Is there a monthly limit?',
-                a: 'No limits on monthly spending. You control your budget and get alerts at thresholds.',
+                q: "Is there a monthly limit?",
+                a: "No limits on monthly spending. You control your budget and get alerts at thresholds.",
               },
             ].map((faq, idx) => (
               <motion.div
@@ -177,7 +181,7 @@ export function PricingPage() {
         </motion.div>
       </div>
     </section>
-  )
+  );
 }
 
-export default PricingPage
+export default PricingPage;

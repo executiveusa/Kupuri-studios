@@ -10,6 +10,7 @@
 ## 📐 VISUAL IDENTITY
 
 ### Color Palette (Light Mode - Primary)
+
 ```css
 /* Primary Text - High Contrast */
 text-primary: #0F172A (slate-900) /* All body text, links */
@@ -44,6 +45,7 @@ accent-primary (A855F7) on white: 5.2:1 ✅
 ```
 
 ### Color Palette (Dark Mode - Secondary)
+
 ```css
 /* Dark Mode - NOT PRIMARY FOR INITIAL LAUNCH */
 text-primary: #F8FAFC (slate-50) /* High contrast white */
@@ -58,6 +60,7 @@ accent-secondary: #D8B4FE (more visible on dark)
 ```
 
 ### Light Mode ONLY for Initial Launch
+
 - **Decision:** Focus 100% on light mode for MVP
 - **Reason:** Light backgrounds work better with video player and content previews
 - **Dark mode:** Implement in Phase 2 after light mode validates
@@ -68,6 +71,7 @@ accent-secondary: #D8B4FE (more visible on dark)
 ## 🔤 TYPOGRAPHY
 
 ### Font Stack
+
 ```css
 /* Headings */
 font-heading: 'Anton', 'Impact', sans-serif
@@ -78,26 +82,30 @@ font-sans: 'Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', sans-seri
 ```
 
 ### Size Hierarchy (Mobile-First)
-| Context | Size (Mobile) | Line-Height | Weight | Use Case |
-|---------|--------------|------------|--------|----------|
-| **Hero H1** | 40px | 1.1 | 700 (bold) | Page headlines |
-| **Section H2** | 28px | 1.2 | 600 (semibold) | Major sections |
-| **Subsection H3** | 20px | 1.3 | 600 (semibold) | Content headings |
-| **Body p** | 16px | 1.6 | 400 (regular) | Body text (WCAG AA min 16px) |
-| **Small p** | 14px | 1.5 | 400 (regular) | Helper text, captions |
-| **Button** | 14px | 1.5 | 600 (semibold) | CTA text |
-| **Label** | 12px | 1.4 | 500 (medium) | Form labels, tags |
+
+| Context           | Size (Mobile) | Line-Height | Weight         | Use Case                     |
+| ----------------- | ------------- | ----------- | -------------- | ---------------------------- |
+| **Hero H1**       | 40px          | 1.1         | 700 (bold)     | Page headlines               |
+| **Section H2**    | 28px          | 1.2         | 600 (semibold) | Major sections               |
+| **Subsection H3** | 20px          | 1.3         | 600 (semibold) | Content headings             |
+| **Body p**        | 16px          | 1.6         | 400 (regular)  | Body text (WCAG AA min 16px) |
+| **Small p**       | 14px          | 1.5         | 400 (regular)  | Helper text, captions        |
+| **Button**        | 14px          | 1.5         | 600 (semibold) | CTA text                     |
+| **Label**         | 12px          | 1.4         | 500 (medium)   | Form labels, tags            |
 
 ### Desktop Scaling
+
 - **Hero H1:** 56px (mobile 40px)
 - **Section H2:** 36px (mobile 28px)
 - **All other:** No desktop scaling (consistency)
 
 ### Letter Spacing
+
 - Compact (`-0.02em`): Headings only
 - Normal (`0em`): Body text
 
 ### Line Height Targets
+
 - **Headings:** 1.1-1.2 (tight, impactful)
 - **Body:** 1.6-1.75 (comfortable reading)
 - **Form labels:** 1.4 (compact)
@@ -107,6 +115,7 @@ font-sans: 'Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', sans-seri
 ## 🎯 LAYOUT SYSTEM
 
 ### Spacing Scale (Tailwind-based)
+
 ```
 Base unit: 4px (Tailwind xs=2px is avoided)
 Scale: 0, 4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 80, 96 (px)
@@ -114,6 +123,7 @@ Tailwind classes: px-2→96 (multiples of 4px)
 ```
 
 ### Container & Max-Width
+
 ```css
 /* Desktop-first max-width for content */
 max-w-container: 6xl (64rem / 1024px) /* Primary content */
@@ -127,6 +137,7 @@ mx-desktop: 32px (px-8)
 ```
 
 ### Grid System
+
 ```css
 /* 12-column responsive */
 Mobile: 1 column
@@ -142,13 +153,14 @@ Gap: 16px (md), 24px (lg) - NEVER 32px (too wide)
 ## 🧩 COMPONENT PATTERNS (Awwwards Winners)
 
 ### 1. Hero Section (Full-Viewport)
+
 **Pattern:** Cinematic, scroll-triggered animations, content-centric
 
 ```tsx
 <section className="relative w-full h-screen flex items-center justify-center overflow-hidden">
   {/* Background Layer - Video or Gradient */}
   <div className="absolute inset-0 -z-10 bg-gradient-to-br from-slate-50 to-gray-100" />
-  
+
   {/* Floating Navbar (Fixed) */}
   <nav className="fixed top-4 left-4 right-4 z-50 bg-white/80 backdrop-blur-md rounded-lg px-6 py-3">
     {/* Logo + Links + CTA */}
@@ -160,9 +172,10 @@ Gap: 16px (md), 24px (lg) - NEVER 32px (too wide)
       Create Video Magic Instantly
     </h1>
     <p className="text-lg md:text-xl text-slate-600 mb-8 leading-relaxed max-w-2xl mx-auto">
-      Professional AI-powered video generation for creators, marketers, and studios
+      Professional AI-powered video generation for creators, marketers, and
+      studios
     </p>
-    
+
     {/* Primary CTA */}
     <button className="cursor-pointer px-8 py-4 bg-accent-primary text-white rounded-lg font-semibold text-lg hover:bg-accent-dark transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-purple-600 min-w-[44px] min-h-[44px]">
       Start Creating Free
@@ -177,6 +190,7 @@ Gap: 16px (md), 24px (lg) - NEVER 32px (too wide)
 ```
 
 **Key Principles:**
+
 - Full viewport (100vh) with centered content
 - Floating navbar (not stuck to edges) - top-4 left-4 right-4
 - Single primary CTA, high contrast
@@ -186,12 +200,13 @@ Gap: 16px (md), 24px (lg) - NEVER 32px (too wide)
 ---
 
 ### 2. Feature Cards (Glassmorphism)
+
 **Pattern:** Subtle glass effect, hover state visible, consistent spacing
 
 ```tsx
 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
   {features.map((feature) => (
-    <div 
+    <div
       key={feature.id}
       className="group cursor-pointer relative p-6 rounded-xl bg-white/80 backdrop-blur-sm border border-slate-200 hover:bg-white hover:shadow-lg transition-all duration-200"
     >
@@ -199,11 +214,11 @@ Gap: 16px (md), 24px (lg) - NEVER 32px (too wide)
       <div className="mb-4">
         {feature.icon} {/* Lucide or Heroicons icon */}
       </div>
-      
+
       <h3 className="text-lg font-semibold text-slate-900 mb-2">
         {feature.title}
       </h3>
-      
+
       <p className="text-sm text-slate-600 leading-relaxed">
         {feature.description}
       </p>
@@ -213,6 +228,7 @@ Gap: 16px (md), 24px (lg) - NEVER 32px (too wide)
 ```
 
 **Key Rules:**
+
 - Glass background: `bg-white/80` (NOT /10, NOT /50)
 - Always visible border: `border-slate-200`
 - Hover: opacity change OR color shift (NOT scale)
@@ -222,24 +238,29 @@ Gap: 16px (md), 24px (lg) - NEVER 32px (too wide)
 ---
 
 ### 3. Navigation (Transparent → Solid on Scroll)
+
 **Pattern:** Initially transparent, solidifies on scroll, floating style
 
 ```tsx
-<nav className="fixed top-4 left-4 right-4 z-50 transition-all duration-200" style={{
-  backgroundColor: scrollY > 50 ? "rgba(255, 255, 255, 0.95)" : "rgba(255, 255, 255, 0.7)",
-  backdropFilter: "blur(8px)",
-  borderRadius: "0.5rem",
-  padding: "0.75rem 1.5rem"
-}}>
+<nav
+  className="fixed top-4 left-4 right-4 z-50 transition-all duration-200"
+  style={{
+    backgroundColor:
+      scrollY > 50 ? "rgba(255, 255, 255, 0.95)" : "rgba(255, 255, 255, 0.7)",
+    backdropFilter: "blur(8px)",
+    borderRadius: "0.5rem",
+    padding: "0.75rem 1.5rem",
+  }}
+>
   <div className="flex items-center justify-between max-w-6xl mx-auto">
     <div className="text-xl font-bold text-slate-900 cursor-pointer">
       Kupuri
     </div>
-    
+
     {/* Desktop Menu */}
     <div className="hidden md:flex items-center gap-8">
-      {navItems.map(item => (
-        <a 
+      {navItems.map((item) => (
+        <a
           key={item.id}
           href={item.href}
           className="text-slate-600 hover:text-slate-900 transition-colors duration-150 cursor-pointer"
@@ -258,6 +279,7 @@ Gap: 16px (md), 24px (lg) - NEVER 32px (too wide)
 ```
 
 **Key Rules:**
+
 - Position: `fixed top-4 left-4 right-4` (floating, NOT top-0)
 - Responsive: Hide complex menu on mobile, show hamburger menu
 - Scrolled state: Gently solidify but maintain translucency
@@ -265,6 +287,7 @@ Gap: 16px (md), 24px (lg) - NEVER 32px (too wide)
 ---
 
 ### 4. CTA Buttons (Primary Pattern)
+
 **CRITICAL:** All buttons require `cursor-pointer`
 
 ```tsx
@@ -279,7 +302,7 @@ Gap: 16px (md), 24px (lg) - NEVER 32px (too wide)
 </button>
 
 /* Icon Button */
-<button 
+<button
   className="cursor-pointer p-2 hover:bg-slate-100 rounded-lg transition-colors duration-150"
   aria-label="Close menu"
 >
@@ -288,6 +311,7 @@ Gap: 16px (md), 24px (lg) - NEVER 32px (too wide)
 ```
 
 **ABSOLUTE RULES:**
+
 - ✅ `cursor-pointer` ON ALL interactive elements
 - ✅ Transition: 150-300ms (never >500ms)
 - ✅ Focus states: `focus-visible:ring-2`
@@ -299,6 +323,7 @@ Gap: 16px (md), 24px (lg) - NEVER 32px (too wide)
 ## ♿ ACCESSIBILITY (WCAG 2.1 AA - MANDATORY)
 
 ### Color Contrast
+
 ```css
 /* Minimum 4.5:1 for normal text, 3:1 for large text (18px+) */
 
@@ -312,18 +337,19 @@ Accent pair: #D8B4FE (purple-300) on white = 2.1:1 ❌ INVALID
 ```
 
 ### Images & Icons
+
 ```tsx
 /* Images MUST have alt text */
-<img 
-  src="hero.webp" 
+<img
+  src="hero.webp"
   alt="Kupuri Studios dashboard showing AI-powered video creation interface"
   loading="lazy"
   className="w-full h-auto"
 />
 
 /* Icons MUST have aria-label if icon-only button */
-<button 
-  aria-label="Toggle theme" 
+<button
+  aria-label="Toggle theme"
   className="cursor-pointer p-2"
 >
   <Moon className="w-6 h-6" /> {/* SVG icon */}
@@ -337,13 +363,14 @@ Accent pair: #D8B4FE (purple-300) on white = 2.1:1 ❌ INVALID
 ```
 
 ### Form Accessibility
+
 ```tsx
 /* Every input MUST have a label with htmlFor + id */
 <div className="mb-4">
   <label htmlFor="email" className="block text-sm font-medium text-slate-900 mb-2">
     Email Address
   </label>
-  <input 
+  <input
     id="email"
     type="email"
     placeholder="your@email.com"
@@ -352,7 +379,7 @@ Accent pair: #D8B4FE (purple-300) on white = 2.1:1 ❌ INVALID
 </div>
 
 /* Error states */
-<input 
+<input
   aria-invalid="true"
   aria-describedby="email-error"
   className="border-red-600"
@@ -363,17 +390,19 @@ Accent pair: #D8B4FE (purple-300) on white = 2.1:1 ❌ INVALID
 ```
 
 ### Keyboard Navigation
+
 - **Tab order:** Logical left-to-right, top-to-bottom
 - **Focus visible:** Always visible (not `outline-none` without replacement)
 - **Focus ring:** `ring-2 ring-offset-2 ring-purple-600`
 - **Skip links:** Hidden but keyboard-accessible (Jump to content)
 
 ### Motion & Animations
+
 ```tsx
 /* ALWAYS respect prefers-reduced-motion */
 const shouldAnimate = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-<motion.div 
+<motion.div
   animate={shouldAnimate ? { opacity: 1, y: 0 } : {}}
   initial={{ opacity: 0, y: 20 }}
   transition={{ duration: 0.3 }}
@@ -392,6 +421,7 @@ const shouldAnimate = !window.matchMedia('(prefers-reduced-motion: reduce)').mat
 ## ⚡ PERFORMANCE TARGETS
 
 ### Lighthouse Benchmarks
+
 ```
 Mobile:  ≥ 90 (Performance, Accessibility, Best Practices, SEO)
 Desktop: ≥ 95 (Performance, Accessibility, Best Practices, SEO)
@@ -404,12 +434,13 @@ Specific Metrics:
 ```
 
 ### Image Optimization
+
 ```tsx
 /* WebP format with fallback */
 <picture>
   <source srcSet="image-1024w.webp 1024w, image-512w.webp 512w" type="image/webp" />
-  <img 
-    srcSet="image-1024w.jpg 1024w, image-512w.jpg 512w" 
+  <img
+    srcSet="image-1024w.jpg 1024w, image-512w.jpg 512w"
     src="image-512w.jpg"
     alt="Description"
     width="1024"
@@ -431,6 +462,7 @@ Specific Metrics:
 ```
 
 ### Animation Performance
+
 ```css
 /* GPU-accelerated properties ONLY */
 ✅ transform: translateY(20px) /* Uses GPU */
@@ -452,12 +484,14 @@ Slow: 300ms (major transitions)
 ## 🚫 ABSOLUTE DO-NOTs (UDIP v2.1)
 
 ### Icons & Visual Elements
+
 - ❌ **NO emoji icons** anywhere (🚀, ⭐, ✨ = VIOLATION)
 - ✅ **SVG icons only:** Lucide React, Heroicons, Simple Icons
 - ✅ **Consistent icon set:** Don't mix Lucide + Heroicons
 - ✅ **Icon size:** 20x20 or 24x24 (viewBox="0 0 24 24"), never 16x16
 
 ### Interaction
+
 - ❌ **Missing cursor-pointer** on clickables = VIOLATION
 - ❌ **Hover-only interactions** on mobile (no touch equivalent)
 - ❌ **Scale transforms** on hover (causes layout shift / CLS violation)
@@ -465,6 +499,7 @@ Slow: 300ms (major transitions)
 - ✅ **Touch targets:** 44x44px minimum (WCAG 2.1 AAA compliance)
 
 ### Layout & Spacing
+
 - ❌ **Navbar at top-0** (old, amateur look)
 - ✅ **Navbar floating:** top-4 left-4 right-4 with slight rounded corners
 - ❌ **Inconsistent max-width** across pages
@@ -473,6 +508,7 @@ Slow: 300ms (major transitions)
 - ✅ **Z-index scale:** 10, 20, 30, 40, 50 (predictable)
 
 ### Colors & Contrast
+
 - ❌ **Light mode unreadable** (using slate-400 for body text)
 - ✅ **Light mode text:** slate-900 (#0F172A) with 4.5:1+ contrast
 - ❌ **Glass cards too transparent** (bg-white/10 or /20)
@@ -481,6 +517,7 @@ Slow: 300ms (major transitions)
 - ✅ **Visible borders:** slate-200 or light accent colors
 
 ### Performance
+
 - ❌ **No responsive images** (srcset, WebP format)
 - ✅ **WebP + JPEG fallback** with lazy loading
 - ❌ **Animations using width/height** (Causes CPU reflow)
@@ -491,6 +528,7 @@ Slow: 300ms (major transitions)
 - ✅ **All animations respect prefers-reduced-motion**
 
 ### Accessibility
+
 - ❌ **Missing alt text** on images
 - ❌ **Icon buttons without aria-label**
 - ❌ **Form inputs without labels** (placeholder ≠ label)
@@ -505,6 +543,7 @@ Slow: 300ms (major transitions)
 ## 📋 PRE-DELIVERY CHECKLIST (MUST PASS ALL)
 
 ### Visual Quality (10 items)
+
 - [ ] No emoji icons (SVG only: Lucide, Heroicons)
 - [ ] Consistent icon set (not mixing libraries)
 - [ ] All icons 24x24px (viewBox="0 0 24 24")
@@ -517,6 +556,7 @@ Slow: 300ms (major transitions)
 - [ ] Light mode primary text readable (#0F172A)
 
 ### Interaction (8 items)
+
 - [ ] cursor-pointer on ALL clickable/hoverable elements
 - [ ] Hover feedback via color/opacity (not scale)
 - [ ] All transitions 150-300ms (not >500ms)
@@ -527,6 +567,7 @@ Slow: 300ms (major transitions)
 - [ ] No missing cursor feedback
 
 ### Light/Dark Mode (5 items) - Light Primary
+
 - [ ] Light mode primary text readable (#0F172A on white)
 - [ ] Light mode secondary text readable (#475569 on white)
 - [ ] Light mode glass cards visible (bg-white/80+)
@@ -534,6 +575,7 @@ Slow: 300ms (major transitions)
 - [ ] Contrast verified ≥4.5:1 (light mode)
 
 ### Accessibility (10 items)
+
 - [ ] All images have descriptive alt text
 - [ ] Icon-only buttons have aria-label
 - [ ] Form inputs have labels (htmlFor + id)
@@ -546,6 +588,7 @@ Slow: 300ms (major transitions)
 - [ ] (No missing ARIA labels)
 
 ### Performance (6 items)
+
 - [ ] Images: WebP format, srcset, lazy loading
 - [ ] Animations: transform/opacity only (no width/height)
 - [ ] CLS < 0.1 (no layout shift on hover/load)
@@ -554,6 +597,7 @@ Slow: 300ms (major transitions)
 - [ ] No unused dependencies in bundle
 
 ### Technical (4 items)
+
 - [ ] TypeScript strict mode (no 'any' types)
 - [ ] No hardcoded colors (use theme/Tailwind)
 - [ ] Responsive tested: 375px, 768px, 1024px, 1440px
@@ -566,6 +610,7 @@ Slow: 300ms (major transitions)
 ## 📚 COMPONENT INVENTORY
 
 ### Already Built (In react/src/components/)
+
 - Navigation
 - HeroSection
 - PricingPage
@@ -577,6 +622,7 @@ Slow: 300ms (major transitions)
 - Agent studio layouts
 
 ### Needs Updating (Per UDIP v2.1)
+
 1. **HeroSection** - Apply hero pattern (floating navbar, kinetic typography)
 2. **Button** - Add cursor-pointer, fix hover states
 3. **Cards** - Update glass background opacity (to /80)
@@ -584,6 +630,7 @@ Slow: 300ms (major transitions)
 5. **Forms** - Add proper labels, aria-describedby
 
 ### Needs Creating
+
 1. **Feature cards grid** - Awwwards pattern
 2. **Testimonials** - Scroll-triggered animations
 3. **CTA section** - Final conversion focus
@@ -596,6 +643,6 @@ Slow: 300ms (major transitions)
 
 ---
 
-*Generated: 2026-01-30*  
-*Protocol: UDIP v2.1 ULTIMATE + Vibe Coding Loop*  
-*Quality Bar: Awwwards-level (9+/10)*
+_Generated: 2026-01-30_  
+_Protocol: UDIP v2.1 ULTIMATE + Vibe Coding Loop_  
+_Quality Bar: Awwwards-level (9+/10)_

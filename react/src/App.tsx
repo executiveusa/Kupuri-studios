@@ -1,69 +1,69 @@
 // import InstallComfyUIDialog from '@/components/comfyui/InstallComfyUIDialog'
-import { ThemeProvider } from '@/components/theme/ThemeProvider'
-import { ConfigsProvider } from '@/contexts/configs'
-import { AuthProvider } from '@/contexts/AuthContext'
-import { useTheme } from '@/hooks/use-theme'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
-import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister'
-import { openDB } from 'idb'
-import { createRouter, RouterProvider } from '@tanstack/react-router'
-import { lazy, Suspense, useEffect } from 'react'
-import { Toaster } from 'sonner'
-import { routeTree } from './route-tree.gen'
+import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import { ConfigsProvider } from "@/contexts/configs";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { useTheme } from "@/hooks/use-theme";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
+import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
+import { openDB } from "idb";
+import { createRouter, RouterProvider } from "@tanstack/react-router";
+import { lazy, Suspense, useEffect } from "react";
+import { Toaster } from "sonner";
+import { routeTree } from "./route-tree.gen";
 
-import '@/assets/style/App.css'
-import '@/i18n'
+import "@/assets/style/App.css";
+import "@/i18n";
 
 // Lazy-load non-critical dialogs for performance optimization
 // This reduces initial bundle size and improves First Contentful Paint (FCP)
 const UpdateNotificationDialog = lazy(() =>
-  import('@/components/common/UpdateNotificationDialog').then(m => ({
+  import("@/components/common/UpdateNotificationDialog").then((m) => ({
     default: m.default,
-  }))
-)
+  })),
+);
 const SettingsDialog = lazy(() =>
-  import('@/components/settings/dialog').then(m => ({
+  import("@/components/settings/dialog").then((m) => ({
     default: m.default,
-  }))
-)
+  })),
+);
 
-const router = createRouter({ routeTree })
+const router = createRouter({ routeTree });
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface Register {
-    router: typeof router
+    router: typeof router;
   }
 }
 
 // 创建 IndexedDB 连接
 const getDB = () =>
-  openDB('react-query-db', 1, {
+  openDB("react-query-db", 1, {
     upgrade(db) {
-      if (!db.objectStoreNames.contains('cache')) {
-        db.createObjectStore('cache')
+      if (!db.objectStoreNames.contains("cache")) {
+        db.createObjectStore("cache");
       }
     },
-  })
+  });
 
 // 创建 IndexedDB 持久化器
 const persister = createAsyncStoragePersister({
   storage: {
     getItem: async (key: string) => {
-      const db = await getDB()
-      return (await db.get('cache', key)) || null
+      const db = await getDB();
+      return (await db.get("cache", key)) || null;
     },
     setItem: async (key: string, value: unknown) => {
-      const db = await getDB()
-      await db.put('cache', value, key)
+      const db = await getDB();
+      await db.put("cache", value, key);
     },
     removeItem: async (key: string) => {
-      const db = await getDB()
-      await db.delete('cache', key)
+      const db = await getDB();
+      await db.delete("cache", key);
     },
   },
-  key: 'react-query-cache',
-})
+  key: "react-query-cache",
+});
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -72,41 +72,41 @@ const queryClient = new QueryClient({
       gcTime: 10 * 60 * 1000,
     },
   },
-})
+});
 
 function App() {
-  const { theme } = useTheme()
+  const { theme } = useTheme();
 
   // Auto-start ComfyUI on app startup
   useEffect(() => {
     const autoStartComfyUI = async () => {
       try {
         // Check if ComfyUI is installed
-        const isInstalled = await window.electronAPI?.checkComfyUIInstalled()
+        const isInstalled = await window.electronAPI?.checkComfyUIInstalled();
         if (!isInstalled) {
-          console.log('ComfyUI is not installed, skipping auto-start')
-          return
+          console.log("ComfyUI is not installed, skipping auto-start");
+          return;
         }
 
         // Start ComfyUI process
-        console.log('Auto-starting ComfyUI...')
-        const result = await window.electronAPI?.startComfyUIProcess()
+        console.log("Auto-starting ComfyUI...");
+        const result = await window.electronAPI?.startComfyUIProcess();
 
         if (result?.success) {
-          console.log('ComfyUI auto-started successfully:', result.message)
+          console.log("ComfyUI auto-started successfully:", result.message);
         } else {
-          console.log('Failed to auto-start ComfyUI:', result?.message)
+          console.log("Failed to auto-start ComfyUI:", result?.message);
         }
       } catch (error) {
-        console.error('Error during ComfyUI auto-start:', error)
+        console.error("Error during ComfyUI auto-start:", error);
       }
-    }
+    };
 
     // Only run if electronAPI is available (in Electron environment)
     if (window.electronAPI) {
-      autoStartComfyUI()
+      autoStartComfyUI();
     }
-  }, [])
+  }, []);
 
   return (
     <ThemeProvider defaultTheme={theme} storageKey="vite-ui-theme">
@@ -141,7 +141,7 @@ function App() {
       </PersistQueryClientProvider>
       <Toaster position="bottom-center" richColors />
     </ThemeProvider>
-  )
+  );
 }
 
-export default App
+export default App;

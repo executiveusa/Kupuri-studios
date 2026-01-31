@@ -1,30 +1,30 @@
-'use client'
+"use client";
 
-import { motion, AnimatePresence } from 'framer-motion'
-import { useEffect, useRef } from 'react'
+import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useRef } from "react";
 
 export function ProjectModal({ project, onClose, isOpen }: any) {
-  const modalRef = useRef(null)
+  const modalRef = useRef(null);
 
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden'
+      document.body.style.overflow = "hidden";
     }
     return () => {
-      document.body.style.overflow = 'unset'
-    }
-  }, [isOpen])
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen]);
 
   const handleEscape = (e: any) => {
-    if (e.key === 'Escape') onClose()
-  }
+    if (e.key === "Escape") onClose();
+  };
 
   useEffect(() => {
-    if (isOpen) window.addEventListener('keydown', handleEscape)
-    return () => window.removeEventListener('keydown', handleEscape)
-  }, [isOpen])
+    if (isOpen) window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, [isOpen]);
 
-  if (!project) return null
+  if (!project) return null;
 
   return (
     <AnimatePresence>
@@ -45,7 +45,7 @@ export function ProjectModal({ project, onClose, isOpen }: any) {
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
             className="fixed inset-4 md:inset-auto md:left-1/2 md:top-1/2 md:transform md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-3xl z-50 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl overflow-hidden"
             role="dialog"
             aria-modal="true"
@@ -59,8 +59,18 @@ export function ProjectModal({ project, onClose, isOpen }: any) {
               className="absolute top-6 right-6 z-10 w-10 h-10 rounded-full bg-slate-200 dark:bg-white/10 hover:bg-slate-300 dark:hover:bg-white/20 flex items-center justify-center backdrop-blur-sm transition-colors cursor-pointer"
               aria-label="Close modal"
             >
-              <svg className="w-6 h-6 text-slate-900 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <svg
+                className="w-6 h-6 text-slate-900 dark:text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </motion.button>
 
@@ -87,7 +97,10 @@ export function ProjectModal({ project, onClose, isOpen }: any) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
               >
-                <h2 id="modal-title" className="text-4xl font-bold text-slate-900 dark:text-white mb-4">
+                <h2
+                  id="modal-title"
+                  className="text-4xl font-bold text-slate-900 dark:text-white mb-4"
+                >
                   {project.title}
                 </h2>
 
@@ -125,8 +138,18 @@ export function ProjectModal({ project, onClose, isOpen }: any) {
                   className="inline-flex items-center gap-2 px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors"
                 >
                   Open Live Site
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                    />
                   </svg>
                 </motion.a>
               </motion.div>
@@ -135,7 +158,7 @@ export function ProjectModal({ project, onClose, isOpen }: any) {
         </>
       )}
     </AnimatePresence>
-  )
+  );
 }
 
-export default ProjectModal
+export default ProjectModal;

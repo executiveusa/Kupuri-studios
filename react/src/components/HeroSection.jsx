@@ -1,6 +1,6 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { ArrowDown, Star } from 'lucide-react';
+import React from "react";
+import { motion } from "framer-motion";
+import { ArrowDown, Star } from "lucide-react";
 
 function HeroSection({ title, subtitle, children }) {
   const containerVariants = {
@@ -19,7 +19,7 @@ function HeroSection({ title, subtitle, children }) {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.8, ease: 'easeOut' },
+      transition: { duration: 0.8, ease: "easeOut" },
     },
   };
 
@@ -30,14 +30,14 @@ function HeroSection({ title, subtitle, children }) {
         <motion.div
           className="absolute w-96 h-96 bg-purple-300/10 rounded-full blur-3xl"
           animate={{ x: [0, 100, -50, 0], y: [0, -100, 50, 0] }}
-          transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-          style={{ top: '10%', left: '10%' }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          style={{ top: "10%", left: "10%" }}
         />
         <motion.div
           className="absolute w-96 h-96 bg-indigo-300/10 rounded-full blur-3xl"
           animate={{ x: [0, -100, 50, 0], y: [0, 100, -50, 0] }}
-          transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
-          style={{ bottom: '10%', right: '10%' }}
+          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+          style={{ bottom: "10%", right: "10%" }}
         />
       </div>
 
@@ -61,12 +61,15 @@ function HeroSection({ title, subtitle, children }) {
           variants={itemVariants}
           className="text-5xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-700 via-purple-600 to-indigo-700 mb-4"
         >
-          {title || 'Kupuri Studios'}
+          {title || "Kupuri Studios"}
         </motion.h1>
 
         {/* Subtitle - slate-600 for light mode readability */}
-        <motion.p variants={itemVariants} className="text-xl md:text-2xl text-slate-600 mb-8">
-          {subtitle || 'AI Creative Canvas Platform'}
+        <motion.p
+          variants={itemVariants}
+          className="text-xl md:text-2xl text-slate-600 mb-8"
+        >
+          {subtitle || "AI Creative Canvas Platform"}
         </motion.p>
 
         {/* Children (e.g., ChatTextarea) */}
