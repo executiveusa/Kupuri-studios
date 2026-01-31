@@ -1,0 +1,15 @@
+{
+  "extends": "../../packages/config/tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@kupuri/ui": ["../../packages/ui/src"],
+      "@kupuri/ui/*": ["../../packages/ui/src/*"],
+      "@kupuri/config": ["../../packages/config/src"],
+      "@kupuri/ecosystem-types": ["../../packages/ecosystem-types/src"]
+    }
+  },
+  "include": ["src/**/*", "vite.config.ts"],
+  "exclude": ["node_modules", "dist"]
+}

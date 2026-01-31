@@ -24,3 +24,5 @@ dist-ssr
 
 # Build output
 dist/
+.vercel
+.env*.local

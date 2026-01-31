@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { ArrowDown, Star } from 'lucide-react';
 
 function HeroSection({ title, subtitle, children }) {
   const containerVariants = {
@@ -23,17 +24,17 @@ function HeroSection({ title, subtitle, children }) {
   };
 
   return (
-    <section className="relative w-full min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-black overflow-hidden">
-      {/* Animated background glow */}
+    <section className="relative w-full min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-gray-50 to-gray-100 overflow-hidden pt-24">
+      {/* Animated background glow - light mode */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          className="absolute w-96 h-96 bg-accent/20 rounded-full blur-3xl"
+          className="absolute w-96 h-96 bg-purple-300/10 rounded-full blur-3xl"
           animate={{ x: [0, 100, -50, 0], y: [0, -100, 50, 0] }}
           transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
           style={{ top: '10%', left: '10%' }}
         />
         <motion.div
-          className="absolute w-96 h-96 bg-purple-500/20 rounded-full blur-3xl"
+          className="absolute w-96 h-96 bg-indigo-300/10 rounded-full blur-3xl"
           animate={{ x: [0, -100, 50, 0], y: [0, 100, -50, 0] }}
           transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
           style={{ bottom: '10%', right: '10%' }}
@@ -47,23 +48,24 @@ function HeroSection({ title, subtitle, children }) {
         initial="hidden"
         animate="visible"
       >
-        {/* Beta badge */}
+        {/* Beta badge with Lucide icon */}
         <motion.div variants={itemVariants} className="mb-6">
-          <span className="inline-flex items-center px-3 py-1 rounded-full bg-accent/20 text-accent text-sm font-semibold border border-accent/50">
-            ✨ Beta
+          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-100 text-purple-900 text-sm font-semibold border border-purple-300 cursor-pointer hover:bg-purple-200 transition-colors">
+            <Star className="w-4 h-4" />
+            Beta
           </span>
         </motion.div>
 
-        {/* Title */}
+        {/* Title - light mode gradient */}
         <motion.h1
           variants={itemVariants}
-          className="text-5xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 mb-4"
+          className="text-5xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-700 via-purple-600 to-indigo-700 mb-4"
         >
           {title || 'Kupuri Studios'}
         </motion.h1>
 
-        {/* Subtitle */}
-        <motion.p variants={itemVariants} className="text-xl md:text-2xl text-slate-400 mb-8">
+        {/* Subtitle - slate-600 for light mode readability */}
+        <motion.p variants={itemVariants} className="text-xl md:text-2xl text-slate-600 mb-8">
           {subtitle || 'AI Creative Canvas Platform'}
         </motion.p>
 
@@ -72,16 +74,14 @@ function HeroSection({ title, subtitle, children }) {
           {children}
         </motion.div>
 
-        {/* Scroll indicator */}
+        {/* Scroll indicator - use Lucide ArrowDown icon */}
         <motion.div
           variants={itemVariants}
           className="flex justify-center mt-12"
           animate={{ y: [0, 8, 0] }}
           transition={{ duration: 2, repeat: Infinity }}
         >
-          <svg className="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-          </svg>
+          <ArrowDown className="w-6 h-6 text-slate-600" />
         </motion.div>
       </motion.div>
     </section>

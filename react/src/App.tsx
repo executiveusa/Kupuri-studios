@@ -1,7 +1,4 @@
 // import InstallComfyUIDialog from '@/components/comfyui/InstallComfyUIDialog'
-import UpdateNotificationDialog from '@/components/common/UpdateNotificationDialog'
-import SettingsDialog from '@/components/settings/dialog'
-import { LoginDialog } from '@/components/auth/LoginDialog'
 import { ThemeProvider } from '@/components/theme/ThemeProvider'
 import { ConfigsProvider } from '@/contexts/configs'
 import { AuthProvider } from '@/contexts/AuthContext'
@@ -11,12 +8,25 @@ import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister'
 import { openDB } from 'idb'
 import { createRouter, RouterProvider } from '@tanstack/react-router'
-import { useEffect } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { Toaster } from 'sonner'
 import { routeTree } from './route-tree.gen'
 
 import '@/assets/style/App.css'
 import '@/i18n'
+
+// Lazy-load non-critical dialogs for performance optimization
+// This reduces initial bundle size and improves First Contentful Paint (FCP)
+const UpdateNotificationDialog = lazy(() =>
+  import('@/components/common/UpdateNotificationDialog').then(m => ({
+    default: m.default,
+  }))
+)
+const SettingsDialog = lazy(() =>
+  import('@/components/settings/dialog').then(m => ({
+    default: m.default,
+  }))
+)
 
 const router = createRouter({ routeTree })
 
@@ -112,11 +122,16 @@ function App() {
               {/* Install ComfyUI Dialog */}
               {/* <InstallComfyUIDialog /> */}
 
-              {/* Update Notification Dialog */}
-              <UpdateNotificationDialog />
+              {/* Lazy-loaded Dialogs with Suspense boundary
+                  These components are loaded on-demand to reduce initial bundle size
+                  and improve First Contentful Paint (FCP) metric */}
+              <Suspense fallback={null}>
+                <UpdateNotificationDialog />
+              </Suspense>
 
-              {/* Settings Dialog */}
-              <SettingsDialog />
+              <Suspense fallback={null}>
+                <SettingsDialog />
+              </Suspense>
 
               {/* Login Dialog - Temporarily disabled for Guest Mode */}
               {/* <LoginDialog /> */}

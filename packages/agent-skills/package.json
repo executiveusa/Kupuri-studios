@@ -1,0 +1,10 @@
+{
+  "name": "@kupuri/agent-skills",
+  "version": "1.0.0",
+  "description": "Modular agent capabilities and recursive thinking loops for the Kupuri Ecosystem",
+  "private": true,
+  "scripts": {
+    "validate": "python3 scripts/validate_skill.py",
+    "package": "python3 scripts/package_skill.py"
+  }
+}

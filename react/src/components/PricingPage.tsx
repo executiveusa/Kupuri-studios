@@ -56,18 +56,18 @@ const pricingTiers = [
 
 export function PricingPage() {
   return (
-    <section className="min-h-screen bg-gradient-to-b from-slate-950 to-slate-900 py-20 px-4">
+    <section className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900 py-20 px-4">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
+        {/* Header - Light/Dark mode aware */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           className="text-center mb-16"
         >
-          <h2 className="text-5xl font-bold text-white mb-6">
+          <h2 className="text-5xl font-bold text-slate-900 dark:text-white mb-6">
             Simple, Transparent Pricing
           </h2>
-          <p className="text-xl text-gray-400">
+          <p className="text-xl text-slate-600 dark:text-gray-400">
             Pay only for what you use. No hidden fees, no subscriptions.
           </p>
         </motion.div>

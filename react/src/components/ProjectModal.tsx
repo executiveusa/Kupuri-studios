@@ -46,7 +46,7 @@ export function ProjectModal({ project, onClose, isOpen }: any) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="fixed inset-4 md:inset-auto md:left-1/2 md:top-1/2 md:transform md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-3xl z-50 bg-gray-900 rounded-3xl shadow-2xl overflow-hidden"
+            className="fixed inset-4 md:inset-auto md:left-1/2 md:top-1/2 md:transform md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-3xl z-50 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl overflow-hidden"
             role="dialog"
             aria-modal="true"
             aria-labelledby="modal-title"
@@ -56,10 +56,10 @@ export function ProjectModal({ project, onClose, isOpen }: any) {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
               onClick={onClose}
-              className="absolute top-6 right-6 z-10 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center backdrop-blur-sm transition-colors"
+              className="absolute top-6 right-6 z-10 w-10 h-10 rounded-full bg-slate-200 dark:bg-white/10 hover:bg-slate-300 dark:hover:bg-white/20 flex items-center justify-center backdrop-blur-sm transition-colors cursor-pointer"
               aria-label="Close modal"
             >
-              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6 text-slate-900 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </motion.button>
@@ -87,18 +87,18 @@ export function ProjectModal({ project, onClose, isOpen }: any) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
               >
-                <h2 id="modal-title" className="text-4xl font-bold text-white mb-4">
+                <h2 id="modal-title" className="text-4xl font-bold text-slate-900 dark:text-white mb-4">
                   {project.title}
                 </h2>
 
-                <p className="text-lg text-gray-300 mb-6 leading-relaxed">
+                <p className="text-lg text-slate-600 dark:text-gray-300 mb-6 leading-relaxed">
                   {project.description}
                 </p>
 
                 {/* Tech Stack */}
                 {project.technologies && (
                   <div className="mb-8">
-                    <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">
+                    <h3 className="text-sm font-semibold text-slate-700 dark:text-gray-300 uppercase tracking-wider mb-3">
                       Technologies
                     </h3>
                     <div className="flex flex-wrap gap-2">
