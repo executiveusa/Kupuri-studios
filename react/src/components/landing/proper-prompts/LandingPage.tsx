@@ -4,6 +4,8 @@ import { LandingStickyScroll } from './LandingStickyScroll';
 import { LandingShowcase } from './LandingShowcase';
 import { LandingFooter } from './LandingFooter';
 import { LandingNavbar } from './LandingNavbar';
+import ServiceGrid from '@/components/ServiceGrid';
+import Footer from '@/components/Footer';
 
 export function LandingPage() {
   return (
@@ -13,9 +15,10 @@ export function LandingPage() {
         <LandingHero />
         <InteractiveDemo />
         <LandingStickyScroll />
+        <ServiceGrid />
         <LandingShowcase />
       </main>
-      <LandingFooter />
+      <Footer />
     </div>
   );
 }
