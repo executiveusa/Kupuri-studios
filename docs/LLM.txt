@@ -1,0 +1,132 @@
+# Kupuri Studios - LLM Instructions
+
+## Project Overview
+Kupuri Studios is an internal AI OS dashboard for managing customer communications, agent workflows, and AI-powered automation. The system integrates Chatwoot as the backend communications layer with a custom "Sprinklr-familiar" UX.
+
+## Technology Stack
+- **Frontend**: React 19 + Vite + TanStack Router + Zustand + Tailwind CSS
+- **Backend**: FastAPI + LangGraph + LiteLLM + Socket.IO
+- **Database**: SQLite with async access (aiosqlite)
+- **AI**: Multi-agent orchestration via LangGraph Swarm
+
+## Key Directories
+```
+/server/             - FastAPI backend
+  /routers/          - API endpoints
+  /services/         - Business logic
+  /models/           - Pydantic models
+  /tools/            - AI tool implementations
+/react/              - React frontend
+  /src/components/   - UI components
+  /src/api/          - API clients
+  /src/routes/       - Page routes
+```
+
+## Core Systems
+
+### 1. BFF Pattern (Backend-for-Frontend)
+- **Location**: `/server/routers/bff_router.py`, `/server/services/bff_service.py`
+- **Purpose**: Secure layer between frontend and services
+- **Features**: Session management, secret handling, context injection, tool orchestration
+
+### 2. Chatwoot Integration
+- **Location**: `/server/routers/chatwoot_router.py`, `/server/services/chatwoot_service.py`
+- **Purpose**: Communications substrate for conversations
+- **Features**: Conversation management, contact sync, message handling, webhooks
+
+### 3. Skills Catalog
+- **Location**: `/server/routers/skills_router.py`, `/server/services/skills_service.py`
+- **Purpose**: Searchable agent skills database
+- **Features**: Autocomplete search, category filtering, installation tracking
+
+### 4. LangGraph Agents
+- **Location**: `/server/services/langgraph_service/`
+- **Purpose**: Multi-agent AI orchestration
+- **Features**: Agent handoff, tool calling, stream processing
+
+## API Conventions
+
+### Authentication
+- Session-based operator context
+- Role-based permissions (operator, supervisor, admin)
+- Secrets managed server-side only
+
+### Response Format
+```json
+{
+  "status": "success|error",
+  "data": {...},
+  "message": "Optional message"
+}
+```
+
+### Error Handling
+- Use `HTTPException` with appropriate status codes
+- Log errors with context
+- Return user-friendly messages
+
+## Coding Guidelines
+
+### Python (Backend)
+- Use async/await for all I/O operations
+- Pydantic models for all request/response validation
+- Type hints required on all functions
+- Follow existing naming conventions
+
+### TypeScript (Frontend)
+- Functional components with hooks
+- Zustand for global state
+- React Query for server state
+- Tailwind CSS for styling
+
+## Key Endpoints
+
+### BFF Layer
+- `POST /api/bff/session/init` - Initialize operator session
+- `POST /api/bff/queue` - Get unified queue view
+- `POST /api/bff/case/{id}` - Get case details
+- `POST /api/bff/macro/execute` - Execute macro
+
+### Chatwoot
+- `GET /api/chatwoot/conversations` - List conversations
+- `POST /api/chatwoot/conversations/{id}/messages` - Send message
+- `POST /api/chatwoot/webhooks` - Receive webhooks
+
+### Skills
+- `GET /api/skills/autocomplete?q=` - Predictive search
+- `GET /api/skills/search?q=` - Full search
+- `GET /api/skills/categories` - List categories
+- `GET /api/skills/featured` - Featured skills
+
+## Environment Variables
+```
+# Required
+CHATWOOT_API_URL=https://chatwoot.example.com
+CHATWOOT_API_TOKEN=your_token
+
+# Optional
+CORS_ORIGINS=http://localhost:3000
+PORT=8000
+HOST=0.0.0.0
+```
+
+## Common Tasks
+
+### Adding a New API Endpoint
+1. Create router in `/server/routers/`
+2. Create service in `/server/services/`
+3. Add models in `/server/models/`
+4. Import router in `main.py`
+5. Add frontend API client
+
+### Adding a New UI Component
+1. Create component in `/react/src/components/`
+2. Add route if needed in `/react/src/routes/`
+3. Connect to API via custom hooks
+4. Add translations in `/react/src/i18n/`
+
+## Design Principles
+- Steve Krug: "Don't make me think" - minimize cognitive load
+- Sprinklr-familiar workflows (not visual clone)
+- Dark theme with glassmorphism
+- Real-time updates via WebSocket
