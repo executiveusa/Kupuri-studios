@@ -26,6 +26,8 @@ print('Importing config_service')
 from services.config_service import config_service
 print('Importing tool_service')
 from services.tool_service import tool_service
+print('Importing skills_service')
+from services.skills_service import skills_service
 print('Importing metrics_service')
 from services.metrics_service import metrics_service
 
@@ -43,6 +45,7 @@ async def lifespan(app: FastAPI):
     # TODO: Check if there will be racing conditions when user send chat request but tools and models are not initialized yet.
     await initialize()
     await tool_service.initialize()
+    await skills_service.initialize()
     yield
     # onshutdown
 

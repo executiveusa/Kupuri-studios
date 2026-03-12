@@ -8,7 +8,7 @@ import logging
 from typing import List, Optional
 from fastapi import APIRouter, HTTPException, Query
 
-from server.models.skills_models import (
+from models.skills_models import (
     CategoryResponse,
     SkillSummary,
     SkillDetail,
@@ -18,19 +18,11 @@ from server.models.skills_models import (
     AutocompleteResponse,
     SkillStats,
 )
-from server.services.skills_service import skills_service
+from services.skills_service import skills_service
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/skills", tags=["skills"])
-
-
-# ==================== Initialization ====================
-
-@router.on_event("startup")
-async def startup():
-    """Initialize skills service on startup."""
-    await skills_service.initialize()
 
 
 # ==================== Search & Autocomplete ====================

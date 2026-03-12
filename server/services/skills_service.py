@@ -12,7 +12,7 @@ from datetime import datetime
 from typing import List, Dict, Any, Optional, Tuple
 from difflib import SequenceMatcher
 
-from server.models.skills_models import (
+from models.skills_models import (
     SkillCategory,
     CategoryCreate,
     CategoryResponse,
