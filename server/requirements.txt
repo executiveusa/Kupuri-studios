@@ -21,7 +21,7 @@ websocket-client # needed for comfyui execution
 websockets>=12.0 # needed for chatwoot real-time integration
 rich # needed for comfyui execution
 typer # needed for comfyui execution
-langchain-core==0.3.26
+langchain-core==0.3.52
 langgraph==0.3.29
 langgraph-checkpoint==2.0.26
 langgraph-prebuilt==0.1.8
