@@ -1,171 +1,284 @@
 import { Hono } from 'hono';
 import { z } from 'zod';
-import { ComicService } from '../services/comicService';
+import { db, comics, pages, choices } from '../db/index';
+import { conductor } from '../services/conductor';
+import { tokenService } from '../services/tokenService';
 import { getUser } from '../middleware/auth';
 import { AppError } from '../middleware/errorHandler';
+import { eq } from 'drizzle-orm';
+import { randomUUID } from 'crypto';
 
-const router = new Hono();
+const app = new Hono();
 
-const CreateComicSchema = z.object({
-  title: z.string().min(3, 'Title must be at least 3 characters'),
+const createComicSchema = z.object({
+  title: z.string().min(1).max(255),
   description: z.string().optional(),
-  theme: z.enum(['pokemon', 'anime', 'fantasy', 'scifi', 'mystery', 'educational']),
+  theme: z.string().min(1).max(100),
 });
 
-const UpdateComicSchema = z.object({
-  title: z.string().min(3).optional(),
+const updateComicSchema = z.object({
+  title: z.string().optional(),
   description: z.string().optional(),
-  status: z.enum(['draft', 'generating', 'completed', 'published']).optional(),
-  metadata: z.record(z.any()).optional(),
+  theme: z.string().optional(),
 });
 
-// GET all published comics (public)
-router.get('/', async (c) => {
+// POST /api/comics - Create new comic
+app.post('/', async (c) => {
+  const user = getUser(c);
+  const body = createComicSchema.parse(await c.req.json());
+
   try {
-    const page = parseInt(c.req.query('page') || '1');
-    const limit = parseInt(c.req.query('limit') || '20');
+    const comicId = randomUUID();
+    await db.insert(comics).values({
+      id: comicId,
+      userId: user.userId,
+      title: body.title,
+      description: body.description || '',
+      theme: body.theme,
+      status: 'draft',
+      metadata: {},
+    });
 
-    if (page < 1 || limit < 1) {
-      throw new AppError('Invalid pagination parameters', 'INVALID_PAGINATION', 400);
+    const comic = await db.query.comics.findFirst({
+      where: eq(comics.id, comicId),
+    });
+
+    return c.json(comic, 201);
+  } catch (error) {
+    console.error('Comic creation error:', error);
+    throw new AppError('Failed to create comic', 'COMIC_CREATE_ERROR', 500);
+  }
+});
+
+// GET /api/comics - List user's comics
+app.get('/', async (c) => {
+  const user = getUser(c);
+
+  try {
+    const userComics = await db.query.comics.findMany({
+      where: eq(comics.userId, user.userId),
+      orderBy: (comics, { desc }) => [desc(comics.createdAt)],
+    });
+
+    return c.json(userComics);
+  } catch (error) {
+    throw new AppError('Failed to fetch comics', 'COMIC_LIST_ERROR', 500);
+  }
+});
+
+// GET /api/comics/:id - Get comic details
+app.get('/:id', async (c) => {
+  const { id } = c.req.param();
+  const user = getUser(c);
+
+  try {
+    const comic = await db.query.comics.findFirst({
+      where: eq(comics.id, id),
+    });
+
+    if (!comic) {
+      throw new AppError('Comic not found', 'COMIC_NOT_FOUND', 404);
     }
 
-    const result = await ComicService.getPublishedComics(page, limit);
-
-    return c.json({
-      success: true,
-      data: result,
-    });
-  } catch (err) {
-    throw err;
-  }
-});
-
-// GET user's comics (protected)
-router.get('/my-comics', async (c) => {
-  try {
-    const user = getUser(c);
-    const page = parseInt(c.req.query('page') || '1');
-    const limit = parseInt(c.req.query('limit') || '10');
-
-    if (page < 1 || limit < 1) {
-      throw new AppError('Invalid pagination parameters', 'INVALID_PAGINATION', 400);
+    if (comic.userId !== user.userId) {
+      throw new AppError('Unauthorized', 'UNAUTHORIZED', 403);
     }
 
-    const result = await ComicService.getUserComics(user.userId, page, limit);
-
-    return c.json({
-      success: true,
-      data: result,
+    // Get pages and choices
+    const comicPages = await db.query.pages.findMany({
+      where: eq(pages.comicId, id),
+      orderBy: (pages, { asc }) => [asc(pages.pageNumber)],
     });
-  } catch (err) {
-    throw err;
-  }
-});
 
-// GET single comic
-router.get('/:id', async (c) => {
-  try {
-    const comicId = c.req.param('id');
-    const user = (c as any).user; // Optional user
-
-    const comic = await ComicService.getComicById(comicId, user?.userId);
-
-    return c.json({
-      success: true,
-      data: comic,
-    });
-  } catch (err) {
-    throw err;
-  }
-});
-
-// CREATE new comic (protected)
-router.post('/', async (c) => {
-  try {
-    const user = getUser(c);
-    const body = await c.req.json();
-    const data = CreateComicSchema.parse(body);
-
-    const comic = await ComicService.createComic(
-      user.userId,
-      data.title,
-      data.description || '',
-      data.theme
+    // Get choices for each page
+    const pagesWithChoices = await Promise.all(
+      comicPages.map(async (page) => ({
+        ...page,
+        choices: await db.query.choices.findMany({
+          where: eq(choices.pageId, page.id),
+        }),
+      }))
     );
 
-    return c.json(
-      {
-        success: true,
-        data: comic,
-      },
-      201
-    );
-  } catch (err) {
-    if (err instanceof z.ZodError) {
-      throw new AppError('Validation failed', 'VALIDATION_ERROR', 400, {
-        errors: err.errors,
-      });
+    return c.json({
+      ...comic,
+      pages: pagesWithChoices,
+    });
+  } catch (error) {
+    if (error instanceof AppError) throw error;
+    throw new AppError('Failed to fetch comic', 'COMIC_FETCH_ERROR', 500);
+  }
+});
+
+// POST /api/comics/:id/generate - Generate comic story
+app.post('/:id/generate', async (c) => {
+  const { id } = c.req.param();
+  const user = getUser(c);
+
+  try {
+    const comic = await db.query.comics.findFirst({
+      where: eq(comics.id, id),
+    });
+
+    if (!comic) {
+      throw new AppError('Comic not found', 'COMIC_NOT_FOUND', 404);
     }
-    throw err;
-  }
-});
 
-// UPDATE comic (protected)
-router.put('/:id', async (c) => {
-  try {
-    const user = getUser(c);
-    const comicId = c.req.param('id');
-    const body = await c.req.json();
-    const data = UpdateComicSchema.parse(body);
-
-    const comic = await ComicService.updateComic(comicId, user.userId, data);
-
-    return c.json({
-      success: true,
-      data: comic,
-    });
-  } catch (err) {
-    if (err instanceof z.ZodError) {
-      throw new AppError('Validation failed', 'VALIDATION_ERROR', 400, {
-        errors: err.errors,
-      });
+    if (comic.userId !== user.userId) {
+      throw new AppError('Unauthorized', 'UNAUTHORIZED', 403);
     }
-    throw err;
-  }
-});
 
-// DELETE comic (protected)
-router.delete('/:id', async (c) => {
-  try {
-    const user = getUser(c);
-    const comicId = c.req.param('id');
+    // Check if already generating
+    if (comic.status === 'generating') {
+      throw new AppError('Comic is already generating', 'COMIC_GENERATING', 409);
+    }
 
-    await ComicService.deleteComic(comicId, user.userId);
+    // Update status to generating
+    await db
+      .update(comics)
+      .set({ status: 'generating' })
+      .where(eq(comics.id, id));
+
+    // Generate the comic story
+    const result = await conductor.generateComic({
+      comicId: id,
+      userId: user.userId,
+      theme: comic.theme,
+      title: comic.title,
+      characterName: 'Hero',
+      userPreferences: { style: 'anime', tone: 'adventurous' },
+    });
+
+    // Update comic status to completed
+    await db
+      .update(comics)
+      .set({
+        status: 'completed',
+        metadata: {
+          totalTokensCost: result.totalTokensCost,
+          pagesGenerated: result.pages.length,
+        },
+      })
+      .where(eq(comics.id, id));
 
     return c.json({
       success: true,
-      message: 'Comic deleted successfully',
+      comicId: id,
+      pagesGenerated: result.pages.length,
+      tokensCost: result.totalTokensCost,
+      message: 'Comic generated successfully',
     });
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    // Revert status on failure
+    await db
+      .update(comics)
+      .set({ status: 'draft' })
+      .where(eq(comics.id, id));
+
+    if (error instanceof AppError) throw error;
+    throw new AppError('Failed to generate comic', 'COMIC_GENERATION_ERROR', 500);
   }
 });
 
-// PUBLISH comic (protected)
-router.post('/:id/publish', async (c) => {
+// PUT /api/comics/:id - Update comic
+app.put('/:id', async (c) => {
+  const { id } = c.req.param();
+  const user = getUser(c);
+  const body = updateComicSchema.parse(await c.req.json());
+
   try {
-    const user = getUser(c);
-    const comicId = c.req.param('id');
-
-    const comic = await ComicService.publishComic(comicId, user.userId);
-
-    return c.json({
-      success: true,
-      data: comic,
+    const comic = await db.query.comics.findFirst({
+      where: eq(comics.id, id),
     });
-  } catch (err) {
-    throw err;
+
+    if (!comic) {
+      throw new AppError('Comic not found', 'COMIC_NOT_FOUND', 404);
+    }
+
+    if (comic.userId !== user.userId) {
+      throw new AppError('Unauthorized', 'UNAUTHORIZED', 403);
+    }
+
+    await db
+      .update(comics)
+      .set({
+        title: body.title || comic.title,
+        description: body.description !== undefined ? body.description : comic.description,
+        theme: body.theme || comic.theme,
+        updatedAt: new Date(),
+      })
+      .where(eq(comics.id, id));
+
+    const updated = await db.query.comics.findFirst({
+      where: eq(comics.id, id),
+    });
+
+    return c.json(updated);
+  } catch (error) {
+    if (error instanceof AppError) throw error;
+    throw new AppError('Failed to update comic', 'COMIC_UPDATE_ERROR', 500);
   }
 });
 
-export default router;
+// DELETE /api/comics/:id - Delete comic
+app.delete('/:id', async (c) => {
+  const { id } = c.req.param();
+  const user = getUser(c);
+
+  try {
+    const comic = await db.query.comics.findFirst({
+      where: eq(comics.id, id),
+    });
+
+    if (!comic) {
+      throw new AppError('Comic not found', 'COMIC_NOT_FOUND', 404);
+    }
+
+    if (comic.userId !== user.userId) {
+      throw new AppError('Unauthorized', 'UNAUTHORIZED', 403);
+    }
+
+    await db.delete(comics).where(eq(comics.id, id));
+
+    return c.json({ success: true, message: 'Comic deleted' });
+  } catch (error) {
+    if (error instanceof AppError) throw error;
+    throw new AppError('Failed to delete comic', 'COMIC_DELETE_ERROR', 500);
+  }
+});
+
+// POST /api/comics/:id/publish - Publish comic
+app.post('/:id/publish', async (c) => {
+  const { id } = c.req.param();
+  const user = getUser(c);
+
+  try {
+    const comic = await db.query.comics.findFirst({
+      where: eq(comics.id, id),
+    });
+
+    if (!comic) {
+      throw new AppError('Comic not found', 'COMIC_NOT_FOUND', 404);
+    }
+
+    if (comic.userId !== user.userId) {
+      throw new AppError('Unauthorized', 'UNAUTHORIZED', 403);
+    }
+
+    if (comic.status !== 'completed') {
+      throw new AppError('Comic must be completed before publishing', 'COMIC_NOT_READY', 400);
+    }
+
+    await db
+      .update(comics)
+      .set({ status: 'published', updatedAt: new Date() })
+      .where(eq(comics.id, id));
+
+    return c.json({ success: true, message: 'Comic published' });
+  } catch (error) {
+    if (error instanceof AppError) throw error;
+    throw new AppError('Failed to publish comic', 'COMIC_PUBLISH_ERROR', 500);
+  }
+});
+
+export default app;
