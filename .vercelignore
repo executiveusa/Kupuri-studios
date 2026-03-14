@@ -1,0 +1,49 @@
+# Git files
+.git
+.gitignore
+.github
+
+# Dependencies
+node_modules
+.npm
+.pnp
+venv
+__pycache__
+
+# Build outputs
+build
+dist
+.next
+out
+.vercel
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Testing
+.vitest
+coverage
+.playwright
+playwright-report
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+tests
+scripts
+docs
+electron
+server (keep server code separate for API routes)
+Choose-Your-Own-Adventure-main
+jaaz-main
