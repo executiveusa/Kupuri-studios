@@ -11,6 +11,8 @@
     "dev": "concurrently \"npm run dev:react\" \"npm run dev:electron\"",
     "start:frontend": "cd frontend && npm run dev",
     "start:electron": "npx electron electron/main.js",
+    "build": "cd react && npm run build",
+    "build:vercel": "cd react && npm run build",
     "build:electron": "electron-builder",
     "build:win": "electron-builder --win",
     "build:mac": "electron-builder --mac",

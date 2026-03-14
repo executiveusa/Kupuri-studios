@@ -1,0 +1,30 @@
+{
+  "version": 2,
+  "framework": "react",
+  "projectSettings": {
+    "sourceFilesOutsideRootDirectory": true
+  },
+  "buildCommand": "npm run build:vercel",
+  "outputDirectory": "react/dist",
+  "env": {
+    "DATABASE_URL": "@database_url",
+    "JWT_SECRET": "@jwt_secret",
+    "JWT_REFRESH_SECRET": "@jwt_refresh_secret",
+    "VAULT_ENCRYPTION_KEY": "@vault_encryption_key",
+    "ANTHROPIC_API_KEY": "@anthropic_api_key",
+    "OPENAI_API_KEY": "@openai_api_key",
+    "GOOGLE_API_KEY": "@google_api_key",
+    "STRIPE_SECRET_KEY": "@stripe_secret_key",
+    "STRIPE_PUBLISHABLE_KEY": "@stripe_publishable_key",
+    "STRIPE_WEBHOOK_SECRET": "@stripe_webhook_secret",
+    "API_BASE_URL": "@api_base_url",
+    "NEXT_PUBLIC_API_BASE_URL": "@next_public_api_base_url",
+    "WEB_BASE_URL": "@web_base_url"
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "http://localhost:8000/api/$1"
+    }
+  ]
+}
