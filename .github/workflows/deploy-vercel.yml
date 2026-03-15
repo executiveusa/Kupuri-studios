@@ -2,9 +2,9 @@ name: Deploy to Vercel
 
 on:
   push:
-    branches: [ main, claude/ai-comic-anime-studio-017xU6RLQvaERkM1T7kkmAvA ]
+    branches: [ master, main, claude/ai-comic-anime-studio-017xU6RLQvaERkM1T7kkmAvA ]
   pull_request:
-    branches: [ main ]
+    branches: [ master, main ]
 
 jobs:
   build:
